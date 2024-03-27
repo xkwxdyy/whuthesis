@@ -1,0 +1,279 @@
+% !TeX root = ../../whuthesis-doc.tex
+
+\PassOptionsToPackage{silent}{xeCJK}
+\usepackage{ctex}
+\usepackage{fontawesome5}
+
+\usepackage[library={doc,box,bnf,ref,counter,pgf}]{whu}
+\SetKeys[updatemarks]{multicol}
+\newcommand{\hook}{\cmd[module=hook point,type=hook point]}
+\newcommand{\colna}{\key[module=color name,type=color name]}
+\usepackage{marginnote}
+
+\makeatletter
+\newcommand{\sdanger}[1][1]{\par\medskip\noindent\@@line{\hss\Replicate{#1}{\textdbend}\hss}\par}
+\newcommand{\mdanger}[1][1]{\marginnote{\Replicate{#1}{\textdbend}}}
+\makeatother
+
+\newcommand{\pkgdoc}[1]{\pkg{#1} 宏包文档}
+\newcommand*{\TODO}{\textcolor{red!90!black}{\bfseries[TODO]}}
+\newcommand\UNEXPANDEDRESULT{最终结果使用 \tn{unexpanded} （\cs{exp_not:n}）包裹起来。}
+
+\setuplayout*[balance]{hmargin=1.7cm,top=2.3cm,bottom=2.5cm,
+  hfoffset=0pt,nomarginpar,
+  columnsep=35pt,headsep=10pt,footskip=30pt,}
+\setuplayout[main]{paper=a4,
+  marginparsep=10pt,marginparwidth=15\ccwd,
+  textwidth=35\ccwd,inner=1.7cm,top=2.3cm,bottom=2.5cm,
+  headsep=10pt,footskip=30pt,
+  hfoffset={[OR,EL]168.1pt},%marking,%showframe,
+}
+
+\usepackage{graphicx}
+\graphicspath{{.}{./whu-aux/}{./whudoc-aux}{./pic}}
+\usepackage{xcolor}
+
+% region math & fonts
+\usepackage{amsmath, amsfonts}
+\usepackage{unicode-math}
+% \setmainfont{texgyrepagella}[
+%   Extension      = .otf,
+%   UprightFont    = *-regular,
+%   BoldFont       = *-bold,
+%   ItalicFont     = *-italic,
+%   BoldItalicFont = *-bolditalic]
+\setmainfont{TeXGyreTermesX}[
+  Extension      = .otf,
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Italic,
+  BoldItalicFont = *-BoldItalic,
+  SlantedFont    = *-Slanted,
+  BoldSlantedFont= *-BoldSlanted]
+\setsansfont{texgyreheros}[
+  Extension      = .otf,
+  UprightFont    = *-regular,
+  BoldFont       = *-bold,
+  ItalicFont     = *-italic,
+  BoldItalicFont = *-bolditalic]
+\setmonofont{cmun}[
+  Extension      = .otf,
+  UprightFont    = *btl,
+  BoldFont       = *tb,
+  ItalicFont     = *bto,
+  BoldItalicFont = *tx,
+  HyphenChar     = None]
+\setmathfont{texgyrepagella-math.otf}
+%endregion
+
+\usepackage{lineno}
+\usepackage{caption}
+% \expandafter\let\csname caption@ifoddpage\endcsname\IfPageOdd
+\usepackage{floatrow}
+\usepackage{tikz}
+\usetikzlibrary{shadings}
+\usepackage[many]{tcolorbox}
+\usepackage{listings}
+% \usepackage{siunitx}
+\usepackage{adjustbox}
+\usepackage[strict]{changepage}
+\renewcommand{\cplabel}{@}
+\usepackage{array,booktabs,tabularx,makecell}
+\usepackage{tabularray}
+
+\floatsetup{captionskip=5pt,facing=yes}
+
+\ExplSyntaxOn
+\msg_redirect_name:nnn { tabularray } { table-width-too-small } { log }
+\ExplSyntaxOff
+
+\usepackage[colorlinks]{hyperref}
+\hypersetup{
+  pdfauthor={夏大鱼羊},
+  pdftitle=\WhuThesis 手册
+}
+\usepackage{nameref,varioref,cleveref}
+
+\usepackage[numbered,open,openlevel=1]{bookmark}
+
+\usepackage{glossaries}
+
+\usepackage{zhlipsum}
+
+\DeclareNewFloatType{example}{fileext=example,name=例}
+
+\newfloatcommand{mtabbox}{table}[\setcaptiontype{table}\captop][\FBwidth]
+
+\enablecombinedlist 
+
+\newsavebox\WaterMarkBox
+\sbox{\WaterMarkBox}{\rotatebox{45}{\color{gray!30}\fontsize{100}{0}\sffamily \WhuThesis}}
+\background+[./watermark]{\copy\WaterMarkBox}
+
+%region title setting
+\makeatletter
+\@secpenalty=-\@m 
+%% 空 mark 实际上保存为了 \prg_do_nothing:，这里并不直接检测，而利用一个空的 mark
+\NewMarkClass{totalempty}
+\InsertMark{totalempty}{}
+\NewMarkClass{chapter/head}
+\NewMarkClass{section/head}
+\long\def\chaptermark#1{%
+  \InsertMark{chapter/head}{\protect\hyperlink{\@currentHref}{#1}}%
+  \InsertMark{section/head}{}}
+\long\def\sectionmark#1{%
+  \InsertMark{section/head}{\protect\hyperlink{\@currentHref}{#1}}}
+\def\@chaptosec{\;\texttt{>\kern-.1em >}\;}
+\def\@splitrange{\ \texttt{=\kern-.1em =\kern-.2em >}\ }
+\def\head@ifempty#1{\ifthenelse{\equal{#1}{}\OR\equal{#1}{\TopMark{totalempty}}}}
+\def\head@hifeq#1{\IfMarksEqualTF{#1/head}}
+\def\head@ifeq#1#2{\ifthenelse{\equal{#1}{#2}}}
+\def\head@ct{\TopMark{chapter/head}} \def\head@st{\TopMark{section/head}}
+\def\head@cf{\FirstMark{chapter/head}} \def\head@sf{\FirstMark{section/head}}
+\def\head@cl{\LastMark{chapter/head}} \def\head@sl{\LastMark{section/head}}
+\def\head@fc#1{{\bfseries #1}} \def\head@fs#1{{#1}}
+\newcommand\marked@title{%
+  \head@hifeq{chapter}{first}{last}{%
+    \head@ifempty\head@cf{}
+      {\head@ifempty\head@ct
+        {\head@fc\head@cf\head@ifempty\head@sl{}{\@chaptosec
+          \head@ifeq\head@sf\head@sl{\head@fs\head@sf}{\head@fs\head@sf
+            \head@ifempty\head@sl{}{\@splitrange\head@fs\head@sl}}}}
+        {\head@ifeq\head@ct\head@cf
+          {\head@fc\head@ct\head@ifempty\head@sf{}
+            {\@chaptosec\head@ifeq\head@sf\head@sl
+              {\head@fs\head@sf}{\head@fs\head@sf\@chaptosec\head@fs\head@sl}}}
+          {\head@fc\head@ct\head@ifempty\head@st{}{\@chaptosec\head@fs\head@st}\@splitrange
+            \head@fc\head@cl\head@ifempty\head@sl{}{\@chaptosec\head@fs\head@sl}}}}%
+  }{\head@fc\head@cf\@splitrange\head@fc\head@cl}}
+\setuptitle[chapter]{pagestyle=fancy, 
+  fixskip, break=\needspace{100pt}, 
+  beforeskip=30pt, afterskip=25pt, format=\zihao{-2}\bfseries\centering,}
+\setuptitle[section]{fixskip, break=\addpenalty{-5000},
+  name={\texorpdfstring{\S~}{\S}},
+  beforeskip=20pt plus 5pt minus 5pt, afterskip=15pt plus 2pt minus 2pt,
+  format=\zihao{-3}\bfseries\raggedright,}
+\setuptitle[subsection]{fixskip,
+  beforeskip=10pt plus 3pt minus 3pt,
+  afterskip=10pt plus 3pt minus 3pt,
+  format=\zihao{-4}\bfseries\raggedright,}
+
+\providecommand\headlink@warp[1]{#1}
+\setpagestyle{plain}[totalempty]{}
+\setpagestyle*{fancy}[totalempty]{
+  \sethead [ol,er] {\WhuThesis 手册}
+  \sethead [or,el] {\headlink@warp\marked@title}
+  % \setfoot [or,el] {\texttt{Longaster@163.com}}
+  \setfoot [ol,er] {第\thepage 页}
+  \setheadrulewidth {1pt}
+}
+\makeatother
+%endregion
+
+\makeatletter
+\protected\def\this@doc@externallink{\raisebox{-.8ex}[0pt][0pt]{\hi{\faIcon{external-link-alt}}}}
+\protected\def\this@doc@linkpage{\raisebox{.8ex}[0pt][0pt]{\lo{P.\labelinfo{page}{\whu@doc@thelabel}}}}
+\protected\def\this@doc@linkinfo{\lohi{\,\rmfamily\this@doc@linkpage}{\,\this@doc@externallink}}
+\def\whu@doc@basic@format{\ifx\whu@doc@thelabel\@empty \whu@doc@thetext
+  \else \hyperref[\whu@doc@thelabel]{\whu@doc@thetext\this@doc@linkinfo}\!\fi}
+\def\whu@doc@cs@format#1{\hypersetup{linkcolor=whu/color/doc cs}\whu@doc@basic@format}
+\let\whu@doc@cmd@format\whu@doc@cs@format
+\let\whu@doc@tn@format\whu@doc@cs@format
+\def\whu@doc@key@format#1{\hypersetup{linkcolor=whu/color/doc key}\whu@doc@basic@format}
+\def\whu@doc@csref@format#1{\whu@doc@basic@format}
+\def\whu@doc@envref@format#1{\whu@doc@basic@format}
+\def\whu@doc@keyref@format#1{\whu@doc@basic@format}
+\setfontface\whu@doc@itfont{texgyrepagella-italic}[Extension=.otf,BoldFont=texgyrepagella-bolditalic]
+\makeatother
+\definecolor{whu/color/doc cs}{RGB}{180,116,107}
+\definecolor{whu/color/doc env}{RGB}{216,156,122}
+\definecolor{whu/color/doc key}{RGB}{138,149,169}
+\newindextype[auto=true,filename=\jobname.idx,heading*={\section}]{\empty}
+\setupindex[\empty,docchange]{auto=false}
+
+
+%region aux env
+\makeatletter
+\lstdefinestyle{xamplestyle}{language={[LaTeX]TeX},
+  basicstyle=\small\linespread{1.1}\ttfamily,
+  aboveskip=\smallskipamount,belowskip=-\medskipamount,
+  % aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+  columns=fullflexible, keepspaces=true,
+  breaklines=true, breakatwhitespace=true, 
+  breakindent=0pt, postbreak={\hb@xt@1.5em{\hss{\color{gray}$\hookrightarrow$}\hss}},
+  extendedchars=true, nolol,
+  numberstyle=\tiny,numbersep=8pt,
+  commentstyle=\color{green!55!black}}
+\definebufferpair [ __process_line=standard-not-nest,
+  save-mode=write, write=\jobname.exambuff, blank=space] 
+  \startxamplecode \stopxamplecode {} 
+  {\edef\xamplecode{\noexpand\lstinputlisting[style=xamplestyle,\unexpanded\expandafter{\xampleOPTlst}]{\jobname.exambuff}}%
+    \def\xcaption{\setcaptiontype{example}\caption}%
+    \xample@hango\begin{longfbox}[]\xample@hangi}
+\protected\def\xample@hango{%
+  \par\refstepcounter{example}%
+  \edef\xample@test{\noexpand\ifnum\the\c@example>\c@example 
+    \global\advance\c@example\@ne\noexpand\fi}}
+\protected\def\xample@hangi{%
+  \setbox\z@\hb@xt@\textwidth{\hss{\color{red!80!black}\bfseries 例\theexample}}%
+  \global\advance\c@example -\@ne
+  \vspace*{-\dimexpr\option{/fbox/padding-top}+\parskip}\par
+  \edef\xample@tmp{\vskip-\the\dimexpr\ht\z@+\dp\z@+.3333em+\parskip\relax\par}%
+  \box\z@ \xample@tmp}
+\protected\def\xampleline{\noindent \kern-\dimexpr\option{/fbox/padding-left}\relax
+  \cleaders\hb@xt@.2em{\hss.\hss}\hfill 
+  \kern\dimexpr-\option{/fbox/padding-right}\relax \par}
+\def\xampletext{\par\input{\jobname.exambuff}}
+\def\xampleprint{\xamplecode \xampleline \xampletext}
+\NewDocumentEnvironment {xample} { O{} O{} }
+  {\penalty-1000 \def\xampleOPTlst{#1}%
+    \fboxset{breakable=true,#2}%
+    \expandafter\expandafter\expandafter\startxamplecode
+      \expandafter\string\@firstofone}
+  {\end{longfbox}\xample@test\goodbreak}
+
+\lstdefinelanguage[BNF]{TeX}[common]{TeX}{
+  texcs=[1]{BNFItem}, texcs=[2]{BNFN}, texcs=[3]{BNFT}, 
+  texcs=[4]{BNFI,is}, texcs=[5]{BNFO,alt},
+  moredelim=[s][{\color{blue}}]{<}{>},
+  moredelim=[s][{\color{red!70}}]{"}{"},
+  literate={{:}{{\bfseries\color{green!50!black}:}}1 {::=}{{\bfseries\color{green!50!black}::=}}3 {|}{{\bfseries\color{cyan}\string|}}1},
+  texcsstyle={[1]{\color{purple}}}, texcsstyle={[2]{\color{blue}}}, 
+  texcsstyle={[3]{\color{red!70}}}, texcsstyle={[4]{\bfseries\color{green!50!black}}},
+  texcsstyle={[5]{\bfseries\color{cyan}}}}
+
+\protected\def\normalsize{%
+  \@setfontsize \normalsize {10.53937}{12.64725}%
+  \abovedisplayskip 1\p@ \@plus 4\p@ \@minus 2\p@ 
+  \abovedisplayshortskip \z@ \@plus 2\p@ 
+  \belowdisplayskip \abovedisplayskip 
+  \belowdisplayshortskip \abovedisplayshortskip
+  \let \@listi \@listI
+}
+\makeatother
+%endregion
+
+\ExplSyntaxOn
+\cs_new:Npn \UseList { \whu_tl_use:nn }
+\cs_new:Npn \UseClist { \clist_use:nn }
+\ExplSyntaxOff
+
+\crefformat{figure}{#2图#1#3}
+\crefformat{table}{#2表#1#3}
+\crefformat{example}{#2例#1#3}
+\crefformat{part}{#2第\zhnumber{#1}部分#3}
+\crefformat{chapter}{#2第\zhnumber{#1}章#3}
+\crefformat{section}{第 #2#1#3 节}
+\crefformat{subsection}{第 #2#1#3 小节}
+
+\setlist{nosep}
+\setlist[itemize,1]{label=\textbullet}
+\setlist[itemize,2]{label=$\smwhtcircle$}
+
+\def\nofuncskip{\par\vskip-\bigskipamount\vskip\parskip\par}
+
+\raggedbottom \hfuzz=2.5pt \vfuzz=10pt 
+
+\title{\WhuThesis 手册}
+\author{夏大鱼羊}
+\date{\zhtoday\quad v\UseName{whu@versi@n}}

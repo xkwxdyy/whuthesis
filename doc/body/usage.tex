@@ -1,0 +1,46 @@
+% !TeX root = ../../whuthesis-doc.tex
+
+\begin{function}{\whusetup}
+\begin{syntax}
+  \verb|\whusetup| \marg{key-vals}
+  \verb|\whusetup| \oarg{key path} \marg{key-vals}
+  \verb|\whusetup| \{
+  ~~\meta{key path_1} = \marg{key-vals_1} ,
+  ~~\meta{key path_2} = \marg{key-vals_2} ,
+  ~~...
+  \}
+\end{syntax}
+键值设置命令。
+
+\WhuThesis 的不同模块使用不同的 \meta{key path}，一般情况下，这些模块会提供自己的键值设置接口，
+为了使用 \cs{whusetup} 来设置这些键值，需要指定 \meta{key path}。
+\end{function}
+
+在本文档中，键的说明文字旁的表格中列出了键的完整写法，\meta{key path} 即为灰色的部分。
+如键 \keyreflist[frame]{outer-sep, sep} 可以写成 
+\begin{xample}
+\whusetup[frame]{outer-sep=0pt, sep=20pt}
+或 
+\whusetup{ frame/outer-sep=0pt, frame/sep=20pt }
+\stopxamplecode
+\xamplecode\medskip
+\end{xample}
+
+
+\begin{function}{\whusetstyle}
+\begin{syntax}
+  \verb|\whusetstyle|   \oarg{key path} \marg{key} \marg{key-vals}
+  \verb|\whusetstyle| * \oarg{key path} \marg{key} \marg{code}
+\end{syntax}
+自定义键。
+
+带 \verb|*| 的可使用一个参数，它代表键传入的值。
+\end{function}
+
+
+\begin{function}[EXP]{\Replicate}
+  \begin{syntax}
+    \verb|\Replicate| \marg{num expr} \marg{code}
+  \end{syntax}
+  重复 \meta{code} \meta{num expr} 次。
+\end{function}

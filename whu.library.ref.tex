@@ -1,0 +1,52 @@
+\WHUProvideExplLibrary{ref}{\whu@d@te}{\whu@versi@n}{cross reference}
+
+\int_new:N \g__whu_ref_record_page_int 
+\cs_gset_protected:Npn \IfPageOdd { \__whu_ref_if_page_odd:N \c@page }
+\cs_gset_protected:Npn \IfAbsPageOdd 
+  { \__whu_ref_if_page_odd:N \g_shipout_readonly_int }
+\cs_gset_protected:Npn \__whu_ref_if_page_odd:N #1
+  {
+    \int_gincr:N \g__whu_ref_record_page_int
+    \whu_newlabel_shipout_x:xxxxxx 
+      { whu@ref/pageodd/cnt/ \int_use:N \g__whu_ref_record_page_int }
+      { \int_use:N \g__whu_ref_record_page_int } 
+      { \exp_not:N \int_value:w #1 } { } { } 
+      { \exp_not:N \int_value:w \g_shipout_readonly_int }
+    \whu_label_if_exist:nTF 
+      { whu@ref/pageodd/cnt/ \int_use:N \g__whu_ref_record_page_int }
+      {
+        \int_if_odd:nTF { \int_value:w \__whu_get_label_page:n { whu@ref/pageodd/cnt/ \int_use:N \g__whu_ref_record_page_int } }
+          { \use_i:nn } { \use_ii:nn }
+      }
+      { 
+        \G@refundefinedtrue 
+        \if_int_odd:w #1 \exp_after:wN \use_i:nn \else: \exp_after:wN \use_ii:nn \fi:
+      }
+  }
+
+\NewDocumentCommand \HyperRef { s m O{} }
+  {
+    \tl_if_blank:nTF {#3} 
+      { \IfBooleanTF {#1} \whu_ref_label_shbox:nn \whu_ref_label_box:nn {#2} }
+      { \exp_last_unbraced:Ne \HyperBoxRef { \IfBooleanT {#1} {*} } {#2} {#3} }
+  }
+\NewDocumentCommand \HyperBoxRef { s m m O{c} O{\relax} O{s} }
+  {
+    \IfBooleanTF{#1} \collectn_varwidth:Nnnnnnw \collectn_width:Nnnnnnw 
+      \l__whu_tmpc_box
+      { \whu_ref_label:nn {#2} { \XeTeXLinkBox { \box_use_drop:N \l__whu_tmpc_box } } }
+      {#4} {#5} {#6} {#3}
+  }
+\NewDocumentCommand \HyperLink { s m O{} }
+  {
+    \tl_if_blank:nTF {#3} 
+      { \IfBooleanTF {#1} \whu_ref_target_shbox:nn \whu_ref_target_box:nn {#2} }
+      { \exp_last_unbraced:Ne \HyperBoxLink { \IfBooleanT {#1} {*} } {#2} {#3} }
+  }
+\NewDocumentCommand \HyperBoxLink { s m m O{c} O{\relax} O{s} }
+  {
+    \IfBooleanTF{#1} \collectn_varwidth:Nnnnnnw \collectn_width:Nnnnnnw 
+      \l__whu_tmpc_box
+      { \whu_ref_target:nn {#2} { \XeTeXLinkBox { \box_use_drop:N \l__whu_tmpc_box } } }
+      {#4} {#5} {#6} {#3}
+  }

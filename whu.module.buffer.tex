@@ -1,0 +1,369 @@
+\WHUDependency{package={buffer}}
+\WHUProvideExplModule{buffer}{\whu@d@te}{\whu@versi@n}{buffer mechanism}
+
+
+
+\endinput
+
+%% old implement
+
+\str_const:Nn \c__whu_buffer_root_str { whu/buffer~ }
+\iow_new:N \g__whu_buffer_file_iow
+\tl_new:N \g__whu_buffer_inner_save_tl
+% 设置 count 为 1 时可以在 seq 名和文件名中使用
+\int_new:N \c@WhuBufferCount
+\int_set_eq:NN \c@WhuBufferCount \c_one_int
+
+% 基本键值
+\keys_define:nn { whu } { buffer .meta:nn = { whu/buffer } {#1} }
+\keys_define:nn { whu/buffer }
+  {
+    store .str_set_e:N  = \l__whu_buffer_name_str ,
+    store .initial:n    = buffer ,
+    macro .code:n       = \tl_set:Nn \l__whu_buffer_macro_tl { \exp_not:N #1 } ,
+    macro .initial:n    = \savedbuffertl ,
+    seq .code:n         = \tl_set:Nn \l__whu_buffer_seq_tl { \exp_not:N #1 } ,
+    seq .initial:n      = \savedbufferseq ,
+    filename .tl_set:N  = \l__whu_buffer_filename_tl ,
+    filename .initial:n = { \c_sys_jobname_str .buffer } ,
+    mode .choices:nn    = { set, push, macro, seq, write } 
+      { \str_set:Nx \l__whu_buffer_mode_clist \l_keys_choice_tl } ,
+    mode .initial:n     = set ,
+    mode* .code:n = 
+      {
+        \clist_clear:N \l__whu_buffer_mode_clist
+        \clist_map_inline:nn {#1}
+          {
+            \keys_if_choice_exist:nnnTF { whu/buffer } { mode } {##1}
+              { \clist_put_right:Nx \l__whu_buffer_mode_clist { \tl_to_str:n {##1} } }
+              { \msg_warning:nnnnn { whu } { unknown-choice-key } { whu/buffer } { mode } {##1} }
+          }
+        \clist_remove_duplicates:N \l__whu_buffer_mode_clist
+      } ,
+    before .tl_set:N    = \l__whu_buffer_before_tl ,
+    after .tl_set:N     = \l__whu_buffer_after_tl ,
+    setup .tl_set:N     = \l__whu_buffer_setup_tl ,
+    begin .cs_set:Np    = \__whu_buffer_begin: ,
+    end   .cs_set:Np    = \__whu_buffer_end:   ,
+    tab-length .int_set:N = \l__whu_buffer_tab_length_int ,
+    tab-length .initial:n = 2 ,
+    tab .tl_set:N    = \l__whu_buffer_tab_tl ,
+    tab* .tl_set_e:N = \l__whu_buffer_tab_tl ,
+    tab* .initial:n  = \prg_replicate:nn \l__whu_buffer_tab_length_int 
+      { \char_generate:nn { 32 } { 12 } } ,
+
+    auto-wrap .bool_set:N = \l__whu_buffer_auto_wrap_bool ,
+    auto-wrap .initial:n = true ,
+    curr-count .int_set:N = \c@WhuBufferCount ,
+  
+    _complete_ .tl_gset:N = \l__whu_buffer_complete_tl ,
+
+    unknown .code:n = 
+      { 
+        \msg_warning:nnx { whu } { buffer-store-key } { \l__whu_buffer_name_str }
+        \str_set_eq:NN \l__whu_buffer_name_str \l_keys_key_str 
+      } ,
+  }
+
+\cs_new_protected:Npn \whu_buffer_new_pair:NNn #1#2#3
+  {
+    \cs_new_protected_nopar:Npn #1
+      { 
+        \group_begin:
+        \keys_set:nn { whu/buffer } { #3 }
+        \tl_set:Nn \l__whu_buffer_start_tl { #1 }
+        \tl_set:Nn \l__whu_buffer_stop_tl  { #2 }
+        \l__whu_buffer_before_tl
+        \__whu_buffer_catcode_store:
+        \l__whu_buffer_setup_tl
+        \char_set_catcode_active:n { 13 }
+        \__whu_buffer_begin: 
+      }
+    \exp_after:wN \NewDocumentCommand \cs:w \cs_to_str:N #1_internal \cs_end: { +r#1#2 }
+      { \__whu_buffer_store:n {##1} }
+    \cs_new_protected_nopar:Npn #2
+      {
+        \l__whu_buffer_catcode_restore:
+        \__whu_buffer_end:
+        \l__whu_buffer_after_tl
+        \exp_args:NNox \group_end:
+        \clist_map_inline:nn { \l__whu_buffer_mode_clist }
+          {
+            \exp_not:n { \cs:w __whu_buffer_store_action_ ####1 :nN \cs_end: }
+              { 
+                {\c__whu_buffer_root_str \exp_not:n {####1} / \l__whu_buffer_name_str}
+                {\l__whu_buffer_macro_tl}
+                {\l__whu_buffer_seq_tl}
+                {\l__whu_buffer_filename_tl}
+              }
+              \exp_not:N \g__whu_buffer_inner_save_tl
+          }
+        \int_incr:N \c@WhuBufferCount
+        \exp_after:wN \tl_gclear:N \exp_after:wN \l__whu_buffer_complete_tl
+          \l__whu_buffer_complete_tl
+      }
+  }
+
+\group_begin:
+\char_set_catcode_active:N \^^M 
+\cs_new_protected:Npn \whu_buffer_new_wrap:NNnnn #1#2#3#4#5
+  {
+    \cs_new_protected_nopar:Npn #1
+      { 
+        \group_begin:
+        \keys_set:nn { whu/buffer } { #3 }
+        \tl_set:Nn \l__whu_buffer_start_tl { #1 }
+        \tl_set:Nn \l__whu_buffer_stop_tl  { #2 }
+        \l__whu_buffer_before_tl
+        \__whu_buffer_catcode_store:
+        \l__whu_buffer_setup_tl
+        \char_set_catcode_active:n { 13 }
+        \__whu_buffer_begin: 
+      }
+    \exp_after:wN \DeclareDocumentCommand \cs:w \cs_to_str:N #1_internal \cs_end: { +r#1#2 }
+      { \__whu_buffer_store:n {##1} }
+    \cs_new_protected_nopar:Npn #2
+      {
+        \l__whu_buffer_catcode_restore:
+        \__whu_buffer_end:
+        \l__whu_buffer_after_tl
+        \exp_args:NNf \group_end:
+        \bool_if:nTF { \int_value:w \l__whu_buffer_auto_wrap_bool }
+          {
+            \cs_set_eq:NN \buffervalue \g__whu_buffer_inner_save_tl
+            \exp_args:Nno \use:nnn { #4 ^^M }
+              \g__whu_buffer_inner_save_tl
+              { ^^M #5 }
+          }
+          { \cs_set_eq:NN \buffervalue \g__whu_buffer_inner_save_tl #4#5 }
+        \exp_after:wN \tl_gclear:N \exp_after:wN \l__whu_buffer_complete_tl
+          \l__whu_buffer_complete_tl
+      }
+  }
+\group_end:
+
+%% 只修改固定的 catcode，其它的不修改，因此不使用 cctab 
+\cs_new_protected:Npn \__whu_buffer_catcode_store:
+  {
+    \cs_set_protected_nopar:Npx \l__whu_buffer_catcode_restore:
+      {
+        \char_set_catcode:nn { 9  } { \char_value_catcode:n { 9  } } % HT 
+        \char_set_catcode:nn { 10 } { \char_value_catcode:n { 10 } } % NL 
+        \char_set_catcode:nn { 13 } { \char_value_catcode:n { 13 } } % CR 
+        \char_set_catcode:nn { 32 } { \char_value_catcode:n { 32 } } % SP 
+        \char_set_catcode:nn { 35 } { \char_value_catcode:n { 35 } } % # 
+        \char_set_catcode:nn { 37 } { \char_value_catcode:n { 37 } } % %
+        \int_set:Nn \tex_endlinechar:D { \int_use:N \tex_endlinechar:D }
+      }
+  }
+\cs_new_protected:Npn \__whu_buffer_catcode_special: 
+  {
+    \int_set:Nn \tex_endlinechar:D { 13 }
+    \char_set_catcode_active:n { 9 }
+    \char_set_catcode_active:n { 13 }
+    \char_set_catcode_other:n { 32 }
+    % \char_set_catcode_other:n { 35 }
+    \char_set_catcode_other:n { 37 }
+  }
+
+\char_set_catcode_active:N \^^M 
+\cs_new_protected:Npn \__whu_buffer_begin:
+  { \__whu_buffer_start_option_grab_o:w }
+\NewDocumentCommand \__whu_buffer_start_option_grab_o:w { o }
+  {
+    \tl_if_novalue:nF {#1}
+      {
+        \tl_set:Nn \l__whu_buffer_options_tl {#1}
+        \tl_replace_all:Nnn \l__whu_buffer_options_tl { ^^M } { ~ }
+        \keys_set:no { whu/buffer } \l__whu_buffer_options_tl
+      }
+    \__whu_buffer_start:
+  }
+\cs_new_protected:Npn \__whu_buffer_start:
+  {
+    \__whu_buffer_catcode_special:
+    \cs:w \exp_after:wN \cs_to_str:N \l__whu_buffer_start_tl \token_to_str:N _internal \exp_after:wN \cs_end: \l__whu_buffer_start_tl
+  }
+\group_begin:
+\char_set_catcode_active:n { 9 }
+\cs_new_protected:Npn \__whu_buffer_store:n #1
+  {
+    \tl_set:Nn \g__whu_buffer_inner_save_tl { #1 }
+    \tl_gset:Nx \g__whu_buffer_inner_save_tl 
+      { \whu_trim_active_endline:o \g__whu_buffer_inner_save_tl }
+    \exp_args:NNno \tl_greplace_all:Nnn 
+      \g__whu_buffer_inner_save_tl { ^^I } { \l__whu_buffer_tab_tl }
+    \l__whu_buffer_stop_tl
+  }
+\group_end:
+\cs_new_protected:Npn \__whu_buffer_end:
+  { \__whu_buffer_stop: }
+\cs_new_protected:Npn \__whu_buffer_stop:
+  { }
+\char_set_catcode_end_line:N \^^M 
+
+% 存储方式
+\cs_new_protected_nopar:Npn \__whu_buffer_store_action_set:nN #1#2
+  {
+    \tl_set_eq:cN { \use_i:nnnn #1 } #2 
+  }
+\cs_new_protected_nopar:Npn \__whu_buffer_store_action_push:nN #1#2
+  {
+    \seq_if_exist:cF { \use_i:nnnn #1 } 
+      { \seq_set_eq:cN { \use_i:nnnn #1 } \c_empty_seq }
+    \seq_push:co { \use_i:nnnn #1 } {#2}
+  }
+\cs_new_protected_nopar:Npn \__whu_buffer_store_action_macro:nN #1#2
+  { 
+    \exp_after:wN \tl_set_eq:NN \use_ii:nnnn #1 #2 
+  }
+\group_begin:
+\char_set_catcode_active:N \^^M 
+\cs_new_protected_nopar:Npn \__whu_buffer_store_action_seq:nN #1#2
+  {
+    \exp_after:wN \seq_set_split_keep_spaces:NnV \use_iii:nnnn #1 { ^^M } #2
+  }
+\group_end:
+\cs_new_protected_nopar:Npn \__whu_buffer_store_action_write:nN #1#2
+  {
+    \group_begin:
+    \iow_open:Nn \g__whu_buffer_file_iow { \use_iv:nnnn #1 }
+    \int_set:Nn \tex_endlinechar:D { -1 }
+    \char_set_active_eq:nN { 13 } \iow_newline:
+    \tl_set_rescan:Nno \g__whu_buffer_inner_save_tl
+      {
+        \cctab_select:N \c_other_cctab
+        \char_set_catcode_active:n { 13 }
+      }
+      #2
+    \iow_now:Nx \g__whu_buffer_file_iow { \g__whu_buffer_inner_save_tl }
+    \iow_close:N \g__whu_buffer_file_iow
+    \group_end:
+  }
+
+\cs_new_protected_nopar:Npn \whu_buffer_get_content:nn #1#2 % buffer, index
+  { 
+    \tl_if_empty:nTF {#2}
+      {
+        \tl_if_exist:cTF { \c__whu_buffer_root_str set / #1 }
+          { \cs:w \c__whu_buffer_root_str set / #1 \cs_end: }
+          { \msg_error:nnnn { whu } { buffer-not-exist } {#1} { set } }
+      }
+      {
+        \tl_if_single_token:nTF {#1}
+          {
+            \token_if_cs:NTF #1 { \use_ii:nn }  { \use_i:nn }
+          }
+          { \use_i:nn }
+            {
+              \seq_if_exist:cTF { \c__whu_buffer_root_str push / #1 }
+                { \seq_item:cn { \c__whu_buffer_root_str push / #2 } }
+                { \msg_error:nnnn { whu } { buffer-not-exist } {#1} { push } }
+            }
+            { \seq_item:Nn #1 {#2} }
+      }
+  }
+\cs_new_protected_nopar:Npn \whu_buffer_set_from_content:Nnn #1#2#3 % macro,buffer,index
+  { 
+    \tl_if_empty:nTF {#3}
+      {
+        \tl_if_exist:cTF { \c__whu_buffer_root_str set / #2 }
+          { \tl_set_eq:Nc #1 { \c__whu_buffer_root_str set / #2 } }
+          { \msg_error:nnnn { whu } { buffer-not-exist } {#2} { set } }
+      }
+      {
+        \tl_if_single_token:nTF {#2}
+          {
+            \token_if_cs:NTF #2 { \use_ii:nn }  { \use_i:nn }
+          }
+          { \use_i:nn }
+            {
+              \seq_if_exist:cTF { \c__whu_buffer_root_str push / #2 }
+                { \tl_set:Nx #1 { \seq_item:cn { \c__whu_buffer_root_str push / #3 } } }
+                { \msg_error:nnnn { whu } { buffer-not-exist } {#2} { push } }
+            }
+            { \tl_set:Nx #1 { \seq_item:Nn #2 {#3} } }
+      }
+  }
+
+\NewDocumentCommand \getbuffer { s D(){} O{buffer} D(){#2} } 
+  { 
+    \bool_if:nTF {#1} { \file_input:n {#3} }
+      { \whu_buffer_get_content:nn {#3} {#4} }
+  }
+\NewDocumentCommand \setfrombuffer { s D(){} O{buffer} D(){#2} m }
+  { 
+    \bool_if:nTF {#1}
+      { \file_get:nnN {#3} {#4} #5 }
+      { \whu_buffer_set_from_content:Nnn #5 {#3} {#4} }
+  }
+\NewDocumentCommand \newbuffer { s O{} m m }
+  { \IfBooleanTF {#1} { \whu_buffer_new_wrap:NNnnn } { \whu_buffer_new_pair:NNn } #3#4 {#2} }
+\NewDocumentCommand \newverbbuffer { O{} m m }
+  { \whu_buffer_new_type:NNnnn #2 #3 {#1} }
+
+
+\whu_buffer_new_pair:NNn \whu_start_buffer: \whu_stop_buffer: { }
+\whu_buffer_new_pair:NNn \startbuffer \stopbuffer { }
+
+\msg_new:nnn { whu } { buffer-unbalanced-pair }
+  { The~buffer~pair~`\token_to_str:N #1'~and~`\token_to_str:N #2'~unbalanced. }
+\msg_new:nnn { whu } { buffer-not-exist }
+  { The~buffer~`#1'~in~mode~`#2'~not~exist. }
+\msg_new:nnn { whu } { buffer-store-key }
+  { Unknown~key~:`#1',~set~to~store~name. }
+
+
+% 移除首尾的 ^^M, modify \cs{tl_trim_spaces:n}
+\group_begin:
+\char_set_catcode_active:N \^^M 
+\cs_new:Npn \whu_trim_active_endline:n #1
+  {
+    \__whu_trim_active_endline:nn
+      { \__whu_trim_mark: #1 }
+      { \elkernel_exp_not:w \exp_after:wN }
+  }
+\cs_generate_variant:Nn \whu_trim_active_endline:n { o }
+\cs_set_protected:Npn \__whu_tmp:w #1
+  {
+    \cs_new:Npn \__whu_trim_active_endline:nn ##1
+      {
+        \__whu_trim_active_endline_auxi:w
+          ##1
+          \s__tl_nil
+          \__whu_trim_mark: #1 \s__tl_mark { } 
+          \__whu_trim_mark: #1 \s__tl_mark
+          \__whu_trim_active_endline_auxii:w
+          \__whu_trim_active_endline_auxiii:w
+          #1 \s__tl_nil
+          \__whu_trim_active_endline_auxiv:w
+        \s__tl_stop
+      }
+    \cs_new:Npn
+        \__whu_trim_active_endline_auxi:w ##1 \__whu_trim_mark: #1 ##2 \__whu_trim_mark: ##3 #1 \s__tl_mark ##4
+      {
+        ##4
+        \__whu_trim_active_endline_auxi:w
+        \__whu_trim_mark:
+        ##1 ##2
+        \__whu_trim_mark: #1 \s__tl_mark { }
+      }
+    \cs_new:Npn \__whu_trim_active_endline_auxii:w
+        \__whu_trim_active_endline_auxi:w \__whu_trim_mark: ##1 
+        \s__tl_nil \s__tl_mark ##2 \s__tl_mark ##3
+      {
+        \__whu_trim_active_endline_auxiii:w
+        ##1 \s__tl_nil 
+      }
+    \cs_new:Npn \__whu_trim_active_endline_auxiii:w ##1 #1 \s__tl_nil ##2
+      {
+        ##2
+        ##1 \s__tl_nil
+        \__whu_trim_active_endline_auxiii:w
+      }
+    \cs_new:Npn \__whu_trim_active_endline_auxiv:w ##1 \s__tl_nil ##2 \s__tl_stop ##3
+      { ##3 { ##1 } }
+    \cs_new:Npn \__whu_trim_mark: { }
+  }
+\__whu_tmp:w { ^^M }
+\group_end:

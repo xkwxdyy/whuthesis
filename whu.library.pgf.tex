@@ -1,0 +1,94 @@
+\WHUProvideLibrary{pgf}{\whu@d@te}{\whu@versi@n}{pgf and tikz support}
+\usetikzlibrary{spath3}
+
+\ekeysdeclarecmd\pgfdeclareimagep{O{}mm}
+  {\whu@getgraphicsname\@curr@file{\whu@filename{#3}}%
+    \ifx\@curr@file\relax\def\@curr@file{""}\fi
+    \pgf@declareimage[#1]{#2}{\@curr@file}}
+\ekeysdeclarecmd\pgfimagep{&O{}m}
+  {\pgfdeclareimagep#1{pgflastimage}{#2}\pgfuseimage{pgflastimage}}
+
+% shade text, see: https://tex.stackexchange.com/questions/192496/
+\newbox\whu@picturebox 
+\protected\def\shadetext#1#2{%
+  \setbox\whu@picturebox=\hbox{{\whu@pdfliteral{7 Tr }#2}}%
+  \tikz[baseline=0,line width=0pt]\path \pgfextra{\rlap{\copy\whu@picturebox}} [#1] 
+    (0,-\dp\whu@picturebox) rectangle (\wd\whu@picturebox,\ht\whu@picturebox);}
+\protected\def\shadetextbox#1{%
+  \@collectn@box\whu@picturebox\hbox{\shadetext{#1}{\unhbox\whu@picturebox}}} 
+
+\newbox\whu@phantombox 
+\protected\def\whu@phantomtobox#1{%
+  \setbox\whu@phantombox=\null 
+  \ht\whu@phantombox=\ht#1%
+  \dp\whu@phantombox=\dp#1%
+  \wd\whu@phantombox=\wd#1%
+  \box\whu@phantombox}
+
+\newcommand\shadecontent[3][]{% node options, shading options, content
+  \setbox\whu@picturebox=\hbox{#3}%
+  \begin{tikzpicture}[baseline=(textnode.base)]
+    \node[shade,#2,inner sep=0pt,outer sep=0pt,#1](textnode)
+      {\whu@phantomtobox\whu@picturebox};
+    \begin{scope}[transparency group=knockout]
+      \fill[white](textnode.south west)rectangle(textnode.north east);
+      \node[opacity=0,inner sep=0pt,outer xsep=0pt,#1]{\box\whu@picturebox};
+    \end{scope}
+  \end{tikzpicture}% 
+}
+\newcommand\shadecontentbox[2][]{%
+  \@collectn@box\whu@picturebox\hbox{\shadecontent[{#1}]{#2}{\unhbox\whu@picturebox}}}
+
+
+\def\whu@pgf@initbfnodes{%
+  \whu@pgf@initpagenode
+  \whu@pgf@initlayoutnode
+}
+\def\whu@pgf@initpagenode{%
+  \@namedef{pgf@sh@ns@page}{rectangle}%
+  \@namedef{pgf@sh@nt@page}{{1}{0}{0}{1}{0pt}{0pt}}%
+  \@namedef{pgf@sh@pi@page}{\pgfpictureid}%
+  \@namedef{pgf@sh@np@page}{%
+    \def\southwest{\pgfpointorigin}%
+    \def\northeast{\pgfpoint{\paperwidth}{\paperheight}}%
+  }%
+}
+\def\whu@pgf@initlayoutnode{%
+  \@namedef{pgf@sh@ns@layout}{rectangle}%
+  \@namedef{pgf@sh@nt@layout}{{1}{0}{0}{1}{0pt}{0pt}}%
+  \@namedef{pgf@sh@pi@layout}{\pgfpictureid}%
+  \@namedef{pgf@sh@np@layout}{%
+    \def\southwest{\pgfpoint{\layoutloffset}{\the\layoutboffset}}%
+    \def\northeast{\pgfpoint{\layoutloffset+\layoutwidth}{\paperheight-\layouttoffset}}%
+  }%
+}
+\long\@namedef{__whu_bfground_tikz:n}#1{%
+  \put(0pt,-\paperheight){\hb@xt@\z@{\begin{tikzpicture}
+    \whu@pgf@initbfnodes
+    \path[use as bounding box](page.south west)rectangle(page.north east);
+    #1\end{tikzpicture}\hss}}}
+
+
+\def\whu@tikz@pathend{}
+\def\whu@tmp#1\tikz@path@do@at@end#2\@nil{%
+  \def\tikz@finish{#1#2\whu@tikz@pathend\tikz@path@do@at@end}}
+\expandafter\whu@tmp\tikz@finish\@nil
+\pgfkeys{
+  /tikz/tangent/.code=\@tangent@process#1\@nil,
+  /tikz/at tangent/.style={shift=(tangent point #1),
+    x=(tangent unit vector #1),y=(tangent orthogonal unit vector #1)}
+}
+\def\@tangent@process #1 at#2\@nil{\pgfkeysalso{spath/save=#1}%
+  \g@addto@macro\whu@tikz@pathend{\global\let\whu@tikz@pathend\@empty
+    \@tangent@getcoordinate{#1}{#1}{\@firstofone#2}}}
+\def\@tangent@getcoordinate#1#2#3{\path
+  [spath/use=#2,postaction=decorate,decoration={
+    markings,
+    mark=at position {#3}
+      with
+        {%
+          \coordinate (tangent point #1) at (0pt,0pt);
+          \coordinate (tangent unit vector #1) at (1,0pt);
+          \coordinate (tangent orthogonal unit vector #1) at (0pt,1);
+        }
+  }];}

@@ -1,0 +1,497 @@
+%% whu.sty 
+%% Copyright 2023, 2024 Wenjian Chern.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Wenjian Chern.
+%
+% This work consists of the files whu.sty, whu.library.bnf.tex, 
+% whu.library.box.tex, whu.library.doc.tex, whu.library.ref.tex,
+% whu.module.bgfg.tex, whu.module.box.tex, whu.module.buffer.tex,
+% whu.module.index.tex, whu.module.layout.tex, whu.module.notes.tex,
+% whu.module.pdfmana.tex, whu.module.space.tex, whu.module.struct.tex,
+% whu.module.util.tex and whuclass.cls .
+\NeedsTeXFormat{LaTeX2e}[2023/06/01]
+\RequirePackage{l3keys2e,xtemplate}
+\def\whu@d@te{2024/03/27}
+\def\whu@versi@n{0.0.4e}
+\ProvidesExplPackage{whu}{\whu@d@te}{\whu@versi@n}{Chinese User Scheme (WHU) basic file}
+
+
+\def\whuthesis{whuthesis}
+\def\WhuTeX{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.15em\TeX}
+\def\WhuLaTeX{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.1em\LaTeX}
+
+\cs_new_eq:NN \BKP \tl_show:n %%TODO
+
+%% primitive alternative and latex3 adding
+\cs_new_eq:NN \__whu_strcmp:ww \tex_strcmp:D 
+\cs_new_eq:NN \__whu_int_let:Nw \tex_mathchardef:D 
+\cs_new_eq:NN \__whu_expanded:w \tex_expanded:D
+\cs_new_eq:NN \__whu_unexpanded:w \tex_unexpanded:D
+\cs_new_eq:NN \__whu_dimexpr:w \tex_dimexpr:D 
+\cs_new_eq:NN \__whu_intexpr:w \tex_intexpr:D 
+
+\cs_new:Npn \__whu_e:w { \__whu_expanded:w }
+\cs_new:Npn \__whu_o:w { \exp:w \exp_after:wN \exp_end: }
+\cs_new:Npn \__whu_d:w { \exp:w \exp_after:wN \exp_after:wN \exp_after:wN \exp_end: }
+\cs_new:Npn \__whu_f:w { \exp:w \exp_end_continue_f:w }
+\cs_new_protected:Npn \__whu_int_let:cw { \exp_args:Nc \__whu_int_let:Nw }
+
+\int_const:Nn \c__whu_mone_int { \m@ne }
+\int_const:Nn \c__whu_zero_int { 0 }
+\int_const:Nn \c__whu_one_int { 1 }
+\int_const:Nn \c__whu_two_int { 2 }
+\int_const:Nn \c__whu_three_int { 3 }
+\int_const:Nn \c__whu_four_int { 4 }
+\int_const:Nn \c__whu_five_int { 5 }
+\int_const:Nn \c__whu_six_int { 6 }
+\int_const:Nn \c__whu_seven_int { 7 }
+\int_const:Nn \c__whu_eight_int { 8 }
+\int_const:Nn \c__whu_nine_int { 9 }
+\int_const:Nn \c__whu_ten_int { 10 }
+\int_const:Nn \c__whu_eleven_int { 11 }
+\int_const:Nn \c__whu_twelve_int { 12 }
+\int_const:Nn \c__whu_thirteen_int { 13 }
+\int_const:Nn \c__whu_fourteen_int { 14 }
+\int_const:Nn \c__whu_fifteen_int { 15 }
+\int_const:Nn \c__whu_sixteen_int { 16 }
+
+\cs_if_free:NT \token_if_cs_word:NTF 
+  {
+    \prg_new_conditional:Npnn \token_if_cs_word:N #1 { p, T, F, TF }
+      {
+        \if_catcode:w \exp_not:N #1 \scan_stop:
+          \if:w 0 \__whu_strcmp:ww { \exp_not:N #1 } { \token_to_str:N #1 }
+            \prg_return_false: \else: \prg_return_true: \fi:
+        \else: 
+          \prg_return_false:
+        \fi:
+      }
+  }
+\cs_if_free:NT \token_if_control_word:NTF 
+  {
+    \prg_new_conditional:Npnn \token_if_control_word:N #1 { p , T , F , TF }
+      {
+        \if:w 0 \__whu_strcmp:ww { \exp_not:N #1 } { \token_to_str:N #1 }
+          \__token_if_control_word_aux:w 
+        \else:
+          \if:w \exp_not:N #1 \token_to_str:N #1
+            \prg_return_false: \else: \prg_return_true: \fi:
+        \fi:
+      }
+    \cs_new:Npn \__token_if_control_word_aux:w #1 \fi: { \prg_return_false: }
+  }
+\cs_if_free:NT \text_mdfive_hash:n 
+  {
+    \cs_new:Npn \text_mdfive_hash:n #1 
+      { \str_mdfive_hash:e { \text_expand:n {#1} } }
+  }
+%%
+
+\RequirePackage{xparse}
+\RequirePackage{ctexhook,ctexpatch}
+\RequirePackage{etl}
+% \RequirePackage{parserange}
+\RequirePackage{lt3ekeysext}
+\RequirePackage{updatemarks}
+
+\sys_if_engine_xetex:TF 
+  { \tex_chardef:D \whu@TATE = \c_zero_int }
+  {
+    \cs_if_exist:NF \whu@TATE 
+      {
+        \cs_if_exist:NT \platex_if_direction_tate:TF
+          {
+            \platex_if_direction_tate:TF 
+              { \tex_chardef:D \whu@TATE = \c_one_int  }
+              { \tex_chardef:D \whu@TATE = \c_zero_int }
+          }
+      }
+  }
+
+\scan_new:N \s__whu_mark
+\scan_new:N \s__whu_stop
+\scan_new:N \s__whu_nil
+\quark_new:N \q__whu_mark
+\quark_new:N \q__whu_stop
+\quark_new:N \q__whu_nil
+\int_new:N \l__whu_tmpa_int
+\int_new:N \l__whu_tmpb_int
+\int_new:N \l__whu_tmpc_int
+\dim_new:N \l__whu_tmpa_dim
+\dim_new:N \l__whu_tmpb_dim
+\dim_new:N \l__whu_tmpc_dim
+\clist_new:N \l__whu_tmpa_clist
+\clist_new:N \l__whu_tmpb_clist
+\clist_new:N \l__whu_tmpc_clist
+\box_new:N \l__whu_tmpa_box
+\box_new:N \l__whu_tmpb_box
+\box_new:N \l__whu_tmpc_box
+\cs_set_eq:NN \whu_toks_new:N \newtoks
+\whu_toks_new:N \c_whu_empty_toks
+\whu_toks_new:N \l__whu_tmpa_toks
+\whu_toks_new:N \l__whu_tmpb_toks
+\whu_toks_new:N \l__whu_tmpc_toks
+\tl_new:N \l__whu_tmpa_tl
+\tl_new:N \l__whu_tmpb_tl
+\tl_new:N \l__whu_tmpc_tl
+\prop_new:N \l__whu_tmpa_prop
+\prop_new:N \l__whu_tmpb_prop
+\prop_new:N \l__whu_tmpc_prop
+\bool_new:N \l__whu_tmpa_bool
+\bool_new:N \l__whu_tmpb_bool
+\bool_new:N \l__whu_tmpc_bool
+\ior_new:N \g__whu_tmp_ior
+\iow_new:N \g__whu_tmp_iow
+
+\int_new:N \l__whu_nest_int 
+\tl_new:N \g__whu_pdfstring_disable_tl 
+\hook_gput_code:nnn { begindocument } { whu/disable }
+  { 
+    \cs_if_exist:NT \pdfstringdefDisableCommands
+      { \pdfstringdefDisableCommands { \g__whu_pdfstring_disable_tl } }
+  }
+\cs_new_protected:Npn \whu_add_pdf_disable:n 
+  { \tl_gput_right:Nn \g__whu_pdfstring_disable_tl }
+
+\cs_new:Npn \whu@filename { \elkernel_file_name_sanitize:n }
+\cs_new_eq:NN \WHUInputFile \whu_file_input:n 
+
+\msg_new:nnn { whu } { unknown-choice-key } 
+  { The~choice~`#3'~of~key~`#2'~in~module~`#1'~is~unknown. }
+\msg_new:nnn { whu } { unknown-key }
+  { The~keys~`#2'~in~module~`#1'~is~unknown. }
+\msg_new:nnn { whu } { key-missing-value }
+  { The~key~`#1'~is~value~required. }
+\msg_new:nnn { whu } { counter-unknown }
+  { The~counter~`#1'~is~undefined. }
+\msg_new:nnn { whu } { bad-variable }
+  { Erroneous~variable~#1 used! }
+
+\NewDocumentCommand \whusetup { >{\TrimSpaces} O{} }
+  { \tl_if_empty:nTF {#1} { \keys_set:nn { whu } } { \keys_set:nn { whu/#1 } } }
+\NewDocumentCommand \whusetstyle { s >{\TrimSpaces} O{} m +m }
+  { 
+    \bool_if:nTF {#1}
+      {
+        \tl_if_empty:nTF {#2} 
+          { \keys_define:nn { whu } } { \keys_define:nn { whu/#2 } } 
+            { #3 .code:n = {#4} }
+      }
+      {
+        \tl_if_empty:nTF {#2} 
+          { \keys_define:nn { whu } } { \keys_define:nn { whu/#2 } } 
+            { #3 .meta:n = {#4} }
+      }
+  }
+
+\msg_new:nnnn { whu } { module-out-of-date } 
+  { The~module~`#1'~you~try~to~load~is~out~of~date,~please~update~this~package. }
+  { The~current~version~of~module~`#1'~is~`#3',~while~you~try~to~load~version~`#2'. }
+\msg_new:nnn { whu } { module-not-exist }
+  { The~module~`#1'~you~try~to~load~does~not~exist. }
+\cs_new_protected_nopar:Npn \WHUProvideModule #1#2#3#4
+  {
+    \str_if_exist:cT { whu/module~#1 } { \tex_endinput:D }
+    \ProvidesFile {#1} [#2~#3~#4]
+    \str_gset:cx { whu/module~#1 } {#2}
+  }
+\cs_new_protected_nopar:Npn \WHUProvideExplModule #1#2#3#4
+  {
+    \str_if_exist:cT { whu/module~#1 } { \tex_endinput:D }
+    \ProvidesExplFile {#1} {#2} {#3} {#4}
+    \str_gset:cx { whu/module~#1 } {#2}
+  }
+\cs_new:Npn \whu@ifmoduleloaded #1 { \cs_if_exist:cTF { whu/module~#1 } }
+\NewDocumentCommand \WHULoadModule { m O{} O{0000/00/00} }
+  {
+    \whu@ifmoduleloaded {#1} { \use:n }
+      { 
+        \file_if_exist:nTF { whu.module.#1.tex }
+          { \elkernel_file_with_options:nnn { whu.module.#1.tex } {#3} {#2} \use:n }
+          { \msg_error:nnn { whu } { module-not-exist } {#1} \use_none:n }
+      }
+        {
+          \WHUIfModuleAtLeast {#1} {#3} { }
+            { \msg_error:nnxxx { whu } { module-out-of-date } {#1} {#3} { \use:c { whu/module~#1 } } }
+        }
+  }
+\msg_new:nnnn { whu } { library-out-of-date } 
+  { The~library~`#1'~you~try~to~load~is~out~of~date,~please~update~this~package. }
+  { The~current~version~of~library~`#1'~is~`#3',~while~you~try~to~load~version~`#2'. }
+\msg_new:nnn { whu } { library-not-exist }
+  { The~library~`#1'~you~try~to~load~does~not~exist. }
+\cs_new_protected_nopar:Npn \WHUProvideLibrary #1#2#3#4
+  {
+    \str_if_exist:cT { whu/library~#1 } { \tex_endinput:D }
+    \ProvidesFile {#1} [#2~#3~#4]
+    \str_gset:cx { whu/library~#1 } {#2}
+  }
+\cs_new_protected_nopar:Npn \WHUProvideExplLibrary #1#2#3#4
+  {
+    \str_if_exist:cT { whu/library~#1 } { \tex_endinput:D }
+    \ProvidesExplFile {#1} {#2} {#3} {#4}
+    \str_gset:cx { whu/library~#1 } {#2}
+  }
+\cs_new:Npn \whu@iflibraryloaded #1 { \cs_if_exist:cTF { whu/library~#1 } }
+\prop_new:N \c__whu_library_delayed_prop
+\prop_set_from_keyval:Nn \c__whu_library_delayed_prop 
+  { pgf=tikz , tcb=tcolorbox }
+\cs_new:Npn \__whu_load_library_real:nnn #1#2#3
+  {
+    \whu@iflibraryloaded {#1} { \use:n }
+      { 
+        \file_if_exist:nTF { whu.library.#1.tex }
+          { \elkernel_file_with_options:nnn { whu.library.#1.tex } {#3} {#2} \use:n }
+          { \msg_error:nnn { whu } { library-not-exist } {#1} \use_none:n }
+      }
+        {
+          \WHUIfLibraryAtLeast {#1} {#3} { }
+            { \msg_error:nnxxx { whu } { library-out-of-date } {#1} {#3} { \use:c { whu/library~#1 } } }
+        }
+  }
+\NewDocumentCommand \WHULoadLibrary { m O{} O{0000/00/00} }
+  {
+    \prop_if_in:NnTF \c__whu_library_delayed_prop {#1}
+      {
+        \hook_gput_code:nnn 
+          { package/ \prop_item:Nn \c__whu_library_delayed_prop {#1} / after }
+          { whu/load }
+          { \__whu_load_library_real:nnn {#1} {#2} {#3} }
+      }
+      { \__whu_load_library_real:nnn {#1} {#2} {#3} }
+  }
+\cs_new:Npn \WHUIfModuleAtLeast #1#2 % module, date(xxxx/xx/xx), true, false
+  { \exp_args:Nv \__whu_date_if_at_least:nnTF { whu/module~#1 } {#2} }
+\cs_new:Npn \WHUIfLibraryAtLeast #1#2 % library, date(xxxx/xx/xx), true, false
+  { \exp_args:Nv \__whu_date_if_at_least:nnTF { whu/library~#1 } {#2} }
+\cs_new:Npn \__whu_date_if_at_least:nnTF #1#2
+  {
+    \if_int_odd:w \__whu_date_if_at_least:w #1 \s__whu_mark #2 \s__whu_stop \exp_stop_f:
+      \exp_after:wN \use_i:nn
+    \else:
+      \exp_after:wN \use_ii:nn
+    \fi:
+  }
+\cs_new:Npn \__whu_date_if_at_least:w #1/#2/#3 \s__whu_mark #4/#5/#6 \s__whu_stop
+  {
+    \bool_lazy_any_p:n
+      {
+        { \int_compare_p:nNn {#1} > {#4} }
+        { \int_compare_p:nNn {#2} > {#5} }
+        { \int_compare_p:nNn {#3} > {#6} }
+      }
+  }
+%% fmt (fmt version), engine, package, library of package, class, module, library
+\cs_new_protected_nopar:Npn \WHUDependency { \keys_set:nn { whu/dependency } }
+%%TODO:
+\keys_define:nn { whu/dependency }
+  {
+    package .code:n = \__whu_load_packages:n {#1} ,
+    module .code:n  = \__whu_load_module:n {#1} ,
+    library .code:n = \__whu_load_library:n {#1} ,
+    disable .code:n = \__whu_disable_packages:n {#1} ,
+  }
+\cs_new_nopar:Npn \__whu_load_packages:n #1
+  {
+    \clist_map_inline:nn {#1}
+      {
+        \tl_if_in:nnTF {##1} { | }
+          {
+            \seq_set_split:Nnn \l__whu_tmp_seq { | } {##1} 
+            \tl_set:Nx \l__whu_tmp_tl { \seq_item:Nn \l__whu_tmp_seq { 1 } }
+          }
+          { \tl_set:Nn \l__whu_tmp_tl {##1} }
+        \exp_args:No \tl_if_head_eq_charcode:nNTF { \l__whu_tmp_tl } ( % )
+          {
+            \cs_set:Npn \__whu_tmp:w (####1) ####2 \s_stop 
+              {
+                \tl_set:Nn \l__whu_tmp_tl {####2}
+                \tl_set:Nn \l__whu_tmpb_tl {####1}
+              }
+            \exp_after:wN \__whu_tmp:w \l__whu_tmp_tl \s_stop
+            \cs_set:Npn \__whu_tmp:w { \exp_args:No \WHUCaseLoadPackage \l__whu_tmpb_tl }
+          }
+          { \cs_set:Npn \__whu_tmp:w { \RequirePackage } }
+        \tl_set:Nx \l__whu_tmp_tl { \exp_args:No \whu_split_bracket_head:n \l__whu_tmp_tl }
+        \@ifpackageloaded { \whu_remove_bracket_head:N \l__whu_tmp_tl } { }
+          { \exp_after:wN \__whu_tmp:w \l__whu_tmp_tl }
+      }
+  }
+\cs_new_nopar:Npn \__whu_load_module:n #1 { }
+\cs_new_nopar:Npn \__whu_load_library:n
+  { \keyval_parse:NNn \__whu_load_library_aux:n \__whu_load_library_aux:nn }
+\cs_new:Npn \__whu_load_library_aux:n #1 { \__whu_load_library_aux:nn {#1} { } }
+\cs_new:Npn \__whu_load_library_aux:nn #1
+  { 
+    \exp_last_unbraced:Ne \__whu_load_library_aux:nwn 
+      { \whu_split_bracket_tail_default:nn {#1} { 0000/00/00 } }
+  }
+\cs_new:Npn \__whu_load_library_aux:nwn #1[#2]#3 { \WHULoadLibrary {#1} [{#3}] [{#2}] }
+\msg_new:nnn { whu } { package-disable } 
+  { Compiling~aborted,~you~should~not~use~package~`#1'. }
+\cs_new_nopar:Npn \__whu_disable_packages:n #1
+  {
+    \clist_map_inline:nn {#1}
+      { 
+        \@ifpackageloaded {##1} { \msg_fatal:nn { whu } { package-disable } }
+          { \disable@package@load {##1} { } }
+      }
+  }
+\NewDocumentCommand \WHUCaseLoadPackage { m o m o }
+  {
+    \cs_if_exist:cT {#1}
+      {
+        \int_if_odd:nT { \use:c {#1} }
+          {
+            \tl_if_novalue:nTF {#2}
+              {
+                \tl_if_novalue:nTF {#4}
+                  { \RequirePackage {#3} }
+                  { \RequirePackage {#3} [#4] }
+              }
+              {
+                \tl_if_novalue:nTF {#4}
+                  { \RequirePackage [#2] {#3} }
+                  { \RequirePackage [#2] {#3} [#4] }
+              }
+          }
+      }
+    \scan_stop:
+  }
+
+
+\cs_new_protected:Npn \whu_pkg_code:nnn #1#2#3 % add #3 after pkg #1, default #2
+  {
+    #2
+    \hook_gput_code:nnn { package/#1/after } { whu/pkg/after } {#3}
+  }
+\cs_new_protected:Npn \whu_pkg_code:nn #1#2
+  { \whu_pkg_code:nnn {#1} {#2} {#2} }
+
+
+\WHULoadModule { ltx }
+\WHULoadModule { util }
+\WHULoadModule { algo }
+\WHULoadModule { package }
+
+\group_begin:
+\cs_set:Npn \__whu_latex_hook_new:nnNn #1#2#3#4
+  {
+    \whu_toks_new:N #3
+    \hook_gput_code:nnn {#1} {#2} { \whu_toks_use:N #3 }
+    \cs_new_protected:cpn { whu_hook_gput_ #4 :n } { \whu_toks_gput_right:Nn #3 }
+    \cs_new_protected:cpn { whu_hook_gput_ #4 :w } ##1 \whu_hook_end:
+      { \whu_toks_gput_right:Nn #3 {##1} }
+  }
+\clist_set:Nn \l__whu_hook_tl
+  {
+    {begindocument/before}  {whu/document}\g__whu_preamble_end_toks     {pe} ,
+    {begindocument}         {whu/document}\g__whu_aux_end_toks          {ae} ,
+    {begindocument/end}     {whu/document}\g__whu_document_starting_toks{ds} ,
+    {enddocument}           {whu/document}\g__whu_document_ending_toks  {de} ,
+    {enddocument/afterlastpage}{whu/document}\g__whu_after_lastpage_toks{lp} ,
+    {enddocument/afteraux}  {whu/document}\g__whu_after_aux_toks        {aa} ,
+    {shipout/after}         {whu/reset}   \g__whu_page_set_toks         {pg} ,
+  }
+\clist_map_inline:Nn \l__whu_hook_tl { \__whu_latex_hook_new:nnNn #1 }
+\group_end:
+
+\cs_new_eq:NN \whu_if_preamble:TF \use_i:nn
+\cs_new_eq:NN \whu_if_document:TF \use_ii:nn
+\cs_new:Npn \whu_if_preamble:T #1 { \whu_if_preamble:TF {#1} { } }
+\cs_new:Npn \whu_if_preamble:F { \whu_if_preamble:TF { } }
+\cs_new:Npn \whu_if_document:T #1 { \whu_if_document:TF {#1} { } }
+\cs_new:Npn \whu_if_document:F { \whu_if_document:TF { } }
+
+\whu_hook_gput_ae:n 
+  {
+    \cs_gset_eq:NN \whu_if_preamble:TF \use_ii:nn
+    \cs_gset_eq:NN \whu_if_document:TF \use_i:nn
+    \hook_gput_code:nnn { shipout/before } { whu/layout/marking } { \__whu_layout_marking: }
+  }
+
+
+\cs_new_protected:Npn \whu_patch_failure:N #1
+  { \msg_error:nnx { whu } { patch-failure } { \token_to_str:N } }
+\msg_new:nnn { whu } { patch-failure } { Patch~command~`#1'~failure. }
+
+
+\WHULoadModule { counter }
+\WHULoadModule { space }
+\WHULoadModule { bgfg }
+\WHULoadModule { layout }
+%\WHULoadModule { notes }
+\WHULoadModule { buffer }
+\WHULoadModule { box }
+\WHULoadModule { index }
+\WHULoadModule { struct }
+\WHULoadModule { pdfmana }
+
+
+\whu_pkg_code:nnn { array } { }
+  {
+    \newcolumntype{v}[1]{}
+    \def\NC@rewrite@v#1#{\whu@NC@rewrite@v{#1}}
+    \def\whu@NC@rewrite@v #1#2
+      { \NC@find >{ \varwidth #1 {#2} \arraybackslash } c <{ \endvarwidth } }
+  }
+
+
+\keys_define:nn { whu/option }
+  {
+    library .code:n = \__whu_load_library:n {#1} ,
+  }
+
+
+\whu_pkg_code:nnn { hologo } { }
+  {
+    \def\WhuTeX{\hologo{WhuTeX}}
+    \def\HoLogo@WhuTeX#1{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.15em\hologo{TeX}}
+    \def\HoLogoBkm@WhuTeX#1{Whu\hologo{TeX}}
+    \def\WhuLaTeX{\hologo{WhuLaTeX}}
+    \def\HoLogo@WhuLaTeX#1{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.1em\LaTeX}
+    \def\HoLogoBkm@WhuLaTeX#1{Whu\hologo{LaTeX}}
+    \whu_pkg_code:nnn { unicode-math } { }
+      {
+        \ctex_patch_cmd:Nnn \HoLogo@LaTeXe
+          { \hbox { \HOLOGO@MathSetup 2 $ _{ \textstyle \varepsilon } $ } }
+          {
+            \hbox
+              {
+                \mathsurround 0pt \relax
+                2
+                \if b \expandafter \@car \f@series \@nil
+                  $ _{ \textstyle \symbf { \varepsilon } } $
+                \else
+                  $ _{ \textstyle \varepsilon } $
+                \fi
+              }
+          }
+        \cs_set_eq:cN { HoLogo@LaTeX2e } \HoLogo@LaTeXe
+        \cs_set_nopar:Npn \HoLogo@eTeX #1 
+          {
+            \ltx@mbox 
+              {
+                \mathsurround 0pt \relax
+                $ \symbf { \varepsilon } $
+                -
+                \HOLOGO@NegativeKerning{-T,T-,To}
+                \hologo{TeX}
+              }
+          }
+      }
+  }
+
+
+
+\ProcessKeysPackageOptions { whu/option }
