@@ -12,6 +12,7 @@ Description:
         - [✔]`CUS` 为 `WHU`
     - [✔]修改 `whu.module.xxx_cus.tex` 中的 `\WHUProvideModule{xxx}` 或 `\WHUProvideExplModule{xxx}` 的 `xxx` 为 `xxx_cus`
     - [✔]修改 `whu.library.xxx_cus.tex` 中的 `\WHUProvideLibrary{xxx}` 或 `\WHUProvideExplLibrary{xxx}` 的 `xxx` 为 `xxx_cus`
+    - `whu.module.xxx_cus.tex` 或 `whu.library.xxx_cus.tex` 中若有 `\WHUDependency{}`，且 `{}` 中包含 `module={xxx,yyy}` 或者 `library={zzz,www}`，则将 `...` 改为 `..._cus`
     - 修改 `whu.sty`
         - [✔]将 `Chinese User Scheme (WHU) basic file` 修改为 `Basic file of thesis template for Wuhan university`
         - 将 `\WHULoadModule { xxx }` 命令修改为 `\WHULoadModule { xxx_cus }`
@@ -117,6 +118,60 @@ for file in os.listdir(whu_directory):
                 file_content = re.sub(r'\\WHUProvide(Library|ExplLibrary){(.*?)}', r'\\WHUProvide\1{\2_cus}', file_content)
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(file_content)
+
+
+"""
+`whu.module.xxx_cus.tex` 或 `whu.library.xxx_cus.tex` 中若有 `\WHUDependency{}`，且 `{}` 中包含 `module={xxx,yyy}` 或者 `library={zzz,www}`，则将 `...` 改为 `..._cus`
+"""
+# 定义替换函数
+def replace_dependency(input_str):
+    # 查找匹配 module 和 library 的正则表达式
+    module_pattern = r'module={([^}]*)}'
+    library_pattern = r'library={([^}]*)}'
+
+    # 查找 module 和 library 中的所有项
+    module_match = re.search(module_pattern, input_str)
+    library_match = re.search(library_pattern, input_str)
+
+    if module_match:
+        # 将 module 中的项替换为带有 _cus 后缀的项
+        old_module_items = module_match.group(1).split(',')
+        new_module_items = [item.strip() + '_cus' for item in old_module_items]
+        # 替换原始字符串中的 module 部分
+        input_str = re.sub(module_pattern, 'module={' + ','.join(new_module_items) + '}', input_str)
+
+    if library_match:
+        # 将 library 中的项替换为带有 _cus 后缀的项
+        old_library_items = library_match.group(1).split(',')
+        new_library_items = [item.strip() + '_cus' for item in old_library_items]
+        # 替换原始字符串中的 library 部分
+        input_str = re.sub(library_pattern, 'library={' + ','.join(new_library_items) + '}', input_str)
+
+    return input_str
+
+for file in os.listdir(whu_directory):
+    file_path = os.path.join(whu_directory, file)
+    # 文件夹不处理
+    if os.path.isfile(file_path):
+        # 处理 module 文件
+        if file.startswith('whu.module') and file.endswith('_cus.tex'):
+            with open(file_path, 'r', encoding='utf-8') as f:
+                file_content = f.read()
+                # 修改文件中的字符串
+                if "WHUDependency" in file_content:
+                    file_content = replace_dependency(file_content)
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(file_content)
+        # 处理 library 文件
+        if file.startswith('whu.library') and file.endswith('_cus.tex'):
+            with open(file_path , 'r', encoding='utf-8') as f:
+                file_content = f.read()
+                # 修改文件中的字符串
+                if "WHUDependency" in file_content:
+                    file_content = replace_dependency(file_content)
+            with open(file_path , 'w', encoding='utf-8') as f:
+                f.write(file_content)
+
 
 
 # 修改 `whu.sty`

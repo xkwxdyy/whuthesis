@@ -15,7 +15,8 @@
 ### Fixed
 
 - 重写 `update-from-custex.py` 脚本，完善功能，处理文件后缀，防止模块和库名称和 `CusTeX` 的冲突
-
+- `update-from-custex.py` 脚本处理 `\WHUDependency` 里的模块后缀和库后缀
+ 
 
 ## [v0.0.1] - 2024-03-27
 
