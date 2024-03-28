@@ -1,0 +1,249 @@
+% !TeX root = ../../whuthesis-doc.tex
+
+%% list of hackings
+\begingroup 
+\setuponetitle{section}{beforeskip=15pt,afterskip=12pt,fixskip}
+
+\ExplSyntaxOn
+\cs_new:Npn \__this_if_liii:nTF #1
+  { \etl_if_in:nnTF { \s_stop #1 } { \s_stop l3 } }
+\cs_new:Npn \__this_if_le:n #1
+  {
+    \str_if_eq:eeTF { latex } { \str_lowercase:n {#1} }
+      { \LaTeXe 内核 }
+      {
+        \str_if_eq:eeTF { latex3 } { \str_lowercase:n {#1} }
+          { \LaTeXiii 内核 }
+          {
+            \etl_if_in:nnTF { \s_stop #1 } { \s_stop lt3 }
+              { \textsf {#1} }
+              {
+                \etl_if_in:nnTF { \s_stop #1 } { \s_stop lt }
+                  { \LaTeXe 内核 } { \textsf {#1} }
+              }
+          }
+      }
+  }
+\cs_new:Npn \__this_detect_file:n #1
+  {
+    \whu_act_case_true:nnnn {#1}
+      {
+        { \str_if_eq:nnTF { latex } } { \LaTeXe 内核 \use_none:n }
+        { \__this_if_liii:nTF }       { \LaTeXiii 的 \textsf }
+      }
+      { \__this_if_le:n }
+      { {#1} }
+  }
+\cs_new:Npn \__this_detect_whu_other:n #1 { \texttt { whu.#1.tex } }
+\cs_new:Npn \__this_detect_whu:n #1 
+  { 
+    \whu_act_case_true:nnnn {#1}
+      {
+        { \str_if_eq:nnTF { whu      } } { \texttt{whu.sty} \use_none:n }
+        { \str_if_eq:nnTF { whuclass } } { \texttt{whuclass.cls} \use_none:n }
+      }
+      { \__this_detect_whu_other:n }
+      { {#1} }
+  }
+\cs_new_eq:NN \CHDetectWHU \__this_detect_whu:n 
+\cs_new_eq:NN \CHDetectFile \__this_detect_file:n
+\ExplSyntaxOff
+\newcommand\CHFrom[1]{\CHDetectWHU{#1}}
+\newcommand\CHToI[2]{使用了 \CHDetectFile{#1} 的内部命令（或环境）：#2}
+\newcommand\CHToP[2]{patch 了 \CHDetectFile{#1} 的命令（或环境）：#2}
+\newcommand\CHToH[2]{hack 了 \CHDetectFile{#1} 的命令（或环境）：#2}
+\newcommand\CHToM[2]{修改了 \CHDetectFile{#1} 的命令（或环境）：#2}
+\newcommand\CHToA[2]{为 \CHDetectFile{#1} 增加了：#2}
+
+
+\chapter{List of Hackings}
+
+本章列出 \WhuTeX 宏集中使用的内核内部命令、其它宏包的内部命令以及所有 hacking。
+
+\linespread{1}\selectfont \small 
+\obeylines
+
+\CHToA{l3text}{\cs{text_mdfive_hash:n}};
+\CHToA{l3token}{\cs{token_if_cs_word:NTF}, \cs{token_if_control_word:NTF}};
+
+\section{\CHFrom{module.ltx}}
+
+\CHToI{latex}{\tn{@dischyph}};
+\CHToI{graphics}{\tn{Ginclude@graphics}};
+\CHToA{graphics}{\tn{IfGraphicsExists}, \tn{InputIfGraphicsExists}};
+
+\section{\CHFrom{module.util}}
+\CHToI{l3seq}{\cs{__seq_push_item_def:n}, \cs{__seq_pop_item_def:}, \cs{s__seq}, \cs{__seq_item:n}};
+\CHToI{latex}{\tn{c@page}};
+\CHToI{latex}{\tn{@onlypreamble}, \tn{@notprerr}};
+\CHToI{latex}{\tn{@twoclasseserror}};
+\CHToA{l3keys}{\cmd[module=keys]{.switch_set:N}, %
+  \cmd[module=keys]{.clist_put_right:N}, \cmd[module=keys]{.clist_put_left:N}, %
+  \cmd[module=keys]{.toks_put_right:N}, \cmd[module=keys]{.toks_put_left:N}, %
+  \cmd[module=keys]{.obey_psrrule:nn}, \cmd[module=keys]{.gbey_psrrule:nn}};
+\CHToI{hyperref}{\tn{@filecolor}, \tn{@linkcolor}, \tn{@citecolor}, \tn{@urlcolor}};
+\CHToI{latex}{\tn{@auxout}, \tn{@currentlabel}};
+\CHToP{bookmark}{\tn{BKM@hook}};
+\CHToM{bookmark}{\tn{bookmark@text}};
+\CHToI{hyperref}{\tn{@currentHref}, \tn{ifHy@pdfstring}};
+\CHToI{hyperref}{\tn{hyper@anchor}, \tn{hyper@anchorstart}, \tn{hyper@anchorend}, %
+  \tn{hyper@link}, \tn{hyper@linkstart}, \tn{hyper@linkend}, %
+  \tn{hyper@linkfile}, \tn{hyper@linkurl}};
+\CHToI{pdfmanagement-testphase}{\cs{hyper@linklaunch}, \cs{hyper@linknamed}};
+\CHToI{hyperref}{\cs{l__hyp_target_create_bool}, \cs{__hyp_target_manual:nn}, %
+  \cs{__hyp_target_manual:nn}, \cs{__hyp_target_counter_anon:n}};
+\CHToI{hyperref}{\hook{__hyp/target/setname}};
+\CHToP{hyperref}{\tn{HyPL@EveryPage}};
+\CHToM{hyperref}{\tn{HyPL@page}, \tn{HyPL@thisLabel}};
+\CHToI{hyperref}{\tn{Hy@SaveSpaceFactor}, \tn{Hy@RestoreSpaceFactor}};
+
+
+\section{\CHFrom{module.algo}}
+\CHToI{l3tl}{\cs{__tl_map_function:Nnnnnnnnn}, \cs{\__tl_map_tokens:nnnnnnnnn} \cs{s__tl_stop}};
+
+
+\section{\CHFrom{module.layout}}
+\CHToI{geometry}{\tn{Gm@warning}};
+\CHToI{geometry}{\tn{Gm@save}};
+\CHToI{geometry}{\tn{Gm@restore}};
+\CHToA{geometry}{\tn[no-index]{Gm@..paper}};
+\CHToI{geometry}{\tn{Gm@setsize}};
+\CHToI{geometry}{\tn{Gm@changelayout}};
+\CHToI{fancyhdr}{\tn{f@nch@O@olh}, \tn{f@nch@O@orh}, \tn{f@nch@O@elh}, \tn{f@nch@O@erh}};
+\CHToI{fancyhdr}{\tn{f@nch@O@olf}, \tn{f@nch@O@orf}, \tn{f@nch@O@elf}, \tn{f@nch@O@erf}};
+\CHToM{latex}{\tn{pagestyle}, \tn{thispagestyle}}
+\CHToP{latex}{\tn{@outputpage}}
+\CHToI{latex}{\tn{ps@\meta{pagestyle}}, \tn{is@specialpage}, \tn{@specialstyle}}
+\CHToI{fancyhdr}{\tn{f@nch@pagestyle}};
+\CHToI{fancyhdr}{\tn{f@nch@headinit}, \tn{f@nch@footinit}};
+\CHToI{fancyhdr}{\tn{ps@f@nch@fancyproto}, \tn{f@nch@def}, \tn{f@nch@ps@\meta{pagestyle}-is-fancyhdr}};
+\CHToI{latex}{\tn{if@fcolmade}};
+\CHToI{fancyhdr}{\tn{iff@nch@footnote}};
+
+
+\section{\CHFrom{module.box}}
+\CHToI{latex}{\tn{if@in@minipage@env}};
+\CHToI{latex}{\tn{@parboxrestore}, \tn{@mpfn}, \tn{@minipagerestore}, \tn{@setminipage}};
+\CHToI{varwidth}{\tn{@vwid@setup}, \tn{@@vwid@minipagerestore}};
+\CHToI{latex}{\tn{@iiiparbox}};
+\CHToI{latex}{\tn{if@nobreak}};
+\CHToI{latex}{\tn{@dischyph}, \tn{if@noskipsec}};
+\CHToI{latex}{\tn{@acci}, \tn{@accii}, \tn{@acciii}};
+\CHToI{latex}{\tn{@totalleftmargin}};
+\CHToI{multicol}{\tn{mult@rightbox}, \tn{mult@nat@firstbox}, \tn{mult@rightbox}};
+\CHToP{multicol}{\tn{page@sofar}, \tn{prepare@multicols}, \tn{multi@column@out}};
+\CHToH{multicol}{\tn{LR@column@boxes}, \tn{RL@column@boxes}, \tn{mc@align@columns}};
+\CHToI{multicol}{\tn{c@minrows}, \tn{c@unbalance}, \tn{c@columnbadness}, \tn{c@finalcolumnbadness}};
+\CHToI{rotating}{\tn{Grot@setangle}};
+\CHToI{latex}{\tn{color@hbox}};
+\CHToI{rotating}{\tn{@rotfloat}, \tn{end@rotfloat}, \tn{@rotdblfloat}, \tn{end@rotdblfloat}};
+
+\section{\CHFrom{module.bgfg}}
+\CHToI{latex}{\tn{c@page}};
+\CHToI{geometry}{\tn{Gm@layoutwidth}, \tn{Gm@layoutheight}};
+
+\section{\CHFrom{module.index}}
+\CHToM{latex}{\tn{@indexfile}};
+\CHToA{latex}{\tn[no-index]{@indexfile..}};
+\CHToI{latex}{\tn{@idxitem}};
+\CHToM{latex}{\tn{index}, \tn{makeindex}, \tn{printindex}};
+\CHToI{latex}{\tn{@bsphack}, \tn{@sanitize}, \tn{@wrindex}};
+\CHToI{latex}{\tn{@input@}};
+
+\section{\CHFrom{module.struct}}
+\CHToI{latex}{\tn{@input}, \tn{@writefile}, \tn{@auxout}};
+\CHToI{latex}{\tn{@auxout},\tn{tf@toc}};
+\CHToI{latex}{\tn{@kernel@after@enddocument@afterlastpage}};
+\CHToI{hyperref}{\tn{Hy@tocdestname}, \tn{Hy@linktoc}, \tn{hyper@link}};
+\CHToP{float}{\tn{newfloat}, \tn{floatplacement}};
+\CHToP{newfloat}{\tn{@DeclareFloatingEnvironment}, \tn{newfloat@setoptions}};
+\CHToP{floatrow}{\tn{DeclareNewFloatType}, \tn{FB@captype}};
+\CHToP{tcolorbox}{\tn{tcb@proc@options@init}, \tn{kvtcb@new@listof}, \tn{kvtcb@new@listtype}};
+\CHToP{amsthm}{\tn{@xnthm}};
+\CHToM{thmtools}{\tn{thmt@mklistcmd}, \tn{listoftheorems}};
+\CHToI{thmtools}{\tn{thmtlo@newentry}, \tn{ifthmt@isstarred}, %
+  \tn[no-index]{ll@<thmt envname>}, \tn{thmt@thmname}, %
+  \tn{thmt@shortoptarg}, \tn{thmtformatoptarg}, \tn{thmt@contentslineShow}};
+\CHToI{thmtools}{\tn{thmt@numberline}, \tn{ifthmt@listswap}, \tn{thmt@allenvs}, \tn{thmtlo@newentry}};
+\CHToM{thmtools}{\tn{thmt@contentsline}};
+\CHToM{hyperref}{\tn{addtocontents}, \tn{contentsline}};
+\CHToM{ctexheading}{\tn{CTEX@addloflotskip}};
+\CHToI{latex}{\tn{f@size}};
+\CHToI{latex}{\tn{c@tocdepth}, \tn{if@restonecol}};
+\CHToM{latex}{\tn{@starttoc}};
+\CHToI{latex}{\tn{e@alloc@chardef}, \tn{allocationnumber}};
+\CHToI{latex}{\tn[no-index]{toclevel@..}};
+\CHToP{hyperref}{\tn{H@refstepcounter}};
+\CHToP{cleveref}{\tn{refstepcounter@noarg}, \tn{refstepcounter@optarg}};
+\CHToI{nameref}{\tn{NR@gettitle}};
+\CHToA{hyperref}{\tn{hyper@nopatch@sectioning}};
+\CHToA{nameref}{\tn{NR@nopatch@sectioning}};
+\CHToI{latex}{\tn{c@secnumdepth}};
+\CHToM{latex}{\tn{part}, \tn{chapter}, \tn{section}, \tn{subsection}, \tn{subsubsection}, \tn{paragraph}, \tn{subparagraph}};
+\CHToI{latex}{\tn{@topnewpage}};
+\CHToI{latex}{\tn{@maketophead}, \tn{@makestophead}, \tn{@afterheading}};
+\CHToI{placeins}{\tn{FloatBarrier}};
+\CHToI{latex}{\tn{@svsec}, \tn{@svsechd}};
+\CHToI{latex}{\tn{@secpenalty}};
+
+% \section{\CHFrom{module.notes}}
+
+\section{\CHFrom{library.box}}
+\CHToA{latex}{\tn{@tempdimd}};
+\CHToA{longfbox}{\texttt{/longfbox/math}, \texttt{/longfbox/highlight math}};
+\CHToI{paracol}{\tn{ifpcol@swapcolumn}, \tn{ifpcol@swapmarginpar}, \tn{ifpcol@bg@swap}};
+\CHToI{latex}{\tn{cl@@ckpt}};
+\CHToI{paracol}{\tn{pcol@gcounters}, \tn{pcol@globalcounter}};
+\CHToI{paracol}{\tn{pcol@colwidthspecleft}, \tn{pcol@colwidthspecright}, \tn{pcol@columnratioleft}, \tn{pcol@columnratioright}};
+\CHToI{paracol}{\tn{pcol@mpthreshold@l}, \tn{pcol@mpthreshold@r}};
+
+\section{\CHFrom{library.math}}
+\CHToI{latex}{\tn{frozen@everymath}, \tn{frozen@everydisplay}};
+\CHToI{amsmath}{\tn{bBigg@}};
+
+\section{\CHFrom{library.counter}}
+\CHToI{latex}{\tn{cl@@ckpt}, \tn{@elt}};
+\CHToM{latex}{\tn{@stpelt}};
+
+\section{\CHFrom{library.ref}}
+\CHToI{latex}{\tn{c@page}, \tn{ifG@refundefined}};
+
+\section{\CHFrom{library.tcb}}
+\CHToI{tcolorbox}{\tn{kvtcb@boxsep}};
+\CHToI{tcolorbox}{\tn{kvtcb@top@rule@stand}, \tn{kvtcb@bottom@rule@stand}, \tn{kvtcb@top}, \tn{kvtcb@bottom}};
+\CHToI{tcolorbox}{\tn{kvtcb@left@rule@stand}, \tn{kvtcb@right@rule@stand}, \tn{kvtcb@leftupper}, \tn{kvtcb@rightupper}};
+
+\section{\CHFrom{library.pdf}}
+\CHToI{graphicx}{\tn{Gin@ii}};
+\CHToI{newpax}{\tn{NEWPAX@cmd@\meta{type}}, \tn{NEWPAX@skip}, \tn{NEWPAX@includegraphics}, \tn{NEWPAX@AddAnnots}, \tn{NEWPAX@file}, \tn{NEWPAX@Gin@page}};
+
+\section{\pkg{lt3ekeys}、\pkg{lt3ekeyscmd} 和 \pkg{lt3ekeysext}}
+\CHToI{ltcmd}{\cs{__cmd_peek_nonspace:NTF}, \cs{__cmd_peek_nonspace_remove:NTF}};
+\CHToI{ltcmd}{\cs{__cmd_token_if_cs:NTF}};
+\CHToI{l3keys}{\cs{c__keys_type_root_str}, \cs{c__keys_code_root_str}, \cs{c__keys_props_root_str}, \cs{c__keys_inherit_root_str}};
+\CHToI{latex}{\tn{e@alloc@top}};
+\CHToI{l3keys}{\cs{l__keys_module_str}, \cs{l_keys_path_tl}, \cs{l__keys_inherit_str}};
+\CHToM{latex}{\cs{@showcommandlisthook}, \cs{@declarecommandcopylisthook}, \cs{g_hook_patch_action_list_tl}};
+\CHToI{lthooks}{\cs{__hook_patch_expand_redefine:NNnn}};
+
+\section{\pkg{lt3ekeys-elkernel}}
+\CHToI{latex}{\cs{__kernel_cmd_if_xparse:NTF}};
+\CHToI{latex3}{\cs{__kernel_str_to_other_fase:n}};
+\CHToI{latex3}{\cs{__kernel_chk_if_free_cs:N}};
+\CHToI{latex3}{\cs{__kernel_quark_new_test:N}, \cs{__kernel_quark_new_conditional:Nn}};
+\CHToI{latex3}{\cs{__kernel_backend_literal_pdf:e}};
+\CHToI{latex3}{\cs{__kernel_file_name_sanitize:n}};
+
+\section{\pkg{lt3ekeys-collectn}}
+\CHToI{latex}{\tn{e@alloc@chardef}};
+
+\section{\pkg{updatemarks}}
+\CHToI{ltmarks}{\cs{g__mark_classes_seq}};
+\CHToI{ltmarks}{\cs{__mark_update_structure_alias:nn}};
+\CHToI{ltmarks}{\cs{g__mark_.._.._.._tl}, \cs{c__mark_class_.._mark}};
+\CHToP{ltboxes}{\cs{endminipage}};
+\CHToP{tcolorbox}{\tn{tcbox@inner@box}, \tn{endtcb@lrbox}, \tn{endtcb@savebox}, \tn{tcb@drawing@env@end}, \tn{tcb@vsplit@upper}, \tn{tcb@vsplit@lower}, \tn{tcb@split@start}, \tn{tcb@split@USL}, \tn{tcb@split@SL@displayed}, \tn{tcb@split@L}};
+\CHToP{multicol}{\tn{set@keptmarks}, \tn{endmulticols}, \tn{multi@column@out}, \tn{balance@columns@out}, \tn{balance@columns}, \tn{prep@keptmarks}};
+\CHToP{adjmulticol}{\tn{adjmc@process@ne@column}};
+
+\endgroup

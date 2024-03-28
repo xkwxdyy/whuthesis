@@ -8,17 +8,53 @@
 
 \input{./doc/setting/whuthesis-doc-setting-titlepage.tex}
 
+
+
+
 \frontmatter
 \input{./doc/setting/whuthesis-doc-setting-frontmatter.tex}
+
+
+
+
 
 \mainmatter
 \input{./doc/setting/whuthesis-doc-setting-mainmatter.tex}
 
 
+\setuplayout{preset=balance}
 % 介绍
 \input{./doc/body/introduction.tex}
 
+
+\setuplayout{preset=main}
 % 使用
 \input{./doc/body/usage.tex}
+
+
+
+
+
+\cleardoublepage 
+\whusetup[doc/cmd]{hyper=false}
+\vbadness=10000 \hbadness=10000 \vfuzz=\maxdimen \hfuzz=\maxdimen
+\backmatter
+\long\def\sectionmark#1{}
+\chapter{索引}
+\vskip-14pt 
+% \printindex 
+% \PrintChanges 
+\PrintUsages 
+
+\input{./doc/back/TODO.tex}
+
+\input{./doc/back/reference.tex}
+
+% \input{./doc/back/list-of-hackings.tex}
+
+
+
+
+
 
 \end{document}

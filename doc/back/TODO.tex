@@ -1,0 +1,27 @@
+% !TeX root = ../../whuthesis-doc.tex
+
+\setuplayout{preset=balance}
+\setuptitle[chapter, section]{numbering=false}
+
+\chapter{TODO}
+
+\newcommand\DN{\faCheckSquare[regular]} % done
+\newcommand\HDN{\faMinusSquare[regular]} % half done
+\newcommand\NDN{\faSquare[regular]} % has not done
+\newcommand\SDN{\faPlusSquare[regular]} % need to be specified
+
+\goodbreak
+\begin{itemize}[midpenalty=-1000,
+  label=\protect\raisebox{-.3ex}{\NDN}]
+  \item 写项目介绍
+  \item 构思论文模板的模块、库的设计
+    \begin{itemize}
+      \item 是否叫模块、库？
+      \item 适配学院需求叫 school？
+    \end{itemize}
+  \item 整理参考资料，设置要有依据
+  \item 兼容一些模板，提供切换到这些模板的接口：
+    \begin{itemize}
+      \item 黄正华老师的模板
+    \end{itemize}
+\end{itemize}

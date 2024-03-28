@@ -6,4 +6,50 @@
 
 \def\thepage{t.\arabic{page}}
 \setuplayout{preset=balance}
+\makeatletter
+\renewcommand{\maketitle}{
+  \begin{titlepage}%
+    \let\footnotesize\small
+    \let\footnoterule\relax
+    \let \footnote \thanks
+    \null\vfil
+    \vskip 60\p@
+    \begin{center}%
+      {\LARGE \@title \par}%
+      \vskip 3em%
+      {\large
+       \lineskip .75em%
+        \begin{tabular}[t]{c}%
+          \@author
+        \end{tabular}\par}%
+        \vskip 1.5em%
+      {\large \@date \par}%       % Set date in \large size.
+    \end{center}\par
+    \@thanks
+    \vfil
+    
+    \begin{flushleft}
+      \Large
+      \textbf{特别声明：}
+    \end{flushleft}
+
+    \begin{enumerate}
+      \item 本模板仍处于开发阶段，出现问题为正常现象，请及时与开发者联系，比如在 GitHub 上提 \href{https://github.com/xkwxdyy/whuthesis}{issue}；
+      \item 本模板仅为个人开发者开发，不是官方的论文模板，使用前请谨慎选择，任何由于使用本模板引起的论文格式审查问题均与本模板作者无关；
+      \item 若确定使用本模板，可以参考手册第 \pageref{chap:开发参考} 页的项目开发参考自行核查规范；
+    \end{enumerate}
+  \end{titlepage}%
+  \setcounter{footnote}{0}%
+  \global\let\thanks\relax
+  \global\let\maketitle\relax
+  \global\let\@thanks\@empty
+  \global\let\@author\@empty
+  \global\let\@date\@empty
+  \global\let\@title\@empty
+  \global\let\title\relax
+  \global\let\author\relax
+  \global\let\date\relax
+  \global\let\and\relax
+}
+\makeatother
 \maketitle

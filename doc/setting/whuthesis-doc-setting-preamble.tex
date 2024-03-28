@@ -90,7 +90,7 @@
 \usepackage[colorlinks]{hyperref}
 \hypersetup{
   pdfauthor={夏大鱼羊},
-  pdftitle=\WhuThesis 手册
+  pdftitle={ whuthesis 手册}
 }
 \usepackage{nameref,varioref,cleveref}
 
@@ -107,7 +107,7 @@
 \enablecombinedlist 
 
 \newsavebox\WaterMarkBox
-\sbox{\WaterMarkBox}{\rotatebox{45}{\color{gray!30}\fontsize{100}{0}\sffamily \WhuThesis}}
+\sbox{\WaterMarkBox}{\rotatebox{45}{\color{gray!30}\fontsize{100}{0}\sffamily whuthesis}}
 \background+[./watermark]{\copy\WaterMarkBox}
 
 %region title setting
@@ -161,7 +161,7 @@
 \providecommand\headlink@warp[1]{#1}
 \setpagestyle{plain}[totalempty]{}
 \setpagestyle*{fancy}[totalempty]{
-  \sethead [ol,er] {\WhuThesis 手册}
+  \sethead [ol,er] {whuthesis 手册}
   \sethead [or,el] {\headlink@warp\marked@title}
   % \setfoot [or,el] {\texttt{Longaster@163.com}}
   \setfoot [ol,er] {第\thepage 页}
@@ -274,6 +274,6 @@
 
 \raggedbottom \hfuzz=2.5pt \vfuzz=10pt 
 
-\title{\WhuThesis 手册}
+\title{whuthesis 手册}
 \author{夏大鱼羊}
 \date{\zhtoday\quad v\UseName{whu@versi@n}}

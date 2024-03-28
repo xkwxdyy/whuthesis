@@ -1,3 +1,73 @@
 % !TeX root = ../../whuthesis-doc.tex
 
-\chapter{\WhuThesis 介绍}
+\chapter{whuthesis 简介}
+
+
+\section{已有的关于武汉大学的毕业论文 \LaTeX{} 模板}
+
+其实目前可以在网上找到不少武汉大学毕业论文的 \LaTeX{} 模板：
+\begin{itemize}
+  \item 目前数学与统计学院学生用的比较多的是武汉大学 \href{http://aff.whu.edu.cn/huangzh/}{黄正华老师} 开发的 \href{http://aff.whu.edu.cn/huangzh/#:~:text=%E4%B8%8B%E5%88%97-,%E6%AF%95%E4%B8%9A%E8%AE%BA%E6%96%87%E6%A8%A1%E6%9D%BF,-%2C%20%E9%80%82%E7%94%A8%E4%BA%8E%20TeX}{本硕博 \LaTeX{} 模版}；
+  \item 其次就是 GitHub 的 \href{https://github.com/whutug}{whu-tug} 组织开发的 \href{https://github.com/whutug/whu-thesis}{\cls{whu-thesis}}：
+    \begin{itemize}
+      \item \href{https://github.com/imfing}{imfing} 于 2019 年首先开发了 \cls{whu-thesis}
+      \item \href{https://github.com/T0nyX1ang}{Tony Xiang} 参与小部分开发
+      \item 最后 \href{https://github.com/tanukihee}{ListLee} 于 2020 年\href{https://github.com/whutug/whu-thesis/commit/d488438b7819ddf5a128081a50b118d8fd4ec1ef}{用 \LaTeX3 重构了 \cls{whu-thesis}}
+      \item 但由于维护者工作原因，于 2021 年六月份后无人继续维护 \cls{whu-thesis}。\href{https://github.com/xkwxdyy}{我(xkwxdyy)} 在 2022 年接手 \cls{whu-thesis} 的维护，于 \href{https://github.com/whutug/whu-thesis/commit/bfaf2c235e7490fa16ce40ec6eb20ce060592a9d}{2022 年 8 月} 重新梳理教务处规范、已有的部分学院的需求差异，基于黄正华老师的模板、历史版本的 \cls{whu-thesis} 以及部分 issues 和 discussions 中的问题和需求，对 \cls{whu-thesis} 进行重构工作（框架完成，但一些小细节还没弄完）。随后 \href{https://github.com/Eliaul}{Eliaul} 和 \href{https://github.com/SwitWu}{SwitWu} 也加入了维护工作。
+    \end{itemize}
+  \item 还可以找到一些针对具体需求改 \cls{whu-thesis} 产生的模板：
+    \begin{itemize}
+      \item \href{https://github.com/cylqqqcyl/whu-thesis-2024}{cylqqqcyl 针对计算机学院改的}
+      \item \href{https://github.com/BenjaminHb/whu-thesis}{BenjaminHb 针对学术硕士改的}
+    \end{itemize}
+\end{itemize}
+
+
+\section{为什么要开发 whuthesis}
+
+根据 \cls{whu-thesis} GitHub （当然还有一些其它学校的 \LaTeX 模板 GitHub）上的 \href{https://github.com/whutug/whu-thesis/issues}{问题}和\href{https://github.com/whutug/whu-thesis/discussions}{讨论}，以及自己一些毕业论文模板开发经验，可以看到一些不仅是 \cls{whu-thesis}，甚至是大部分毕业论文 \LaTeX{} 模板都存在的问题。
+
+
+\subsection{模板很难适配每一个学院的需求}
+
+大部分学校的官方模板都是 word 版本，甚至一些学校没有专门的模板，而只有教务处网站有一些文字版本的论文规范说明。能找到的的一些 \LaTeX{} 模板基本上都是开发者（有一定部分都是模板对应学校的校内学生）基于这些参考开发而来。
+  
+但是每个学院根据专业需求不同，可能会基于学校的给的框架，对一些细节进行调整，生成更适合这些学院用的 word 模板。而开发者一开始开发的时候很难获取到比较全面的这些细节要求，所以模板\emph{一开始}很难照顾到每一个学院学生的需求。
+
+
+\subsection{模板可以针对用户反馈来完善，但是效果差强人意}
+
+上面提到了一些学院可能会对学校官方的模板进行一些调整，所以学生拿到已有的 \LaTeX{} 模板经常会发现一些细节不同，但是自己又不知道怎么改。在“改模板”上，\LaTeX{} 模板的修改门槛比 word 的要高不少，这也是 GitHub 上 issues 和 discussions 来源的根本原因。
+
+开发者可以根据用户反馈来完善模板，但是效率和效果只能说差强人意。我自己在维护 \cls{whu-thesis} 之前开发了 \href{https://github.com/xkwxdyy/CCNUthesis}{华中师范大学的毕业论文 \LaTeX{} 模板 \cls{CCNUthesis}}，我最初参考的是一位华师的数统学院老师用 \CTeX 套装开发的一个旧模板，但是了解 一些 \CTeX 套装的用户知道，这已经是“老古董”了，而且只能在 Windows 系统上运行（除非在其它系统上用虚拟机，但这样成本和上手门槛就很高），所以就有了重写模板的需求，所以我最初开发这套模板只是为了改写数统学院的模板，但是后来我参考了教务处的规范，在模板里兼容了教务处的 word 模板样式，通过键值切换。
+
+但是随其它学院的学生开始使用这套模板，比如几位物理学院的硕士和博士，会发现博士课题组可能有一些“祖传”的模板，或者是一些毕业了的学长学姐“传下来”的模板，他们希望调整一些细节来符合这些模板。我当时的做法就是加键值，比如英文页的标题内容是否是居中的，是否需要去掉“title”字样等等。
+
+“加键值”这个做法本身没有问题，但是随着键值越来越多，可能会忘记为什么加这个键值，即使知道是因为针对某一特殊课题组的需求改的，但我之前的做法是把键值配合注释写在了 \file{.tex} 文件中，方便用户查看。但是对于大部分用户来说，它们都没有这些特殊的需求，反而这些注释和键值会让他们看的一头雾水。他们也不知道怎么样的键值的排列组合是适合他们的，要不要改，比如把这个值设置为默认值，那对于那个学院又不是默认值了，不同学院的不同需求耦合在一起，众口难调。
+
+所以根据特定学院，甚至特定课题组的需求，“将键值设置打包”就成了一个比较主要的需求。这不但可以使 \file{.tex} 文件更简洁，也可以降低上手门槛。而且根据需要再来加载额外的功能，一定程度上也能提高文件的编译速度。
+
+
+
+\subsection{用户自行修改模板的门槛高}
+
+之前的模板提供给用户的接口基本上是开发者写好的功能，供用户自行调整的接口比较少。而且修改模板功能基本都需要开发者参与其中，一个是时间成本增加了，另一个是灵活性降低了。
+
+所以 whuthesis 要降低用户自主配置的门槛，用户可以根据自己所需要的设置进行一些相应的打包成库，甚至这些设置可以慢慢成为后人的“祖传模板”。
+
+
+\subsection{以前的模板开发时的注释太少}
+
+用户经常会提一些格式变更的需求或者疑问，这个时候我就会查看一下源代码的设置，来确认模板设置是否正确，但是很多时候由于注释不详细甚至没有，我很多时候都不知道当时设置的时候参考了什么文件或者网站，这样在与用户沟通起来极大增加了时间成本，而且也极大增加了模板的不稳定性。
+
+whuthesis 开发过程中会尽可能加上模板设置的参考来源（不管是在代码源文件还是模板的用户手册中），一个是为了开发者后续维护，另一个是方便用户对格式进行核查。
+
+而且一旦用户提了一个新的格式上变更的需求，我可以更方便地知道用户的需求是“个性”还是“共性”，后续的处理也会更高效。
+
+毕业论文的格式规范的可回溯性越好，模版的鲁棒性才会更强。
+
+
+
+\section{whuthesis 的优势}
+
+因为采用了模块化和库化的想法和设计思路，所以 whuthesis 的可定制程度更高，可以更好地适配不同学院甚至是不同课题组的要求。
