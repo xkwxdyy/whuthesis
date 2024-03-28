@@ -5,23 +5,45 @@
 
 \chapter{TODO}
 
-\newcommand\DN{\faCheckSquare[regular]} % done
-\newcommand\HDN{\faMinusSquare[regular]} % half done
-\newcommand\NDN{\faSquare[regular]} % has not done
-\newcommand\SDN{\faPlusSquare[regular]} % need to be specified
+\newcommand\Done{\faCheckSquare[regular]} % done
+\newcommand\HalfDone{\faMinusSquare[regular]} % half done
+\newcommand\NotDone{\faSquare[regular]} % has not done
+\newcommand\ToBeSpecified{\faPlusSquare[regular]} % need to be specified
 
 \goodbreak
 \begin{itemize}[midpenalty=-1000,
-  label=\protect\raisebox{-.3ex}{\NDN}]
-  \item 写项目介绍
-  \item 构思论文模板的模块、库的设计
-    \begin{itemize}
-      \item 是否叫模块、库？
-      \item 适配学院需求叫 school？
-    \end{itemize}
+  label=\protect\raisebox{-.3ex}{\NotDone}]
+  \item[\Done] 写项目介绍
+  \item[\ToBeSpecified] 构思论文模板的模块、库的设计
+    \begin{enumerate}
+      \item 模块
+        \begin{itemize}[midpenalty=-1000,
+          label=\protect\raisebox{-.3ex}{\NotDone}]
+          \item 信息
+          \item 页面设置与组织
+          \item 目录
+          \item 摘要
+          \item 章节标题样式
+          \item 字体
+          \item 页眉页脚
+          \item 参考文献
+          \item 成果
+        \end{itemize}
+      \item 库
+        \begin{itemize}[midpenalty=-1000,
+          label=\protect\raisebox{-.3ex}{\NotDone}]
+          \item bachelor: 本科
+          \item master: 硕士
+          \item doctor: 博士
+          \item math: 数学与统计学院。参考
+            \begin{itemize}
+              \item \cls{whu-thesis}
+              \item 黄正华老师的模板
+            \end{itemize}
+          \item math-hzh: 数学与统计学院。完全兼容黄正华老师的模板配置
+          \item computer: 计算机学院。参考 \href{https://github.com/cylqqqcyl/whu-thesis-2024}{cylqqqcyl 针对计算机学院改的模板}
+          \item cs: 国家网络安全学院。参考网安用户上传的模板
+        \end{itemize}
+    \end{enumerate}
   \item 整理参考资料，设置要有依据
-  \item 兼容一些模板，提供切换到这些模板的接口：
-    \begin{itemize}
-      \item 黄正华老师的模板
-    \end{itemize}
 \end{itemize}

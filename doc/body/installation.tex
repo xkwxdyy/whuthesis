@@ -1,10 +1,14 @@
 % !TeX root = ../../whuthesis-doc.tex
 
+\chapter{whuthesis 的安装与更新}
+
+
+
 % \chapter{概述}
 
-% {\color{red}\bfseries 目前 \WhuTeX 还处于早期的开发状态中，很多功能还并不完善。}
+% {\color{red}\bfseries 目前 whuthesis 还处于早期的开发状态中，很多功能还并不完善。}
 
-% \WhuTeX （\WhuLaTeX）宏集意为 a \textcolor{purple}Chinese \textcolor{purple}User
+% whuthesis （\WhuLaTeX）宏集意为 a \textcolor{purple}Chinese \textcolor{purple}User
 % \textcolor{purple}Scheme \textcolor{purple}\TeX（\textcolor{purple}{\LaTeX}），
 % 为中文 \LaTeX 用户定制的文档类框架。
 
@@ -15,30 +19,28 @@
 % 要求它们具有像 \hologo{KOMAScript} 文档类的完整功能不太可能。
 % 如此，本宏集应运而生。
 
-% 使用 \WhuTeX 可以方便地设置标题、目录、页面样式（页面几何元素、页眉页脚等）、图表、背景、水印、
-% 边注、脚注、列表、索引、术语表等文档元素，具有强大的可定制性。\WhuTeX 原生兼容 \pkg{pgf} 和 
+% 使用 whuthesis 可以方便地设置标题、目录、页面样式（页面几何元素、页眉页脚等）、图表、背景、水印、
+% 边注、脚注、列表、索引、术语表等文档元素，具有强大的可定制性。whuthesis 原生兼容 \pkg{pgf} 和 
 % \pkg{tcolorbox}，加载这两个宏包或使用 \whulibrary{pgf} 库可实现更多的功能 \TODO。
 
-% \WhuTeX 通过模块（module）和库（library）来实现诸多功能。其中\emph{模块}是核心部分，
-% \WhuTeX 将自动加载它们；库是提供额外功能的，用户可以选择是否加载它们。库可能依赖其它模块和库，
-% 但模块不会依赖库。
 
-% 模块和库均可能加载其它宏包，一般情况下，\WhuTeX 会自动加载这些模块并处理好它们的依赖和兼容性，
-% 当用户需要加载其它宏包时，最好通过 \WhuTeX 的宏包加载机制来加载它们 \TODO。
 
-% \WhuTeX 支持 \XeLaTeX、\LuaLaTeX、\upLaTeX、\ApLaTeX（p\LaTeX-ng）等多种编译方式，其中
+% 模块和库均可能加载其它宏包，一般情况下，whuthesis 会自动加载这些模块并处理好它们的依赖和兼容性，
+% 当用户需要加载其它宏包时，最好通过 whuthesis 的宏包加载机制来加载它们 \TODO。
+
+% whuthesis 支持 \XeLaTeX、\LuaLaTeX、\upLaTeX、\ApLaTeX（p\LaTeX-ng）等多种编译方式，其中
 % \LuaLaTeX、\upLaTeX、\ApLaTeX 还支持竖排 \TODO。
 
-% \WhuTeX 还很好的支持和适配了通用驱动（generic driver），这是 \LaTeXe 2022-06-01 中的新功能。
+% whuthesis 还很好的支持和适配了通用驱动（generic driver），这是 \LaTeXe 2022-06-01 中的新功能。
 
 % \emph{不}兼容 \pkg{beamer}。
 
 % \chapter{文档接口}
 
-% \WhuTeX 定义的命令有的用于文档中，有的则是面向开发者，本章描述那些在文档中可能使用到的接口。
+% whuthesis 定义的命令有的用于文档中，有的则是面向开发者，本章描述那些在文档中可能使用到的接口。
 
-% \begin{function}{\WhuTeX,\WhuLaTeX}
-% Logo。输出 \WhuTeX，\WhuLaTeX。
+% \begin{function}{whuthesis,\WhuLaTeX}
+% Logo。输出 whuthesis，\WhuLaTeX。
 % \end{function}
 
 % \begin{function}{\whusetup}
@@ -53,7 +55,7 @@
 % \end{syntax}
 % 键值设置命令。
 
-% \WhuTeX 的不同模块使用不同的 \meta{key path}，一般情况下，这些模块会提供自己的键值设置接口，
+% whuthesis 的不同模块使用不同的 \meta{key path}，一般情况下，这些模块会提供自己的键值设置接口，
 % 为了使用 \cs{whusetup} 来设置这些键值，需要指定 \meta{key path}。
 % \end{function}
 
@@ -1528,7 +1530,7 @@
 
 % \subsection{多栏文字}\label{sec:multicol}
 
-% \WhuTeX 中排版多栏文字有两种方式，本节描述其中一种，使用 \pkg{multicol} 宏包实现。另一种方式见\cref{sec:lib-box}。
+% whuthesis 中排版多栏文字有两种方式，本节描述其中一种，使用 \pkg{multicol} 宏包实现。另一种方式见\cref{sec:lib-box}。
 
 % 在 \pkg{multicol} 中，可以使用 
 % \begin{xample}
@@ -1779,7 +1781,7 @@
 
 % \subsection{旋转的盒子}
 
-% \WhuTeX 封装了 \pkg{rotating} 宏包，提供了旋转的盒子。
+% whuthesis 封装了 \pkg{rotating} 宏包，提供了旋转的盒子。
 
 % \begin{function}{\startrotate,\stoprotate,\Rotate}
 %   \begin{syntax}
@@ -1835,7 +1837,7 @@
 % % 将盒子的内容添加到背景上
 % \background + [./watermark]{%
 %   \rotatebox{45}{\color{gray!30}\fontsize{100}{0}%
-%     \sffamily \WhuTeX}}
+%     \sffamily whuthesis}}
 
 % % 使用如下代码即可删除此背景
 % \removebackground[./watermark]
@@ -1867,7 +1869,7 @@
 % 本例展示在页面样式的代码中为本页增加背景文字：
 % \needspace{3cm}
 % \begin{xample}
-% \background(lt){\textcolor{red}{\LARGE\WhuTeX}}
+% \background(lt){\textcolor{red}{\LARGEwhuthesis}}
 % \stopxamplecode
 % \xampleprint
 % 如本页左上角所示。
@@ -1917,7 +1919,7 @@
 
 % \section{索引，\whumodule{index}模块}
 
-% \WhuTeX 提供了添加多个索引的方法。并且能够自动编译索引文件。
+% whuthesis 提供了添加多个索引的方法。并且能够自动编译索引文件。
 
 % 目前暂未提供 \pkg{splitidx} 宏包的功能，也不与其兼容。
 
@@ -1942,7 +1944,7 @@
 % \LaTeX 原有的接口。默认创建名称为空的索引。
 % \end{function}
 
-% \meta{index keys} 不同于 \WhuTeX 中其它的键值选项，仅具有类似的接口。
+% \meta{index keys} 不同于 whuthesis 中其它的键值选项，仅具有类似的接口。
 
 % \begin{itemize}[nosep]
 %   \item \texttt{filename}：索引文件名，一般以 \texttt{idx} 结尾，如果未设置，则为：
@@ -2019,7 +2021,7 @@
 % 标题的使用方式见下方预定义的几个章节标题命令。
 % \end{function}
 
-% 标准的 {\LaTeX} book 类中，章节标题可分为三种，一种是以 \cs{part} 为代表的，\WhuTeX 将其命令为 \texttt{page} 类，一种是以 \cs{chapter} 为代表的，\WhuTeX 将其命名为 \texttt{top} 类，另一种则是以 \cs{section} 为代表，\WhuTeX 将其命名为 \texttt{normal} 类。\footnote{实际上，这些名称基本沿用了 \pkg{titlesec} 宏包的名称。}
+% 标准的 {\LaTeX} book 类中，章节标题可分为三种，一种是以 \cs{part} 为代表的，whuthesis 将其命令为 \texttt{page} 类，一种是以 \cs{chapter} 为代表的，whuthesis 将其命名为 \texttt{top} 类，另一种则是以 \cs{section} 为代表，whuthesis 将其命名为 \texttt{normal} 类。\footnote{实际上，这些名称基本沿用了 \pkg{titlesec} 宏包的名称。}
 % 另外还有 \texttt{free}、\texttt{wrap} 类，详细用法见\cref{sec:struct-title-class}。
 
 % 本模块预先定义了一些章节命令，它们与 \cls{ctexbook} 文档类的效果基本一致。
@@ -2119,7 +2121,7 @@
 %   \end{syntax}
 % 设置对章节标题进行编号的层次数。可以是整数或层级名称。
 
-% \WhuTeX 预先定义了一些层级名称，如\cref{tab:level-name} 所示。
+% whuthesis 预先定义了一些层级名称，如\cref{tab:level-name} 所示。
 % \end{function}
 
 % \begin{table}[htb]
@@ -2197,7 +2199,7 @@
 
 % \subsection{格式}
 
-% 和 \CTeX 宏集一样，\WhuTeX 也提供了提供了 \opt{numberformat}，\opt{nameformat}，\opt{titleformat}，\opt{format} 这几个选项用来控制章节标题的格式。它们的作用范围如\cref{fig:heading-format} 所示。
+% 和 \CTeX 宏集一样，whuthesis 也提供了提供了 \opt{numberformat}，\opt{nameformat}，\opt{titleformat}，\opt{format} 这几个选项用来控制章节标题的格式。它们的作用范围如\cref{fig:heading-format} 所示。
 
 % % from ctex.dtx
 % \begin{figure}[htb]
@@ -2325,7 +2327,7 @@
 
 % \subsection{浮动体}
 
-% \WhuTeX 提供了可以控制本章节内的浮动体位置的接口。
+% whuthesis 提供了可以控制本章节内的浮动体位置的接口。
 
 % \begin{keyval}[path=title/...]{float-barrier}
 %   \begin{syntax}
@@ -2454,9 +2456,9 @@
 
 % \subsection{目录}
 
-% \WhuTeX 重新实现了目录的制作方式，将每个目录项看成是一个个数据，不同于标准的目录制作方式，因此可能存在与其它宏包不兼容的情况。
+% whuthesis 重新实现了目录的制作方式，将每个目录项看成是一个个数据，不同于标准的目录制作方式，因此可能存在与其它宏包不兼容的情况。
 
-% 在 \WhuTeX 中，目录被称为 “combined list”，这是 \ConTeXt 中的称呼。
+% 在 whuthesis 中，目录被称为 “combined list”，这是 \ConTeXt 中的称呼。
 
 % \begin{function}{\enablecombinedlist}
 % \cs{enablecombinedlist} 启用目录。可用于导言区或文档最开头。如果未使用此命令则其它目录命令不可用。
@@ -2634,7 +2636,7 @@
 
 % \chapter{编程接口}
 
-% 本章描述 \WhuTeX 提供的编程接口。
+% 本章描述 whuthesis 提供的编程接口。
 
 % \begin{function}[module=whu]{\WHUProvideLibrary,\WHUProvideExplLibrary}
 % \begin{syntax}
@@ -2761,7 +2763,7 @@
 
 % \LaTeX 的 \tn{label} 可以标记位置用于交叉引用，\pkg{hyperref} 宏包还提供了超链接的功能，\pkg{bookmark} 宏包则提供了书签功能。本模块封装了其中的某些命令，但不会自动加载这些宏包
 % （如果没有加载所需的宏包，这些命令不会报错，只是被忽略掉了），
-% 需要用户自行加载或使用 \WhuTeX 提供的宏包加载机制来加载。
+% 需要用户自行加载或使用 whuthesis 提供的宏包加载机制来加载。
 
 % \begin{function}[EXP]{\labelinfo,\whu_label_info:nn}
 %   \begin{syntax}
@@ -3228,7 +3230,7 @@
 % \begin{xample}
 % \ExplSyntaxOn
 % \whu_exp_args:Nd \tl_to_str:n
-%   { \prg_replicate:nn { 5 } { \WhuTeX } }
+%   { \prg_replicate:nn { 5 } { whuthesis } }
 % \ExplSyntaxOff
 % \stopxamplecode
 % \xampleprint 
@@ -3922,7 +3924,7 @@
 
 % \chapter{章节标题和目录}\label{ch:title-cbl}
 
-% \WhuTeX 重新实现了标题和目录的命令。其中标题的设置方式是 \CTeX 风格的，
+% whuthesis 重新实现了标题和目录的命令。其中标题的设置方式是 \CTeX 风格的，
 % 输出目录则提供了多种设置风格，例如 \pkg{etoc} 宏包和 \hologo{KOMAScript} 文档类的风格。
 % 可以在正文中任意位置使用任意次这些命令。
 
@@ -3948,7 +3950,7 @@
 
 % \section{输出\LaTeX 原始风格的目录}
 
-% \WhuTeX 接管各种目录的输出，如标题、图表目录等。如果要输出任何一种目录，
+% whuthesis 接管各种目录的输出，如标题、图表目录等。如果要输出任何一种目录，
 % 则必须通过 \csref{enablecombinedlist} 命令启用。这个命令只能使用一次，可以用于导言区
 % （此时它自动移动到文档开头）和文档开头，使用它以后会读取指定的目录文件。此后方可通过
 % \tn{tableofcontents} 等命令来输出目录。
@@ -3970,7 +3972,7 @@
 % \csref{multicolplaincombinedlist} 则是用于输出默认的多栏目录。可以使用一个可选参数
 % 设置多栏的样式，见\cref{sec:multicol}。
 
-% \WhuTeX 的目录机制适配了许多宏包，诸如 \pkg{algorithm2e}、\pkg{chemmacros}、
+% whuthesis 的目录机制适配了许多宏包，诸如 \pkg{algorithm2e}、\pkg{chemmacros}、
 % \pkg{listings}、\pkg{thmtools} 等有固定目录扩展名（即目录类型）的宏包，以及
 % \pkg{float}、\pkg{newfloat}、\pkg{floatrow}、\pkg{tcolorbox} 等可设置目录扩展名的宏包，
 % 既可以直接使用这些宏包自己的输出目录的命令，
@@ -4008,9 +4010,9 @@
 
 % \section{\pkg{etoc}风格的目录设置方式}
 
-% \pkg{etoc} 宏包提供了 \tn{etocsetstyle} 命令来设置目录，\WhuTeX 提供了类似的命令。
+% \pkg{etoc} 宏包提供了 \tn{etocsetstyle} 命令来设置目录，whuthesis 提供了类似的命令。
 
-% \WhuTeX 提供了 \csref{tocsetstyle} 和 \csref{specifiedlot} 来分别设置和输出目录，
+% whuthesis 提供了 \csref{tocsetstyle} 和 \csref{specifiedlot} 来分别设置和输出目录，
 % 它们独立于 \csref{tableofcontents} 命令，互不干扰。
 % 对于图片和表格也有类似的命令：\csref{lofsetstyle}、\csref{specifiedlof}、
 % \csref{lotsetstyle}、\csref{specifiedlot}。
@@ -4205,7 +4207,7 @@
 % 想要双栏并排显示只需使用 \csref{startmulticolumns} 即可。
 
 % \enlargethispage{10pt}
-% 下面这个例子展示了本文目录在 \WhuTeX 目录机制下的输出顺序。
+% 下面这个例子展示了本文目录在 whuthesis 目录机制下的输出顺序。
 % \begin{xample}
 % \startmulticolumns[cols=4,ragged,column-sep=10pt]
 % \newcommand\showthelevel{$l_{\tocthelevel}$ }
@@ -4371,16 +4373,16 @@
 
 % \section{目录的内部处理方式}
 
-% 在 \WhuTeX 中，如果要输出某类目录，则必须先通过 \csref{addcombinedlisttype} 注册它，
+% 在 whuthesis 中，如果要输出某类目录，则必须先通过 \csref{addcombinedlisttype} 注册它，
 % 这个命令接受两个参数，第一个参数为 \veta{type}，表示添加的这个目录类型。
 % 对于标题目录，则为 \texttt{toc}，对于图片、表格目录则分别为 \texttt{lof}、\texttt{lot}，
 % 它就是 \LaTeX 标准目录输出方式里的 \veta{ext}，即输出目录的文件扩展名。
-% 由于 \WhuTeX 把所有类型的目录都写入到同一个文件中，因此，\veta{type} 
+% 由于 whuthesis 把所有类型的目录都写入到同一个文件中，因此，\veta{type} 
 % 用于唯一区分不同的目录类型。
 
 % 同一个目录中，可以有不同的层级，同一层级也可以有所区分。
 
-% 在 \WhuTeX 中，用于区分不同层级的
+% 在 whuthesis 中，用于区分不同层级的
 % 就是 \veta{level} 变量，它是一个整数，数值小的，层级越高。
 % 例如，对于 \texttt{toc} 目录，在默认情况下，\tn{part} 为 $-1$，\tn{chapter} 为 $0$，
 % \tn{section} 为 $1$，依此类推。
@@ -4398,13 +4400,13 @@
 % 有 $7$ 个，分别代表这 $7$ 种之一。
 
 % 在标准文档类下，\LaTeX 通过 \tn{l@\meta{name}} 来唯一区分这些 \veta{level name}。
-% 但在 \WhuTeX 宏集中，每个 \veta{level name} 只需在其所属的那个目录类型中唯一，
+% 但在 whuthesis 宏集中，每个 \veta{level name} 只需在其所属的那个目录类型中唯一，
 % 不同目录类型可以有相同的 \veta{level name}。
 
 % 例如，对于图片类型的目录 \texttt{lof}，其 \veta{level name} 为 \texttt{figure}，
 % 但你尽可以把它设置成 \veta{section}，但写入目录文件中的目录条目也必须随之修改。
 
-% 尽管看起来很复杂，但实际上以上这些工作在绝大多数情况下 \WhuTeX 都会自动完成它们，
+% 尽管看起来很复杂，但实际上以上这些工作在绝大多数情况下 whuthesis 都会自动完成它们，
 % 无需手动设置它。
 
 
@@ -4568,8 +4570,8 @@
 % \ConTeXt
 % \WhuLaTeX
 % \WHULATEX
-% \WhuTeX
-% \WHUTEX
+% whuthesis
+% whuthesis
 % \dvipdfmx
 % \eTeX
 % \iniTeX
