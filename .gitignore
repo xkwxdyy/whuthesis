@@ -305,3 +305,5 @@ TSWLatexianTemp*
 *.pdf
 
 script/requirements.md
+
+script/test.py
