@@ -377,10 +377,10 @@
   { \whu_pkg_code:nnn {#1} {#2} {#2} }
 
 
-\WHULoadModule { ltx }
-\WHULoadModule { util }
-\WHULoadModule { algo }
-\WHULoadModule { package }
+\WHULoadModule { ltx_cus }
+\WHULoadModule { util_cus }
+\WHULoadModule { algo_cus }
+\WHULoadModule { package_cus }
 
 \group_begin:
 \cs_set:Npn \__whu_latex_hook_new:nnNn #1#2#3#4
@@ -424,16 +424,16 @@
 \msg_new:nnn { whu } { patch-failure } { Patch~command~`#1'~failure. }
 
 
-\WHULoadModule { counter }
-\WHULoadModule { space }
-\WHULoadModule { bgfg }
-\WHULoadModule { layout }
+\WHULoadModule { counter_cus }
+\WHULoadModule { space_cus }
+\WHULoadModule { bgfg_cus }
+\WHULoadModule { layout_cus }
 %\WHULoadModule { notes }
-\WHULoadModule { buffer }
-\WHULoadModule { box }
-\WHULoadModule { index }
-\WHULoadModule { struct }
-\WHULoadModule { pdfmana }
+\WHULoadModule { buffer_cus }
+\WHULoadModule { box_cus }
+\WHULoadModule { index_cus }
+\WHULoadModule { struct_cus }
+\WHULoadModule { pdfmana_cus }
 
 
 \whu_pkg_code:nnn { array } { }
