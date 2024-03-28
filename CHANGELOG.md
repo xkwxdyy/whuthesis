@@ -7,9 +7,14 @@
 - 增加用户手册，完成简介部分
 
 
+### Changed
+
+- 将 `whuthesis` 的日期和版本号与 `CusTeX` 的分开
+
+
 ### Fixed
 
-- 重写 `update-from-custex.py` 脚本，完善功能，处理文件后缀，防止模块和库名称和 \CusTeX 的冲突
+- 重写 `update-from-custex.py` 脚本，完善功能，处理文件后缀，防止模块和库名称和 `CusTeX` 的冲突
 
 
 ## [v0.0.1] - 2024-03-27
