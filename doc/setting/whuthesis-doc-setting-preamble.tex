@@ -4,7 +4,16 @@
 \usepackage{ctex}
 \usepackage{fontawesome5}
 
-\usepackage[library={doc,box,bnf,ref,counter,pgf}]{whu}
+\usepackage[
+  library={
+    doc_cus,
+    box_cus,
+    bnf_cus,
+    ref_cus,
+    counter_cus,
+    % pgf
+  }
+]{whu}
 \SetKeys[updatemarks]{multicol}
 \newcommand{\hook}{\cmd[module=hook point,type=hook point]}
 \newcommand{\colna}{\key[module=color name,type=color name]}
