@@ -16,6 +16,8 @@ Description:
     - [✔]修改 `whu.sty`
         - [✔]将 `Chinese User Scheme (WHU) basic file` 修改为 `Basic file of thesis template for Wuhan university`
         - [✔]将 `\WHULoadModule { xxx }` 命令修改为 `\WHULoadModule { xxx_cus }`
+        - [✔]版权申明修改
+    - `_cus.tex` 文件开头增加版权申明
 """
 import os
 import shutil
@@ -199,3 +201,35 @@ with open(whu_sty_path, 'r', encoding='utf-8') as whu_sty_file:
 
 with open(whu_sty_path, 'w', encoding='utf-8') as whu_sty_file:
     whu_sty_file.writelines(lines)
+
+
+"""
+版权申明
+"""
+old_whu_copyright = "%% Copyright 2023, 2024 Wenjian Chern.\n%\n% This work may be distributed and/or modified under the\n% conditions of the LaTeX Project Public License, either version 1.3\n% of this license or any later version.\n% The latest version of this license is in\n%   http://www.latex-project.org/lppl.txt\n% and version 1.3 or later is part of all distributions of LaTeX\n% version 2005/12/01 or later.\n%\n% This work has the LPPL maintenance status `maintained'.\n% \n% The Current Maintainer of this work is Wenjian Chern.\n%\n% This work consists of the files whu.sty, whu.library.bnf.tex, \n% whu.library.box.tex, whu.library.doc.tex, whu.library.ref.tex,\n% whu.module.bgfg.tex, whu.module.box.tex, whu.module.buffer.tex,\n% whu.module.index.tex, whu.module.layout.tex, whu.module.notes.tex,\n% whu.module.pdfmana.tex, whu.module.space.tex, whu.module.struct.tex,\n% whu.module.util.tex and whuclass.cls ."
+new_whu_copyright = "%% Copyright 2023, 2024 Wenjian Chern.\n%% \n% whu.sty, whuclass.cls and all the files with postfix \"_cus.tex\"\n% come originally from the CusTeX project (https://github.com/Sophanatprime/cus)\n%%"
+
+with open(whu_sty_path, 'r') as file:
+    file_data = file.read()
+
+file_data = file_data.replace(old_whu_copyright, new_whu_copyright)
+
+with open(whu_sty_path, 'w') as file:
+    file.write(file_data)
+
+
+
+"""
+`_cus.tex` 文件开头增加版权申明
+"""
+cus_file_copyright = "%% Copyright 2023, 2024 Wenjian Chern.\n%% \n% This file comes originally from the CusTeX project (https://github.com/Sophanatprime/cus)\n%%"
+for file in os.listdir(whu_directory):
+    file_path = os.path.join(whu_directory, file)
+    # 文件夹不处理
+    if os.path.isfile(file_path):
+        if file.endswith('_cus.tex'):
+            with open(file_path , 'r', encoding='utf-8') as f:
+                file_content = f.read()
+                file_content = '%% ' + file + '\n' + cus_file_copyright + '\n' + file_content
+            with open(file_path , 'w', encoding='utf-8') as f:
+                f.write(file_content)
