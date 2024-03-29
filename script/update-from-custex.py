@@ -1,7 +1,7 @@
 """
 update-from-custex.py
 Author: 夏大鱼羊
-Date: 2024/03/28
+Date: 2024/03/29
 Description:
     - [✔] 从 custex 仓库中复制 `.sty`, `.cls`, `cus.module.xxx.tex` 和 `cus.library.xxx.tex` 文件
         - [✔]`cus.module.xxx.tex` 和 `whu.library.xxx.tex` 文件改名为 `whu.module.xxx_cus.tex` 和 `cus.library.xxx_cus.tex` 文件
@@ -13,7 +13,7 @@ Description:
     - [✔]修改 `whu.module.xxx_cus.tex` 中的 `\WHUProvideModule{xxx}` 或 `\WHUProvideExplModule{xxx}` 的 `xxx` 为 `xxx_cus`
     - [✔]修改 `whu.library.xxx_cus.tex` 中的 `\WHUProvideLibrary{xxx}` 或 `\WHUProvideExplLibrary{xxx}` 的 `xxx` 为 `xxx_cus`
     - [✔]`whu.module.xxx_cus.tex` 或 `whu.library.xxx_cus.tex` 中若有 `\WHUDependency{}`，且 `{}` 中包含 `module={xxx,yyy}` 或者 `library={zzz,www}`，则将 `...` 改为 `..._cus`
-    - 修改 `whu.sty`
+    - [✔]修改 `whu.sty`
         - [✔]将 `Chinese User Scheme (WHU) basic file` 修改为 `Basic file of thesis template for Wuhan university`
         - [✔]将 `\WHULoadModule { xxx }` 命令修改为 `\WHULoadModule { xxx_cus }`
         - [✔]将 `pgf_cus` 和 `tcb_cus` 加入 \c__whu_library_delayed_prop 
