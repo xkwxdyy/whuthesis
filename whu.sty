@@ -20,9 +20,8 @@
 % whu.module.pdfmana.tex, whu.module.space.tex, whu.module.struct.tex,
 % whu.module.util.tex and whuclass.cls .
 \NeedsTeXFormat{LaTeX2e}[2023/06/01]
-\RequirePackage{l3keys2e,xtemplate}
-\def\whu@d@te{2024/03/27}
-\def\whu@versi@n{0.0.4e}
+\def\whu@d@te{2024/03/29}
+\def\whu@versi@n{0.0.4f}
 \ProvidesExplPackage{whu}{\whu@d@te}{\whu@versi@n}{Basic file of thesis template for Wuhan university}
 
 \def\WhuTeX{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.15em\TeX}
@@ -241,32 +240,51 @@
     \str_gset:cx { whu/library~#1 } {#2}
   }
 \cs_new:Npn \whu@iflibraryloaded #1 { \cs_if_exist:cTF { whu/library~#1 } }
-\prop_new:N \c__whu_library_delayed_prop
-\prop_set_from_keyval:Nn \c__whu_library_delayed_prop 
-  { pgf=tikz , tcb=tcolorbox }
-\cs_new:Npn \__whu_load_library_real:nnn #1#2#3
+\prop_new:N \g__whu_library_delayed_prop
+\cs_new_protected:Npn \WHULibraryDelayedUntil #1
   {
-    \whu@iflibraryloaded {#1} { \use:n }
+    \tl_set:Nx \l__whu_tmp_tl { \tl_range:Nnn \CurrentFile { 13 } { -5 } }
+    \prop_if_in:NoTF \g__whu_library_delayed_prop \l__whu_tmp_tl
+      { }
+      {
+        \prop_gput:Nxx \g__whu_library_delayed_prop \l__whu_tmp_tl {#1}
+        \@ifpackageloaded {#1} 
+          { }
+          {
+            \cs_undefine:c { whu/library~\l__whu_tmp_tl }
+            \cs_undefine:c { @pkg-disable@whu.library.\l__whu_tmp_tl .tex }
+            \cs_undefine:c { ver@whu.library.\l__whu_tmp_tl .tex }
+            \exp_args:Neee
+            \hook_gput_code:nnn { package/#1/after } { whu/load }
+              {
+                % \file_input:n { whu.library.\l__whu_tmp_tl.tex }
+                \__whu_load_library_real:nnn { \l__whu_tmp_tl }
+                  { \exp_not:v { whu/library-options~\l__whu_tmp_tl } }
+                  { \exp_not:v { whu/library-version~\l__whu_tmp_tl } }
+              }
+            \tex_endinput:D 
+          }
+      }
+  }
+\cs_new_protected:Npn \__whu_load_library_real:nnn #1#2#3
+  {
+    \whu@iflibraryloaded {#1} { }
       { 
         \file_if_exist:nTF { whu.library.#1.tex }
-          { \elkernel_file_with_options:nnn { whu.library.#1.tex } {#3} {#2} \use:n }
-          { \msg_error:nnn { whu } { library-not-exist } {#1} \use_none:n }
+          { \elkernel_file_with_options:nnn { whu.library.#1.tex } {#3} {#2} }
+          { \msg_error:nnn { whu } { library-not-exist } {#1} }
       }
-        {
-          \WHUIfLibraryAtLeast {#1} {#3} { }
-            { \msg_error:nnxxx { whu } { library-out-of-date } {#1} {#3} { \use:c { whu/library~#1 } } }
-        }
+    \whu@iflibraryloaded {#1}
+      {
+        \WHUIfLibraryAtLeast {#1} {#3} { }
+          { \msg_error:nnxxx { whu } { library-out-of-date } {#1} {#3} { \use:c { whu/library~#1 } } }
+      } { }
   }
 \NewDocumentCommand \WHULoadLibrary { m O{} O{0000/00/00} }
   {
-    \prop_if_in:NnTF \c__whu_library_delayed_prop {#1}
-      {
-        \hook_gput_code:nnn 
-          { package/ \prop_item:Nn \c__whu_library_delayed_prop {#1} / after }
-          { whu/load }
-          { \__whu_load_library_real:nnn {#1} {#2} {#3} }
-      }
-      { \__whu_load_library_real:nnn {#1} {#2} {#3} }
+    \tl_gset:cn { whu/library-options~#1 } {#2}
+    \tl_gset:cn { whu/library-version~#1 } {#3}
+    \__whu_load_library_real:nnn {#1} {#2} {#3}
   }
 \cs_new:Npn \WHUIfModuleAtLeast #1#2 % module, date(xxxx/xx/xx), true, false
   { \exp_args:Nv \__whu_date_if_at_least:nnTF { whu/module~#1 } {#2} }
@@ -492,4 +510,4 @@
 
 
 
-\ProcessKeysPackageOptions { whu/option }
+\ProcessKeyOptions [ whu/option ]

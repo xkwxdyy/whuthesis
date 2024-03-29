@@ -2,9 +2,9 @@
 
 ## [v0.0.1] - 2024-03-29
 
-### Added
+### Fixed
 
-- 增加 `update-from-custex.py` 脚本对 `pgf` 和 `tcb` 的处理（[cus/issues/#7](https://github.com/Sophanatprime/cus/issues/7)
+- `cus` 修复 对 `pgf` 和 `tcb` 的处理（[cus/issues/#7](https://github.com/Sophanatprime/cus/issues/7)
 
 
 
