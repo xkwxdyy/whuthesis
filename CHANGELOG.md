@@ -5,6 +5,7 @@
 ### Fixed
 
 - `cus` 修复 对 `pgf` 和 `tcb` 的处理（[cus/issues/#7](https://github.com/Sophanatprime/cus/issues/7)
+- `cus` 修复与 `biblatex` 宏包的冲突（[cus/issues/#8](https://github.com/Sophanatprime/cus/issues/8)
 
 
 
