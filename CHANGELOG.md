@@ -1,5 +1,13 @@
 # 更新日志
 
+## [v0.0.1] - 2024-03-29
+
+### Added
+
+- 增加 `update-from-custex.py` 脚本对 `pgf` 和 `tcb` 的处理（[cus/issues/#7](https://github.com/Sophanatprime/cus/issues/7)
+
+
+
 ## [v0.0.1] - 2024-03-28
 
 ### Added

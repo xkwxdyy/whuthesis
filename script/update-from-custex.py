@@ -12,10 +12,11 @@ Description:
         - [✔]`CUS` 为 `WHU`
     - [✔]修改 `whu.module.xxx_cus.tex` 中的 `\WHUProvideModule{xxx}` 或 `\WHUProvideExplModule{xxx}` 的 `xxx` 为 `xxx_cus`
     - [✔]修改 `whu.library.xxx_cus.tex` 中的 `\WHUProvideLibrary{xxx}` 或 `\WHUProvideExplLibrary{xxx}` 的 `xxx` 为 `xxx_cus`
-    - `whu.module.xxx_cus.tex` 或 `whu.library.xxx_cus.tex` 中若有 `\WHUDependency{}`，且 `{}` 中包含 `module={xxx,yyy}` 或者 `library={zzz,www}`，则将 `...` 改为 `..._cus`
+    - [✔]`whu.module.xxx_cus.tex` 或 `whu.library.xxx_cus.tex` 中若有 `\WHUDependency{}`，且 `{}` 中包含 `module={xxx,yyy}` 或者 `library={zzz,www}`，则将 `...` 改为 `..._cus`
     - 修改 `whu.sty`
         - [✔]将 `Chinese User Scheme (WHU) basic file` 修改为 `Basic file of thesis template for Wuhan university`
-        - 将 `\WHULoadModule { xxx }` 命令修改为 `\WHULoadModule { xxx_cus }`
+        - [✔]将 `\WHULoadModule { xxx }` 命令修改为 `\WHULoadModule { xxx_cus }`
+        - [✔]将 `pgf_cus` 和 `tcb_cus` 加入 \c__whu_library_delayed_prop 
 """
 import os
 import shutil
@@ -199,3 +200,51 @@ with open(whu_sty_path, 'r', encoding='utf-8') as whu_sty_file:
 
 with open(whu_sty_path, 'w', encoding='utf-8') as whu_sty_file:
     whu_sty_file.writelines(lines)
+
+
+
+"""
+将 `pgf_cus` 和 `tcb_cus` 加入 \c__whu_library_delayed_prop
+
+ref: https://github.com/Sophanatprime/cus/issues/7
+"""
+old_latex_code_WHULoadLibrary = r'''
+\NewDocumentCommand \WHULoadLibrary { m O{} O{0000/00/00} }
+  {
+    \prop_if_in:NnTF \c__whu_library_delayed_prop {#1}
+      {
+        \hook_gput_code:nnn 
+          { package/ \prop_item:Nn \c__whu_library_delayed_prop {#1} / after }
+          { whu/load }
+          { \__whu_load_library_real:nnn {#1} {#2} {#3} }
+      }
+      { \__whu_load_library_real:nnn {#1} {#2} {#3} }
+  }
+'''
+
+new_latex_code_WHULoadLibrary = r'''
+\NewDocumentCommand \WHULoadLibrary { m O{} O{0000/00/00} }
+  {
+    \prop_set_from_keyval:Nn \c__whu_library_delayed_prop 
+      {
+        pgf     = tikz,
+        tcb     = tcolorbox,
+        pgf_cus = tikz,
+        tcb_cus = tcolorbox
+      }
+    \prop_if_in:NnTF \c__whu_library_delayed_prop {#1}
+      {
+        \hook_gput_code:nnn 
+          { package/ \prop_item:Nn \c__whu_library_delayed_prop {#1} / after }
+          { whu/load }
+          { \__whu_load_library_real:nnn {#1} {#2} {#3} }
+      }
+      { \__whu_load_library_real:nnn {#1} {#2} {#3} }
+  }
+'''
+whu_sty_path = os.path.join(whu_directory, 'whu.sty')
+with open(whu_sty_path, 'r', encoding='utf-8') as f:
+    file_content = f.read()
+    file_content = file_content.replace(old_latex_code_WHULoadLibrary, new_latex_code_WHULoadLibrary)
+with open(whu_sty_path, 'w', encoding='utf-8') as f:
+    f.write(file_content)
