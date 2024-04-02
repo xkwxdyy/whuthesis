@@ -35,9 +35,11 @@
 \ProcessKeyOptions [ whu / class ]
 
 % 消除 xeCJK 的警告
-\PassOptionsToPackage{silent}{xeCJK}
+\PassOptionsToPackage { silent } { xeCJK }
 
-\LoadClass{book}
 
-\RequirePackage{ctex}
-\RequirePackage{whu}
+\RequirePackage { whu }
+
+\LoadClass { book }
+
+\RequirePackage { ctex }
