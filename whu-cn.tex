@@ -2235,6 +2235,7 @@ Unicode 代码点。
 \end{function}
 
 也可直接使用 \cs{background} 放置背景图片。
+\needspace{3\baselineskip}
 \begin{xample}
 \background(ob){\includegraphics[width=\marginparwidth]{ctanlion.pdf}}
 \stopxamplecode
@@ -2398,6 +2399,20 @@ Unicode 代码点。
     \V\setuptitle \oarg{title level list} \marg{title key-val}
   \end{syntax}
 设置标题的样式。\meta{title level} 为章节标题层级，如：\verb|chapter|、\verb|section|、\verb|1|。\meta{title} 为章节标题名，而非标题命令（\verb|\chapter|、\verb|\section|）。
+\end{function}
+
+\begin{function}{\setupnexttitle}
+  \begin{syntax}
+    \V\setupnexttitle     <{title keys}>
+    \V\setupnexttitle   + <{title keys}>
+    \V\setupnexttitle ?   <{title keys}>
+    \V\setupnexttitle ? + <{title keys}>
+  \end{syntax}
+设置标题的选项 \meta{title keys}，但只作用于接下来的那个标题，这个标题完成后，会清空它。
+
+带 \texttt{+} 的，把 \marg{title keys} 附加到之前所保存的选项之后。
+带 \texttt{?} 的，仅会设置已知的选项，当选项未定义时会忽略它们。
+当为某些标题定义了额外的键，但不确定接下来使用的标题是否有这些键时，它很有用。
 \end{function}
 
 以下几节描述了章节标题中可用的键值选项，它们均可以被设置，但并不一定在所有的标题类中都有效。
@@ -2725,15 +2740,20 @@ Unicode 代码点。
 在当前标题下写入的 \meta{property} 的值。
 \end{keyval}
 
-\begin{keyval}[path=title/...]{bookmark,bookmark*}
+\begin{keyval}[path=title/...]{bookmark,bookmark*,bookmark-extra}
   \begin{syntax}
     bookmark  = \marg{text}
     bookmark* = \marg{text}
+    bookmark-extra = \marg{text}
+    bookmark-extra = \oarg{bookmark options} \marg{text}
   \end{syntax}
 设置\emph{此条}标题在书签中的文字。
 
 \opt{bookmark} 会在 \pkg{bookmark} 宏包设置了 \opt{numbered} 选项后，把数字也加上。
 \linebreak\opt{bookmark*} 则直接设置书签为 \meta{text}。
+
+\opt{bookmark-extra} 额外添加一个书签。
+用在带星号的命令中可以为其增加书签。
 \end{keyval}
 
 \begin{function}{\titleaddinfo,\titleremoveinfo,\titleremoveallinfo}
@@ -2987,6 +3007,18 @@ Unicode 代码点。
 提供库文件。库文件名必须是：“\opt{whu.library.\meta{库名}.tex}”。
 \end{function}
 
+\begin{function}[module=whu]{\WHULibraryDelayedUntil}
+  \begin{syntax}
+    \V\WHULibraryDelayedUntil   \marg{package}
+    \V\WHULibraryDelayedUntil * \{\}
+    \V\WHULibraryDelayedUntil * \marg{package}
+  \end{syntax}
+用于库文件的第一行，将本库标记为需要延迟加载。
+
+标记本库延迟至加载了 \meta{package} 之后再加载，
+带星号的命令将库延迟至加载了文档类之后再加载。
+\end{function}
+
 \begin{function}[module=whu]{\WHUDependency}
 \begin{syntax}
   \verb|\WHUDependency| \marg{key-val}
@@ -3004,13 +3036,12 @@ Unicode 代码点。
 \cs{WHUDependency} 可用的键值选项。
 \end{keyval}
 
-\begin{function}[module=whu]{\WHULoadLibrary,\WHUIfLibraryAtLeast}
+\begin{function}[module=whu]{\WHULoadLibrary,\WHUPassOptionsToLibrary}
 \begin{syntax}
-  \verb|\WHULoadLibrary|      \marg{库名} \oarg{日期}
-  \verb|\WHUIfLibraryAtLeast| \marg{库名} \marg{日期} \marg{true code} \marg{false code}
+  \V\WHULoadLibrary \oarg{选项} \marg{库名} \oarg{日期}
+  \V\WHUPassOptionsToLibrary \marg{选项} \marg{库名}
 \end{syntax}
 \end{function}
-
 
 \begin{function}[EXP]{\text_mdfive_hash:n}
   \begin{syntax}
@@ -3551,11 +3582,12 @@ Unicode 代码点。
 \subsection{杂项}
 
 \nofuncskip 
-\begin{function}[pTF]{\whu_if_preamble:,\whu_if_document:,\whu_if_after_documentclass:}
+\begin{function}[pTF]{\whu_if_preamble:,\whu_if_document:,
+  \whu_if_class_loaded:,\whu_if_after_documentclass:}
   \begin{syntax}
     \verb|\whu_if_preamble:TF| \marg{true code} \marg{false code}
   \end{syntax}
-测试是否在导言区、正文或在 \tn{documentclass} 后。
+测试是否在导言区、正文，或是否已经加载了文档类，或是否在 \tn{documentclass} 后。
 \end{function}
 
 \begin{function}[EXP]{\whu_exp_args:Nd,\whu_exp_args:NNd,\whu_exp_args:Nnd,
@@ -3890,8 +3922,6 @@ Unicode 代码点。
   \end{syntax}
 直接执行 \meta{处理器} 的 \meta{规则}。可用于其它规则中，相当于一个宏。其后需有对应数目的参数。
 \end{function}
-
-\enlargethispage{12pt}
 
 \begin{function}[EXP]{\whu_psr_argument_count:n}
   \begin{syntax}
@@ -4348,6 +4378,13 @@ cbl 列表除了 \cs{whu@type@contentsline}、\cs{whu@type@contentsline@}、
 这些宏包的 \veta{level name} 的 \veta{level} 值都是 $1$，即与 \tn{section} 同级。
 可以使用 \csref{addcombinedlisttype} 修改。
 
+\begin{function}{\setplaintocdepth}
+  \begin{syntax}
+    \V\setplaintocdepth \marg{整数或层级名称}
+  \end{syntax}
+设置 \texttt{tocdepth} 计数器的值。可以用来控制目录显示的层级。
+\end{function}
+
 
 \section{\pkg{etoc}风格的目录设置方式}
 
@@ -4545,9 +4582,8 @@ cbl 列表除了 \cs{whu@type@contentsline}、\cs{whu@type@contentsline@}、
 之后，我们照常设置标题的页码，并使用括号括住带有超链接的页码。
 最后，用到了先前定义的 \tn[no-index]{ifinmiddle}，如果在中间，则插入一个分号分隔。
 
-想要双栏并排显示只需使用 \csref{startmulticolumns} 即可。
+想要双栏并排显示只需使用 \csref{startmulticolumns}。
 
-\enlargethispage{10pt}
 下面这个例子展示了本文目录在 \WhuTeX 目录机制下的输出顺序。
 \begin{xample}
 \startmulticolumns[cols=4,ragged,column-sep=10pt]
@@ -4562,7 +4598,7 @@ cbl 列表除了 \cs{whu@type@contentsline}、\cs{whu@type@contentsline@}、
   {\showhbarl └ \showthelevel list finish\par}
 \setlength{\parindent}{0pt}
 \setlength{\lineskip}{0pt} \setlength{\lineskiplimit}{\maxdimen}
-\fontspec{TH-Times}\small
+\IfFontExistsTF{TH-Times}{\fontspec{TH-Times}}{}\small
 \specifiedtoc 
 \stopmulticolumns 
 \stopxamplecode
@@ -4585,7 +4621,7 @@ cbl 列表除了 \cs{whu@type@contentsline}、\cs{whu@type@contentsline@}、
   {\showhbarl └ \showthelevel list finish\par}
 \setlength{\parindent}{0pt}
 \setlength{\lineskip}{0pt} \setlength{\lineskiplimit}{\maxdimen}
-\fontspec{TH-Times}\small
+\IfFontExistsTF{TH-Times}{\fontspec{TH-Times}}{}\small
 \specifiedtoc 
 \label{ref:toc-code-order-2}
 \vpagerefcompare{ref:toc-code-order-1}{ref:toc-code-order-2}{}
@@ -4823,7 +4859,9 @@ verbatim 和分段。
 
 \begin{keyval}[path=/tikz]{tangent,at tangent}
   \begin{syntax}
+    tangent=\meta{pos}
     tangent=\meta{name} at\meta{pos}
+    tangent=\meta{name} at\meta{pos} and ...
     at tangent=\meta{name}
   \end{syntax}
 \keyref[/tikz]{tangent} 用于记录一条路径在 \meta{pos} 的切点坐标及切线方向，
@@ -5317,8 +5355,6 @@ BNF 范式排版环境。
 \xampletext
 \end{xample}
 
-\enlargethispage{10pt}
-
 完全等价的一个写法是：
 \begin{xample}[language={[BNF]{TeX}}]
 \begin{latexbnf}[hyper, hyper-color=purple]
@@ -5752,9 +5788,12 @@ s_0,s_1,s_2&w_0&g_0&w_1&g_1&w_2\rlap{ (in \texttt{pt})}\\\hline
 
 \section{\whulibrary{pdf}库}
 
-本库提供一些与 PDF 文件的特性相关的功能。它们只能在使用了 \cs{DocumentMetadata} 之后使用。
+本库提供一些与 PDF 文件的特性相关的功能。它们只能在使用了 
+\cs[break-at-any]{DocumentMetadata} 之后使用。
 
 默认情况下，在 \TeX 中直接导入 PDF 文件会丢失该 PDF 的超链接信息，使用本库可以解决此问题。
+相较于直接使用 \pkg{newpax} 宏包，若导入的 PDF 文件中有很多超链接，
+本库提供的 \cs{includegraphicspax} 速度会快很多。
 
 \begin{keyval}[path=pdf]{pax,pax+}
   \begin{syntax}
@@ -5801,7 +5840,7 @@ s_0,s_1,s_2&w_0&g_0&w_1&g_1&w_2\rlap{ (in \texttt{pt})}\\\hline
     \V*|\collectn_verbatim:Nnw| \meta{tl} \marg{code} \marg{balanced tokens}
   \end{syntax}
 向后以 verbatim 的形式收集内容，将其保存至 \meta{tl} 中，再执行 \meta{code}。
-\meta{token} 或 \meta{\meta{balanced tokens}} 不在命令的参数里。
+\meta{token} 或 \meta{\meta{balanced tokens}} 不能在命令的参数里。
 
 \cs{l_collectn_long_verbatim_bool} 控制是否接受长的 verbatim 文本（包含 \tn{par} 的）。
 \end{function}
@@ -6058,9 +6097,13 @@ s_0,s_1,s_2&w_0&g_0&w_1&g_1&w_2\rlap{ (in \texttt{pt})}\\\hline
 然后执行 \meta{code}。
 
 \meta{tl} 由形如 
-\verb|{_|\marg{text}\verb|}| 或 \verb|{^|\marg{text}\verb|}| 的项组成。
+\verb|{^|\marg{text}\verb|}| 或 \verb|{_|\marg{text}\verb|}| 的项组成。
+其中 \verb|^| 和 \verb|_| 的类别码分别为 7 和 8。
 
 它们会自动展开后面的内容，并且自动移除空格和 \tn{relax}。
+
+它们只会匹配类别码为 7 和 8 的显式或隐式字符。若加载了 \pkg{underscore} 宏包，则 \texttt{\_}
+的类别码会修改为 13，在文本模式下无法匹配，但在数学模式下可以。
 \end{function}
 
 \begin{xample}
@@ -6196,6 +6239,23 @@ s_0,s_1,s_2&w_0&g_0&w_1&g_1&w_2\rlap{ (in \texttt{pt})}\\\hline
 
 检查是否为键值对的方法和 \pkg{ltcmd} 的 \texttt = spec 一致。
 \end{function}
+
+\begin{function}[TF]{\elkernel_if_date_at_least:nn}
+  \begin{syntax}
+    \V*|\elkernel_if_date_at_least:nnTF| \marg{date_1} \marg{date_2} \marg{true} \marg{false}
+  \end{syntax}
+测试 \meta{date_1} 是否等于或晚于 \meta{date_2}。
+年月日可用 \texttt{\textbackslash} 或 \texttt{-} 分隔，但不可混用。
+\end{function}
+
+\begin{xample}
+\ExplSyntaxOn
+\tl_to_str:N \fmtversion;
+\elkernel_if_date_at_least:nnTF { \fmtversion } { 2024/06/01 } { t } { f }
+\ExplSyntaxOff
+\stopxamplecode
+\xampleprint
+\end{xample}
 
 \subsection{定义命令——\pkg{lt3ekeyscmd}}\label{sec:lt3ekeyscmd}
 
@@ -6760,14 +6820,14 @@ $ \foo<a|b> $\quad $ \foo\displaystyle<\sum|\prod> $.
         \collectn_scan_keywords:nTF { true, false, on, off, yes, no }
           {
             \int_if_odd:nTF \l_collectn_keywords_int
-              { \ekeys_cmd_scanner_end: 1 }
-              { \ekeys_cmd_scanner_end: 0 }
+              { \ekeys_cmd_scanner_end: 1~ }
+              { \ekeys_cmd_scanner_end: 0~ }
           }
-          { \ekeys_cmd_scanner_end: }
+          { \ekeys_cmd_scanner_end: -1~ }
       }
   }
+\DeclareEKeysCommand \foo { K{u{replace-keyword-to-num}} u{~} } {[#1]}
 \ExplSyntaxOff
-\DeclareEKeysCommand \foo { K{u{replace-keyword-to-num}} m } {[#1]}
 \foo TRUE; \foo on; \foo false; \foo ;
 \stopxamplecode
 \xampleprint
