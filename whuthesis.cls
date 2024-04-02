@@ -27,10 +27,12 @@
 
 \keys_define:nn { whu/class }
   {
-    library .code:n = \__whu_load_library:n {#1}
+    library .code:n = 
+      { \PassOptionsToPackage { library = {#1} } { whu } }
   }
 
-\ProcessKeysPackageOptions { whu/class }
+
+\ProcessKeyOptions [ whu / class ]
 
 % 消除 xeCJK 的警告
 \PassOptionsToPackage{silent}{xeCJK}
