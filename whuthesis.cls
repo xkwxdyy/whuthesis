@@ -38,6 +38,9 @@
 \PassOptionsToPackage { silent } { xeCJK }
 
 
+\seq_put_right:Nx \l_file_search_path_seq { ./module }
+\seq_put_right:Nx \l_file_search_path_seq { ./library }
+\seq_put_right:Nx \l_file_search_path_seq { ./library-cus }
 \RequirePackage { whu }
 
 \LoadClass { book }
