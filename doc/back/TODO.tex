@@ -32,19 +32,26 @@
       \item 库
         \begin{itemize}[midpenalty=-1000,
           label=\protect\raisebox{-.3ex}{\NotDone}]
-          \item bachelor: 本科
-          \item master: 硕士
-          \item doctor: 博士
-          \item math: 数学与统计学院。参考
+          \item \whulibrary{proposal}: 开题报告。移植于我开发的 \href{https://github.com/whutug/whu-proposal}{whu-proposal 项目}
+          \item \whulibrary{bachelor}: 本科
+          \item \whulibrary{master}: 硕士
+          \item \whulibrary{doctor}: 博士
+          \item \whulibrary{math}: 数学与统计学院。参考
             \begin{itemize}
               \item \cls{whu-thesis}
               \item 黄正华老师的模板
             \end{itemize}
-          \item math-hzh: 数学与统计学院。完全兼容黄正华老师的模板配置
-          \item computer: 计算机学院。参考 \href{https://github.com/cylqqqcyl/whu-thesis-2024}{cylqqqcyl 针对计算机学院改的模板}
-          \item cs: 国家网络安全学院。参考网安用户上传的模板
+          \item \whulibrary{math-hzh}: 数学与统计学院。完全兼容黄正华老师的模板配置
+            \begin{itemize}
+              \item \whulibrary{math.bachelor}
+              \item \whulibrary{math.master}
+              \item \whulibrary{math.doctor}
+            \end{itemize}
+          \item \whulibrary{computer}: 计算机学院。参考 \href{https://github.com/cylqqqcyl/whu-thesis-2024}{cylqqqcyl 针对计算机学院改的模板}
+          \item \whulibrary{cs}: 国家网络安全学院。参考网安用户上传的模板
         \end{itemize}
     \end{enumerate}
   \item 整理参考资料，设置要有依据
   \item[\Done] 防止模块和库名称和 \CusTeX 的冲突
+  \item 写 \file{build.py} 文件打包压缩模板
 \end{itemize}
