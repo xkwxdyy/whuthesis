@@ -1,0 +1,47 @@
+% !TeX root = ../whu-proposal-main.tex
+
+\section{如何使用此模版}
+
+此文件既是示例文件，也是模版的说明文档。本模版的使用方法如下：
+
+\subsection{如何选择本科或硕博的版本}
+
+在 \file{whu-proposal-main.tex} 的 \tn{documentclass} 命令中，type 选择 bachelor 或 master 或 doctor 选项，即可选择本科或硕博的版本。
+
+
+\subsection{个人信息}
+
+在 \file{whu-proposal-main.tex} 的 \tn{ProposalSetup} 命令中填写个人信息，包括姓名、学号、专业、研究方向、导师姓名、日期等信息。其中，题目、学院、学号和姓名为本科生必填信息，其他信息为研究生必填信息。
+
+
+\subsection{正文内容}
+
+个人推荐使用 \tn{input} 命令实现分章节编译，使得主文件（即本文件）结构更清晰（就像 \file{whu-proposal-main.tex} 文件的处理一样）。
+
+章节是三级结构，即 \tn{section}、\tn{subsection} 和 \tn{subsubsection}。
+
+如果不需要目录，可以将 \file{whu-proposal-main.tex} 文件的 \tn{tableofcontents} 命令注释掉。
+
+
+\subsection{如何编译}
+
+如果暂时不需要编译参考文献，请使用 \tool{xelatex} 编译。但要注意的是，由于硕博模版中的实现原理，没有报错的前提下，\emph{初次编译} 的时候可能需要 \emph{至少} 编译两次以上（基本上最多四次），才能正确生成封面、目录（如果有）和边框。
+
+
+\subsection{参考文献}
+
+模板已经提前配置好了 \pkg{biblatex} 宏包（见导言区）。如果你不会自己配置，只需要按照我下面的步骤来。
+
+\subsubsection{如何引用参考文献}
+
+请将参考文献信息填入 \file{whu-proposal.bib} 文件中，然后根据需要在正文中使用 \tn{cite} 或者 \tn{parencite} 命令引用参考文献。例如：
+\begin{itemize}
+  \item \tn{cite}：上标引用一篇文献\cite[定理 1]{研究生学位论文开题报告登记表}。
+
+  \item \tn{parencite}：行内引用一篇文献 \parencite[定理 1]{研究生学位论文开题报告登记表}。
+\end{itemize}
+
+
+\subsubsection{参考文献的编译方式}
+
+使用 \tool{biber} 编译参考文献，编译顺序为 \tool{xelatex} $\to$ \tool{biber} $\to$ \tool{xelatex} $\to$ \tool{xelatex}，或者使用 \tool{latexmk -xelatex whu-proposal-main} 编译。
