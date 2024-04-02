@@ -1,10 +1,10 @@
-%% whu.module.box_cus.tex
+%% whu.module.box.cus.tex
 %% Copyright 2023, 2024 Wenjian Chern.
 %% 
 % This file comes originally from the CusTeX project (https://github.com/Sophanatprime/cus)
 %%
-\WHUDependency{ module={util_cus}, package={framedmulticol, varwidth, rotating, lscape, (ROTpdf)pdflscape} }
-\WHUProvideExplModule{box_cus}{\whu@d@te}{\whu@versi@n}{box, breakable box}
+\WHUDependency{ module={util.cus}, package={framedmulticol, varwidth, rotating, lscape, (ROTpdf)pdflscape} }
+\WHUProvideExplModule{box.cus}{\whu@d@te}{\whu@versi@n}{box, breakable box}
 
 \ekeysdeclarecmd\startextrawidth{ @O{} mm }
   {\startmulticolumns[adj,cols=1,outer-sep=0pt,heading=,framed=none,
@@ -754,7 +754,7 @@
 \cs_new_eq:NN \__whu_filler_math: \__whu_filler:
 \cs_new:Npn \__whu_filler_aux:nn { \whu_align_leaders:nn }
 \NewDocumentCommand \filler { O{} } { \whu_filler:n {#1} }
-\NewDocumentCommand \dashfiller { O{0pt} G{\linewidth} !O{1ex} !O{0.4pt} } % r, w, s, ru
+\ekeysdeclarecmd \dashfiller { O{0pt} G{\linewidth} O{1ex} O{0.4pt} } % r, w, s, ru
   { \exp_args:Nnff \whu_dash_approx:nnnn {#1} { \dim_eval:n {#2} } { \dim_eval:n {#4} } {#3} }
 \NewDocumentCommand \atleastfiller { O{} m } % filler at least #2 width
   { 

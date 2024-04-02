@@ -1,9 +1,9 @@
-%% whu.library.pdf_cus.tex
+%% whu.library.pdf.cus.tex
 %% Copyright 2023, 2024 Wenjian Chern.
 %% 
 % This file comes originally from the CusTeX project (https://github.com/Sophanatprime/cus)
 %%
-\WHUProvideExplLibrary{pdf_cus}{\whu@d@te}{\whu@versi@n}{pdf features}
+\WHUProvideExplLibrary{pdf.cus}{\whu@d@te}{\whu@versi@n}{pdf features}
 \RequirePackage{graphicx}
 \tl_const:Nn \c__whu_pdf_patch_tl
   {
@@ -11,7 +11,7 @@
     \ekeysdeclarecmd \includegraphicspax { s O{} m }
       { \IfBooleanTF {#1} { \Gin@ii [{clip,#2}] {#3} }{ \Gin@ii [{#2}] {#3} } }
   }
-\WhuIfPdfmana { } { \c__whu_pdf_patch_tl \tex_endinput:D }
+\WhuIfPdfmana { } { \c__whu_pdf_patch_tl \file_input_stop: }
 
 \keys_define:nn { whu/pdf }
   {

@@ -1,9 +1,9 @@
-%% whu.module.pdfmana_cus.tex
+%% whu.module.pdfmana.cus.tex
 %% Copyright 2023, 2024 Wenjian Chern.
 %% 
 % This file comes originally from the CusTeX project (https://github.com/Sophanatprime/cus)
 %%
-\WHUProvideExplModule{pdfmana_cus}{\whu@d@te}{\whu@versi@n}{special for pdfmanagement}
+\WHUProvideExplModule{pdfmana.cus}{\whu@d@te}{\whu@versi@n}{special for pdfmanagement}
 \tl_const:Nn \c__whu_pdfmana_patch_tl 
   {
     \cs_set_protected_nopar:Npn \transparent #1 { }
@@ -17,7 +17,7 @@
   { 
     \cs_gset_eq:NN \WhuIfPdfmana \use_ii:nn 
     \c__whu_pdfmana_patch_tl 
-    \tex_endinput:D 
+    \file_input_stop: 
   }
 \WHUDependency{disable={transparent},package={l3opacity}}
 

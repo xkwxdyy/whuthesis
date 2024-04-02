@@ -1,9 +1,9 @@
-%% whu.module.util_cus.tex
+%% whu.module.util.cus.tex
 %% Copyright 2023, 2024 Wenjian Chern.
 %% 
 % This file comes originally from the CusTeX project (https://github.com/Sophanatprime/cus)
 %%
-\WHUProvideExplModule{util_cus}{\whu@d@te}{\whu@versi@n}{utilities}
+\WHUProvideExplModule{util.cus}{\whu@d@te}{\whu@versi@n}{utilities}
 \cs_generate_variant:Nn \tl_count:n { e , f }
 \cs_generate_variant:Nn \tl_show:n { e , o }
 \cs_generate_variant:Nn \tl_head:n { e , f }
@@ -1088,7 +1088,7 @@
       \prg_return_false: 
     \fi:
   }
-\prg_new_conditional:Npnn \whu_if_after_documentclass_test: { p, T, F, TF }
+\prg_new_conditional:Npnn \whu_if_after_documentclass: { p, T, F, TF }
   {
     \if_meaning:w \documentclass \@twoclasseserror
       \prg_return_true:
