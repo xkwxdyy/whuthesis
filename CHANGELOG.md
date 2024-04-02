@@ -23,9 +23,7 @@
 - `whuthesis.cls` 改为 `\LoadClass` 前载入 `whu` 宏包（https://github.com/Sophanatprime/cus/commit/f0d8c9c042f5c72a29c1bd012517aee74b235f4a）
 - `update-from-custex.py` 脚本将 `_cus` 的处理改为 `.cus`
 - 修改模块和库的路径
-
-
-### Fixed
+- `update-from-custex.py` 适配模板和库的路径移动
 
 
 
