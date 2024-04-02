@@ -1,12 +1,12 @@
 %% whu.sty 
 %% Copyright 2023, 2024 Wenjian Chern.
 %% 
-% whu.sty, whuclass.cls and all the files with postfix "_cus.tex"
+% whu.sty, whuclass.cls and all the files with postfix ".cus.tex"
 % come originally from the CusTeX project (https://github.com/Sophanatprime/cus)
 %%
 \NeedsTeXFormat{LaTeX2e}[2023/06/01]
-\def\whu@d@te{2024/03/29}
-\def\whu@versi@n{0.0.4f}
+\def\whu@d@te{2024/04/02}
+\def\whu@versi@n{0.0.4i}
 \ProvidesExplPackage{whu}{\whu@d@te}{\whu@versi@n}{Basic file of thesis template for Wuhan university}
 
 \def\WhuTeX{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.15em\TeX}
@@ -79,11 +79,9 @@
   }
 %%
 
-\RequirePackage{xparse}
 \RequirePackage{ctexhook,ctexpatch}
 \RequirePackage{etl}
-% \RequirePackage{parserange}
-\RequirePackage{lt3ekeysext}
+\RequirePackage{lt3ekeysext}[2024/03/31]
 \RequirePackage{updatemarks}
 
 \sys_if_engine_xetex:TF 
@@ -183,29 +181,25 @@
   { The~module~`#1'~you~try~to~load~does~not~exist. }
 \cs_new_protected_nopar:Npn \WHUProvideModule #1#2#3#4
   {
-    \str_if_exist:cT { whu/module~#1 } { \tex_endinput:D }
+    \str_if_exist:cT { whu/module~#1 } { \file_input_stop: }
     \ProvidesFile {#1} [#2~#3~#4]
     \str_gset:cx { whu/module~#1 } {#2}
   }
 \cs_new_protected_nopar:Npn \WHUProvideExplModule #1#2#3#4
   {
-    \str_if_exist:cT { whu/module~#1 } { \tex_endinput:D }
+    \str_if_exist:cT { whu/module~#1 } { \file_input_stop: }
     \ProvidesExplFile {#1} {#2} {#3} {#4}
     \str_gset:cx { whu/module~#1 } {#2}
   }
 \cs_new:Npn \whu@ifmoduleloaded #1 { \cs_if_exist:cTF { whu/module~#1 } }
-\NewDocumentCommand \WHULoadModule { m O{} O{0000/00/00} }
+\NewDocumentCommand \WHULoadModule { +O{} m O{0000/00/00} }
   {
-    \whu@ifmoduleloaded {#1} { \use:n }
+    \whu@ifmoduleloaded {#2} { }
       { 
-        \file_if_exist:nTF { whu.module.#1.tex }
-          { \elkernel_file_with_options:nnn { whu.module.#1.tex } {#3} {#2} \use:n }
-          { \msg_error:nnn { whu } { module-not-exist } {#1} \use_none:n }
+        \file_if_exist:nTF { whu.module.#2.tex }
+          { \elkernel_file_with_options:nnn { whu.module.#2.tex } {#3} {#1} }
+          { \msg_error:nnn { whu } { module-not-exist } {#2} }
       }
-        {
-          \WHUIfModuleAtLeast {#1} {#3} { }
-            { \msg_error:nnxxx { whu } { module-out-of-date } {#1} {#3} { \use:c { whu/module~#1 } } }
-        }
   }
 \msg_new:nnnn { whu } { library-out-of-date } 
   { The~library~`#1'~you~try~to~load~is~out~of~date,~please~update~this~package. }
@@ -214,82 +208,91 @@
   { The~library~`#1'~you~try~to~load~does~not~exist. }
 \cs_new_protected_nopar:Npn \WHUProvideLibrary #1#2#3#4
   {
-    \str_if_exist:cT { whu/library~#1 } { \tex_endinput:D }
+    \str_if_exist:cT { whu/library~#1 } { \file_input_stop: }
     \ProvidesFile {#1} [#2~#3~#4]
     \str_gset:cx { whu/library~#1 } {#2}
   }
 \cs_new_protected_nopar:Npn \WHUProvideExplLibrary #1#2#3#4
   {
-    \str_if_exist:cT { whu/library~#1 } { \tex_endinput:D }
+    \str_if_exist:cT { whu/library~#1 } { \file_input_stop: }
     \ProvidesExplFile {#1} {#2} {#3} {#4}
     \str_gset:cx { whu/library~#1 } {#2}
   }
 \cs_new:Npn \whu@iflibraryloaded #1 { \cs_if_exist:cTF { whu/library~#1 } }
 \prop_new:N \g__whu_library_delayed_prop
-\cs_new_protected:Npn \WHULibraryDelayedUntil #1
+\ekeysdeclarecmd \WHULibraryDelayedUntil { s m }
   {
     \tl_set:Nx \l__whu_tmp_tl { \tl_range:Nnn \CurrentFile { 13 } { -5 } }
-    \prop_if_in:NoTF \g__whu_library_delayed_prop \l__whu_tmp_tl
-      { }
+    \bool_if:nT {#1} 
+      { 
+        \whu_if_class_loaded:F 
+          {
+            \__whu_load_library_hook:nn \whu_hook_gput_dc:n { \l__whu_tmp_tl }
+            \use_i:nnnn \file_input_stop:
+          }
+      }
+    \tl_if_blank:nF {#2}
       {
-        \prop_gput:Nxx \g__whu_library_delayed_prop \l__whu_tmp_tl {#1}
-        \@ifpackageloaded {#1} 
+        \prop_if_in:NoTF \g__whu_library_delayed_prop \l__whu_tmp_tl
           { }
           {
-            \cs_undefine:c { whu/library~\l__whu_tmp_tl }
-            \cs_undefine:c { @pkg-disable@whu.library.\l__whu_tmp_tl .tex }
-            \cs_undefine:c { ver@whu.library.\l__whu_tmp_tl .tex }
-            \exp_args:Neee
-            \hook_gput_code:nnn { package/#1/after } { whu/load }
-              {
-                % \file_input:n { whu.library.\l__whu_tmp_tl.tex }
-                \__whu_load_library_real:nnn { \l__whu_tmp_tl }
-                  { \exp_not:v { whu/library-options~\l__whu_tmp_tl } }
-                  { \exp_not:v { whu/library-version~\l__whu_tmp_tl } }
+            \prop_gput:Nxx \g__whu_library_delayed_prop \l__whu_tmp_tl {#2}
+            \@ifpackageloaded {#2} 
+              { }
+              { 
+                \__whu_load_library_hook:nn 
+                  { \hook_gput_code:nnn { package/#2/after } {whu/load} } \l__whu_tmp_tl
+                \file_input_stop: 
               }
-            \tex_endinput:D 
           }
       }
   }
-\cs_new_protected:Npn \__whu_load_library_real:nnn #1#2#3
+\cs_new_protected:Npn \__whu_load_library_hook:nn #1#2
+  { 
+    \cs_undefine:c { whu/library~#2 }
+    \cs_undefine:c { @pkg-disable@whu.library.#2.tex }
+    \cs_undefine:c { ver@whu.library.#2.tex }
+    \exp_args:Nne \use:n {#1}
+      {
+        % \file_input:n { whu.library.#2.tex }
+        \__whu_load_library_delayed:nnn { #2 }
+          { \exp_not:v { whu/library-options~#2 } }
+          { \exp_not:v { whu/library-version~#2 } }
+      }
+  }
+\cs_new_protected:Npn \__whu_load_library_delayed:nnn #1#2#3
   {
     \whu@iflibraryloaded {#1} { }
       { 
         \file_if_exist:nTF { whu.library.#1.tex }
-          { \elkernel_file_with_options:nnn { whu.library.#1.tex } {#3} {#2} }
+          { 
+            \exp_last_unbraced:Ne \elkernel_file_with_options:nnn 
+              {
+                { whu.library.#1.tex } 
+                {#3} 
+                {
+                  \clist_if_exist:cT { whu/library-options-passed~#1 }
+                    { \exp_not:v { whu/library-options-passed~#1 } , }
+                  \exp_not:n {#2} 
+                }
+              }
+          }
           { \msg_error:nnn { whu } { library-not-exist } {#1} }
       }
-    \whu@iflibraryloaded {#1}
+  }
+\cs_new_protected:Npn \WHUPassOptionsToLibrary #1#2
+  {
+    \clist_if_exist:cF { whu/library-options-passed~#2 }
+      { \clist_new:c { whu/library-options-passed~#2 } }
+    \clist_put_right:cn { whu/library-options-passed~#2 } {#1}
+  }
+\NewDocumentCommand \WHULoadLibrary { +O{} m O{0000/00/00} }
+  {
+    \tl_if_exist:cF { whu/library-options~#2 }
       {
-        \WHUIfLibraryAtLeast {#1} {#3} { }
-          { \msg_error:nnxxx { whu } { library-out-of-date } {#1} {#3} { \use:c { whu/library~#1 } } }
-      } { }
-  }
-\NewDocumentCommand \WHULoadLibrary { m O{} O{0000/00/00} }
-  {
-    \tl_gset:cn { whu/library-options~#1 } {#2}
-    \tl_gset:cn { whu/library-version~#1 } {#3}
-    \__whu_load_library_real:nnn {#1} {#2} {#3}
-  }
-\cs_new:Npn \WHUIfModuleAtLeast #1#2 % module, date(xxxx/xx/xx), true, false
-  { \exp_args:Nv \__whu_date_if_at_least:nnTF { whu/module~#1 } {#2} }
-\cs_new:Npn \WHUIfLibraryAtLeast #1#2 % library, date(xxxx/xx/xx), true, false
-  { \exp_args:Nv \__whu_date_if_at_least:nnTF { whu/library~#1 } {#2} }
-\cs_new:Npn \__whu_date_if_at_least:nnTF #1#2
-  {
-    \if_int_odd:w \__whu_date_if_at_least:w #1 \s__whu_mark #2 \s__whu_stop \exp_stop_f:
-      \exp_after:wN \use_i:nn
-    \else:
-      \exp_after:wN \use_ii:nn
-    \fi:
-  }
-\cs_new:Npn \__whu_date_if_at_least:w #1/#2/#3 \s__whu_mark #4/#5/#6 \s__whu_stop
-  {
-    \bool_lazy_any_p:n
-      {
-        { \int_compare_p:nNn {#1} > {#4} }
-        { \int_compare_p:nNn {#2} > {#5} }
-        { \int_compare_p:nNn {#3} > {#6} }
+        \tl_gset:cn { whu/library-options~#2 } {#1}
+        \tl_gset:cn { whu/library-version~#2 } {#3}
+        \__whu_load_library_delayed:nnn {#2} {#1} {#3}
       }
   }
 %% fmt (fmt version), engine, package, library of package, class, module, library
@@ -337,7 +340,7 @@
     \exp_last_unbraced:Ne \__whu_load_library_aux:nwn 
       { \whu_split_bracket_tail_default:nn {#1} { 0000/00/00 } }
   }
-\cs_new:Npn \__whu_load_library_aux:nwn #1[#2]#3 { \WHULoadLibrary {#1} [{#3}] [{#2}] }
+\cs_new:Npn \__whu_load_library_aux:nwn #1[#2]#3 { \WHULoadLibrary [{#3}] {#1} [{#2}] }
 \msg_new:nnn { whu } { package-disable } 
   { Compiling~aborted,~you~should~not~use~package~`#1'. }
 \cs_new_nopar:Npn \__whu_disable_packages:n #1
@@ -362,8 +365,8 @@
               }
               {
                 \tl_if_novalue:nTF {#4}
-                  { \RequirePackage [#2] {#3} }
-                  { \RequirePackage [#2] {#3} [#4] }
+                  { \RequirePackage [{#2}] {#3} }
+                  { \RequirePackage [{#2}] {#3} [#4] }
               }
           }
       }
@@ -380,16 +383,15 @@
   { \whu_pkg_code:nnn {#1} {#2} {#2} }
 
 
-\WHULoadModule { ltx_cus }
-\WHULoadModule { util_cus }
-\WHULoadModule { algo_cus }
-\WHULoadModule { package_cus }
+\WHULoadModule { ltx.cus }
+\WHULoadModule { util.cus }
+\WHULoadModule { algo.cus }
 
 \group_begin:
 \cs_set:Npn \__whu_latex_hook_new:nnNn #1#2#3#4
   {
     \whu_toks_new:N #3
-    \hook_gput_code:nnn {#1} {#2} { \whu_toks_use:N #3 }
+    \hook_gput_code:nnn {#1} {#2} { \whu_toks_use_gclear:N #3 }
     \cs_new_protected:cpn { whu_hook_gput_ #4 :n } { \whu_toks_gput_right:Nn #3 }
     \cs_new_protected:cpn { whu_hook_gput_ #4 :w } ##1 \whu_hook_end:
       { \whu_toks_gput_right:Nn #3 {##1} }
@@ -403,6 +405,7 @@
     {enddocument/afterlastpage}{whu/document}\g__whu_after_lastpage_toks{lp} ,
     {enddocument/afteraux}  {whu/document}\g__whu_after_aux_toks        {aa} ,
     {shipout/after}         {whu/reset}   \g__whu_page_set_toks         {pg} ,
+    {class/after}           {whu/initial} \g__whu_class_hook_toks       {dc} ,
   }
 \clist_map_inline:Nn \l__whu_hook_tl { \__whu_latex_hook_new:nnNn #1 }
 \group_end:
@@ -413,6 +416,13 @@
 \cs_new:Npn \whu_if_preamble:F { \whu_if_preamble:TF { } }
 \cs_new:Npn \whu_if_document:T #1 { \whu_if_document:TF {#1} { } }
 \cs_new:Npn \whu_if_document:F { \whu_if_document:TF { } }
+\prg_new_conditional:Npnn \whu_if_class_loaded: { T, F, TF }
+  {
+    \tl_if_head_eq_meaning:VNTF \normalsize { \@latex@error }
+      { \prg_return_false: } { \prg_return_true: }
+  }
+\cs_new_protected:Npn \whu_after_class:n
+  { \whu_if_class_loaded:TF { \use:n } { \whu_hook_gput_dc:n } }
 
 \whu_hook_gput_ae:n 
   {
@@ -426,17 +436,20 @@
   { \msg_error:nnx { whu } { patch-failure } { \token_to_str:N } }
 \msg_new:nnn { whu } { patch-failure } { Patch~command~`#1'~failure. }
 
-
-\WHULoadModule { counter_cus }
-\WHULoadModule { space_cus }
-\WHULoadModule { bgfg_cus }
-\WHULoadModule { layout_cus }
-%\WHULoadModule { notes }
-\WHULoadModule { buffer_cus }
-\WHULoadModule { box_cus }
-\WHULoadModule { index_cus }
-\WHULoadModule { struct_cus }
-\WHULoadModule { pdfmana_cus }
+\WHULoadModule { counter.cus }
+\WHULoadModule { space.cus }
+\WHULoadModule { buffer.cus }
+\WHULoadModule { box.cus }
+\WHULoadModule { pdfmana.cus }
+\whu_after_class:n 
+  {
+    \WHULoadModule { package.cus }
+    \WHULoadModule { bgfg.cus }
+    \WHULoadModule { layout.cus }
+    % \WHULoadModule { notes }
+    \WHULoadModule { index.cus }
+    \WHULoadModule { struct.cus }
+  }
 
 
 \whu_pkg_code:nnn { array } { }

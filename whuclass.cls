@@ -9,4 +9,4 @@
   }
 
 
-\ProcessKeysOptions { whu / class }
+\ProcessKeyOptions [ whu / class ]
