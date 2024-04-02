@@ -21,7 +21,7 @@
 \RequirePackage{l3keys2e}
 % \whu@date 和 \whu@version 为 whuthesis 的日期和版本号
 % \whu@d@te 和 \whu@versi@n 为上游的 CusTeX 的日期和版本号
-\def\whu@date{2024/03/28}
+\def\whu@date{2024/04/02}
 \def\whu@version{0.0.1}
 \ProvidesExplClass{whuthesis}{\whu@date}{\whu@version}{Thesis template for Wuhan University}
 
