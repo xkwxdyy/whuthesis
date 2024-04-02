@@ -5,8 +5,23 @@
 ### Added
 
 - 增加 `gb7714-WHU.cbx`
+- `whuthesis.cls`
+  - 增加版权说明
+  - 增加 `library` 的文档类选项
+- 增加未完成的 `build.py` 脚本
+- 增加两个 logo
+- 增加一些 TODO
+- 增加 `math` 的相关库（未完成）
+- 增加本硕博库（未开始）
+- 增加 `math` 库的参考资料
+
 
 ### Changed
+
+- 文件名采用 `pgf` 规范（https://github.com/Sophanatprime/cus/issues/13#issuecomment-2029553021）
+- 自定义内容全部改为以 `library` 形式
+- `whuthesis.cls` 改为 `\LoadClass` 前载入 `whu` 宏包（https://github.com/Sophanatprime/cus/commit/f0d8c9c042f5c72a29c1bd012517aee74b235f4a）
+- `update-from-custex.py` 脚本将 `_cus` 的处理改为 `.cus`
 
 
 ### Fixed
