@@ -3,15 +3,14 @@
 \PassOptionsToPackage{silent}{xeCJK}
 \usepackage{ctex}
 \usepackage{fontawesome5}
-
 \usepackage[
   library={
-    doc_cus,
-    box_cus,
-    bnf_cus,
-    ref_cus,
-    counter_cus,
-    % pgf
+    doc.cus,
+    box.cus,
+    bnf.cus,
+    ref.cus,
+    counter.cus,
+    pgf.cus
   }
 ]{whu}
 \SetKeys[updatemarks]{multicol}
@@ -285,7 +284,25 @@
 
 \title{whuthesis 手册}
 \author{夏大鱼羊}
-\date{\zhtoday\quad v\UseName{whu@versi@n}}
+\date{\zhtoday\quad v\UseName{whu@version}}
 
 
 \def\CusTeX{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.15em\TeX}
+
+\usepackage[
+  % backref      = true,
+  backend      = biber,
+  bibstyle     = gb7714-2015,
+  sorting      = nty,
+  gbalign      = right,
+  citestyle    = gb7714-CCNU,
+  gbnamefmt    = givenahead,
+  gbpunctin    = false
+]{biblatex}
+
+\addbibresource{whuthesis-doc.bib}
+% \usepackage{cite}
+% \makeatletter
+% \def\@cite#1#2{\textsuperscript{[{#1\if@tempswa , #2\fi}]}}
+% \makeatother
+% \bibliographystyle{plain}
