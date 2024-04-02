@@ -1,0 +1,22 @@
+\WHUProvideExplLibrary{math}{\whu@date}{\whu@version}{configuration for the School of Mathematics and Statistics}
+
+% ---------------------------------------- %
+% 采用黄正华老师的模板设置作为数学与统计学院的配置 %
+% ---------------------------------------- %
+
+
+% 检测是否同时加载了 bachelor, master, doctor 库
+\whu@iflibraryloaded { bachelor }
+  { \WHULoadLibrary { math-bachelor } }
+  {
+    \whu@iflibraryloaded { master }
+      { \WHULoadLibrary { math-master } }
+      {
+        \whu@iflibraryloaded { doctor }
+          { \WHULoadLibrary { math-doctor } }
+          {
+            % 如果没有加载 bachelor, master, doctor 库中的任意一个，则默认加载 math-bachelor
+            \WHULoadLibrary { math-bachelor } 
+          }
+      }
+  }

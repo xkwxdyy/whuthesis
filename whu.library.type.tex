@@ -1,0 +1,16 @@
+\WHUProvideExplLibrary{type}{\whu@date}{\whu@version}{for different use}
+
+
+\cs_new:Npn \__whu_set_type_for_library: { }
+\cs_new:Npn \__whu_set_type_for_print: { }
+\cs_new:Npn \__whu_set_type_electronic: { }
+
+\keys_define:nn { whu/type }
+  {
+    electronic .code:n = \__whu_set_type_electronic:
+  , for-print .code:n = \__whu_set_type_for_print:
+  , for-library .code:n = \__whu_set_type_for_library:
+  }
+
+
+\ProcessKeyOptions [ whu/type ]

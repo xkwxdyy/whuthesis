@@ -1,0 +1,22 @@
+\WHUDependency { library = { constant } }
+\WHUProvideExplLibrary{publications}{\whu@date}{\whu@version}{environment for publications}
+
+
+\cs_new:Npn \__whu_publications_format_set: { }
+\cs_new:Npn \__whu_publications_begin: { }
+\cs_new:Npn \__whu_publications_end: { }
+\NewDocumentEnvironment { publications } {}
+  {
+    \__whu_publications_format_set:
+    \chapter
+      [
+        \__whu_use_constant:nn { publications } { zh-toc }
+      ]
+      {
+        \__whu_use_constant:nn { publications } { zh }
+      }
+    \__whu_publications_begin:
+  }
+  { 
+    \__whu_publications_end:
+  }

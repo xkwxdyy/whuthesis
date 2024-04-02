@@ -1,3 +1,50 @@
 % !TeX root = ../../whuthesis-doc.tex
 
 \chapter{库}
+
+\section{\whulibrary{proposal} 库：开题报告}
+
+
+\section{\whulibrary{bachelor} 库：本科}
+
+
+\section{\whulibrary{master} 库：硕士}
+
+
+\section{\whulibrary{doctor} 库：博士}
+
+
+\section{学院配置}
+
+\subsection{\whulibrary{math} 库：数学与统计学院}
+
+本库调用了与数统学院黄正华老师模板基本相同的配置，但仍有一些细节进行了调整：
+
+\begin{enumerate}
+  \item 更新了武汉大学校徽\cite{whulogo}
+  \item 去掉了 \verb|致谢| 章节标题样式中的 \cs{ziju} 设置（因为经测试比对，是否添加 \cs{ziju} 设置对排版效果没有影响）
+\end{enumerate}
+
+
+\subsubsection{\whulibrary{math.bachelor} 库：数学与统计学院\&本科}
+
+\verb|library={bachelor, math}| 和 \verb|library={math.bachelor}| 的效果相同，会调用黄正华老师的本科模板设置，但注意前者的 \whulibrary{bachelor} 库和 \whulibrary{math} 库的顺序不能颠倒，所以推荐直接使用 \verb|library={math.bachelor}|。
+
+如果只载入了 \whulibrary{math} 库而没有载入 \whulibrary{bachelor}、\whulibrary{master} 和 \whulibrary{doctor} 的任意一个库，则默认调用 \whulibrary{math.bachelor} 库。
+
+
+\subsubsection{\whulibrary{math.master} 库：数学与统计学院\&硕士}
+
+
+\verb|library={master, math}| 和 \verb|library={math.master}| 的效果相同，会调用黄正华老师的硕士模板设置，但注意前者的 \whulibrary{master} 库和 \whulibrary{math} 库的顺序不能颠倒，所以推荐直接使用 \verb|library={math.master}|。
+
+
+\subsubsection{\whulibrary{math.doctor} 库：数学与统计学院\&博士}
+
+
+\verb|library={doctor, math}| 和 \verb|library={math.doctor}| 的效果相同，会调用黄正华老师的博士模板设置，但注意前者的 \whulibrary{doctor} 库和 \whulibrary{math} 库的顺序不能颠倒，所以推荐直接使用 \verb|library={math.doctor}|。
+
+\subsection{\whulibrary{computer} 库：计算机学院}
+
+
+\subsection{\whulibrary{cs} 库：国家网络安全学院}
