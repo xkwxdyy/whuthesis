@@ -2,7 +2,7 @@
 
 
 % ----------------------- %
-% \c__whu_constant_..._tl %
+% \l__whu_constant_..._tl %
 % ----------------------- %
 
 
@@ -56,20 +56,23 @@
   }
 \cs_new_protected:Nn \__whu_set_constant:nnn
   {
-    \tl_const:cn { c__whu_constant_ #1/#2 _tl } {#3}
+    % \tl_const:cn { l__whu_constant_ #1/#2 _tl } {#3}
+    % @muzimuzhi: 建议改为变量类型
+    \tl_new:c { l__whu_constant_ #1/#2 _tl }
+    \tl_set:cn { l__whu_constant_ #1/#2 _tl } {#3}
   }
 
 % https://github.com/Sophanatprime/cus/issues/17
 % 在写入目录文件、标签时，\protected 的宏不会被展开。\__whu_use_constant:nn 不能定义成 \protected。
 % > 一个命令能否展开、会不会展开、怎么展开和它所处的上下文有关。 interface3.pdf 里标记 ⋆ 的是可以用于 `e` 和 `f` 参数，标记 ✩ 可以用于 `e` 参数，用在这些参数中它们被完全展开。 写入目录文件、标签、书签等，和用在 `e` 参数中类似，不过用 `\DeclareRobustCommand` 定义的命令也不会展开，所以 `\textbf` 这些可以安全的写入目录文件。
-% > `\protected` 命令不会在 `e` 参数中展开，但出现在控制序列的名称中会展开（所以 `\__whu_get_constant_csname:nn` 能生效）。 所以使用 `\cs_new:Npn \__whu_use_constant:nn` 会在 `e` 参数中展开为 `\tl_use:c { c__whu_constant_ #1/#2 _tl }`，`\tl_use:c` 还可以展开，但它先把后面那个变成一个控制序列，变成了 `\tl_use:N <...>`，`\tl_use:N` 还可以展开，它的作用是展开为那个 tl 的内容，而这个 tl 的内容并没有 LaTeX3 名称的命令，所以能够正确读取。
+% > `\protected` 命令不会在 `e` 参数中展开，但出现在控制序列的名称中会展开（所以 `\__whu_get_constant_csname:nn` 能生效）。 所以使用 `\cs_new:Npn \__whu_use_constant:nn` 会在 `e` 参数中展开为 `\tl_use:c { l__whu_constant_ #1/#2 _tl }`，`\tl_use:c` 还可以展开，但它先把后面那个变成一个控制序列，变成了 `\tl_use:N <...>`，`\tl_use:N` 还可以展开，它的作用是展开为那个 tl 的内容，而这个 tl 的内容并没有 LaTeX3 名称的命令，所以能够正确读取。
 \cs_new:Nn \__whu_use_constant:nn
   {
-    \tl_use:c { c__whu_constant_ #1/#2 _tl }
+    \tl_use:c { l__whu_constant_ #1/#2 _tl }
   }
 \cs_new_protected:Nn \__whu_get_constant_csname:nn
   {
-    c__whu_constant_ #1/#2 _tl
+    l__whu_constant_ #1/#2 _tl
   }
 \prg_new_conditional:Nnn \__whu_constant_if_exist:nn { p , T , F , TF }
   {
