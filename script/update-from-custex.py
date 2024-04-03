@@ -1,7 +1,7 @@
 """
 update-from-custex.py
 Author: 夏大鱼羊
-Date: 2024/04/02
+Date: 2024/04/04
 Description:
     - [✔] 从 custex 仓库中复制 `.sty`, `.cls`, `cus.module.xxx.tex` 和 `cus.library.xxx.tex` 文件
         - [✔]`cus.module.xxx.tex` 和 `whu.library.xxx.tex` 文件改名为 `whu.module.xxx.cus.tex` 和 `cus.library.xxx.cus.tex` 文件
@@ -27,6 +27,8 @@ import re
 
 # 源目录和目标目录
 cus_directory = "/Users/xiakangwei/Nutstore/Github/repository/custex"
+cus_module_directory = "/Users/xiakangwei/Nutstore/Github/repository/custex/module"
+cus_library_directory = "/Users/xiakangwei/Nutstore/Github/repository/custex/library"
 whu_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis"
 module_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/module"
 library_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/library-cus"
@@ -76,19 +78,29 @@ for file in os.listdir(cus_directory):
             # 处理以 '.tex' 结尾并以 'cus' 开头的文件
             if file.endswith('.tex') and file.startswith('cus'):
                 source_file_path = file_path
-                # 如果是 module 或 library 文件，则还需要在 module 名后加上 '.cus'
-                if 'module' in file:
-                    target_file_path = os.path.join(module_directory, file.replace('cus', 'whu').replace('.tex', '.cus.tex'))
-                elif 'library' in file:
-                    target_file_path = os.path.join(library_directory, file.replace('cus', 'whu').replace('.tex', '.cus.tex'))
-                else:
-                    # 其余文件直接替换 cus 即可
-                    target_file_path = os.path.join(whu_directory, file.replace('cus', 'whu'))
+                target_file_path = os.path.join(whu_directory, file.replace('cus', 'whu'))
                 # 复制文件
                 shutil.copy(source_file_path, target_file_path)
                 # 修改文件中的 cus 为 whu
                 modify_cus_to_whu(target_file_path)
 
+
+# 复制 `custex/module` 的 `cus.module.xxx.tex` 和 `custex/library` 的 `cus.library.xxx.tex` 文件到 `whuthesis/module` 和 `whuthesis/library-cus` 目录
+for file in os.listdir(cus_module_directory):
+    file_path = os.path.join(cus_module_directory, file)
+    if os.path.isfile(file_path):
+        source_file_path = file_path
+        target_file_path = os.path.join(module_directory, file.replace('cus', 'whu').replace('.tex', '.cus.tex'))
+        shutil.copy(source_file_path, target_file_path)
+        modify_cus_to_whu(target_file_path)
+
+for file in os.listdir(cus_library_directory):
+    file_path = os.path.join(cus_library_directory, file)
+    if os.path.isfile(file_path):
+        source_file_path = file_path
+        target_file_path = os.path.join(library_directory, file.replace('cus', 'whu').replace('.tex', '.cus.tex'))
+        shutil.copy(source_file_path, target_file_path)
+        modify_cus_to_whu(target_file_path)
 
 
 """
