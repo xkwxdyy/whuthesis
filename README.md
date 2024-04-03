@@ -12,5 +12,5 @@
 
 - 特别鸣谢 [@Sophanatprime](https://github.com/Sophanatprime)
   - 本模板的开发想法和主要框架来自 Sophanatprime 的 [CusTeX 项目](https://github.com/Sophanatprime/cus)，同时 CusTeX 也部分依赖于 Sophanatprime 的 [lt3ekeys 项目](https://github.com/Sophanatprime/lt3ekeys)。
-  - 开发过程中，在 CusTeX 的 GitHub 中提了许多 [issues](https://github.com/Sophanatprime/cus/issues)，得到了非常多的帮助。
+  - 开发过程中，在 CusTeX 的 GitHub 中提了很多 [issues](https://github.com/Sophanatprime/cus/issues?q=is%3Aissue+user%3Axkwxdyy)，得到了非常多的帮助。
 - 感谢 [@muzimuzhi](https://github.com/muzimuzhi) 在 [`constant` 库的开发中提供的帮助](https://github.com/CTeX-org/forum/issues/309#issuecomment-2030804140)
