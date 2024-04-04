@@ -1,0 +1,93 @@
+\WHUProvideExplLibrary{authorization}{\whu@date}{\whu@version}{Wuhan University Dissertation Use Authorization Agreement}
+
+\whu_after_class:n
+  {
+    \IfPackageLoadedTF { enumitem } { }
+      { \RequirePackage { enumitem } }
+  }
+
+\AtEndDocument
+  {
+    \__whu_authorization_output:
+  }
+
+\cs_if_exist:NTF \checkedbox
+  {
+    \cs_set_eq:NN \__whu_checkedbox: \checkedbox
+  }
+  {
+    \box_new:N \l__whu_checkedbox_box
+    \cs_new:Nn \__whu_checkedbox: 
+      {
+        \dim_set:Nn \fboxsep { 0pt }
+        \hbox_set:Nn \l__whu_checkedbox_box { \framebox [ 0.6em ] { \rule { 0pt } { 0.55em } } }
+        \box_resize_to_ht:Nn \l__whu_checkedbox_box { 0.66em }
+        \kern1pt
+        \box_use:N \l__whu_checkedbox_box
+        \kern1pt
+      } 
+  }
+\cs_new:Nn \__whu_authorization_output:
+  {
+    \__whu_authorization_before_title:
+    \__whu_authorization_title_content:
+    \__whu_authorization_after_title:
+    \__whu_authorization_content:
+    \__whu_authorization_before_information:
+    \__whu_authorization_information_content:
+    \__whu_authorization_date:
+    \__whu_authoriazation_end_if_newpage:
+  }
+\cs_new:Nn \__whu_authorization_before_title: 
+  {
+    \cleardoublepage
+    \newpage
+    \vspace* { 20pt }
+    \begin{center}
+      \zihao { -2 }
+      \heiti
+  }
+\cs_new:Nn \__whu_authorization_title_content: 
+  { 武汉大学学位论文使用授权协议书 }
+\cs_new:Nn \__whu_authorization_after_title: 
+  {
+    \end{center}
+    \par
+    \vspace* { 30pt }
+  }
+\cs_new:Nn \__whu_authorization_content: 
+  {
+    本学位论文作者愿意遵守武汉大学关于保存、使用学位论文的管理办法及规定,
+    即：学校有权保存学位论文的印刷本和电子版, 并提供文献检索与阅览服务；
+    学校可以采用影印、缩印、数字化或其它复制手段保存论文；
+    在以教学与科研服务为目的前提下, 学校可以在校园网内公布部分及全部内容.
+    \begin{enumerate}[label=\arabic*、]
+      \item  在本论文提交当年, 同意在校园网内以及中国高等教育文献保障系统(CALIS)高校学位论文系统提供查询及前十六页浏览服务.
+      \item  在本论文提交~$\__whu_checkedbox:$~当年/~$\__whu_checkedbox:$~一年/~$\__whu_checkedbox:$~两年/~$\__whu_checkedbox:$~三年/~$\__whu_checkedbox:$~五年以后, 同意在校园网内允许读者在线浏览并下载全文, 学校可以为存在馆际合作关系的兄弟高校用户提供文献传递服务和交换服务.(保密论文解密后遵守此规定)
+    \end{enumerate}
+  }
+\cs_new:Nn \__whu_authorization_before_information: 
+  {
+    \vspace* { 15mm }
+  }
+\cs_new:Nn \__whu_authorization_information_content: 
+  {
+    论文作者(签名)：         \__whu_authorization_information_underline: \\[2em]
+    学\qquad\qquad\quad 号：\__whu_authorization_information_underline: \\[2em]
+    学\qquad\qquad\quad 院：\__whu_authorization_information_underline: \\[2cm]
+  }
+\cs_new:Nn \__whu_authorization_information_underline: 
+  {
+    \raisebox { -1ex } { \underline{ \makebox [ 5cm ] [c] { } } }
+  }
+\cs_new:Nn \__whu_authorization_date: 
+  {
+    \begin{flushright}
+    日期：\hspace { 2cm } 年 \hspace { 1.2cm } 月 \hspace { 1.2cm } 日
+    \end{flushright}
+  }
+\cs_new:Nn \__whu_authoriazation_end_if_newpage:
+  {
+    \str_if_eq:VnF \g__whu_type_str { for-library }
+      { \newpage \cleardoublepage }
+  }
