@@ -1,7 +1,7 @@
 \WHUDependency 
   {
     package = { amsmath },
-    library = { constant }
+    library = { constant, authorization }
   }
 \WHUProvideExplLibrary{math-master}{\whu@date}{\whu@version}{Compatible with the configuration of Huang Zhenhua's template for master}
 
@@ -227,16 +227,23 @@
         en = Key~words
       }
   }
-\cs_set:Npn \__whu_keywords_zh_format_set:
-  { \heiti\zihao{-4} }
-\cs_set:Npn \__whu_abstract_zh_begin: 
+\cs_set:Nn \__whu_abstract_zh_begin: 
   {
-    开头
+    % 开头
   }
-\cs_set:Npn \__whu_abstract_zh_end: 
+\cs_set:Nn \__whu_abstract_zh_end: 
   {
-    结尾
+    % 结尾
   }
+\cs_set:Nn \__whu_keywords_zh_format_set:
+  { \heiti \zihao{-4} }
+\cs_set:Nn \__whu_keywords_en_format_set:
+  { \bfseries \zihao{-4} }
+\cs_set:Nn \__whu_keywords_zh_above_sep: 
+  { \par \vfill }
+\cs_set:Nn \__whu_keywords_en_above_sep:
+  { \par \vfill }
+
 
 
 
@@ -275,13 +282,12 @@
 \WHULoadLibrary { publications }
 \cs_set:Npn \__whu_publications_format_set:
   {
-    \setuponetitle { chapter } 
-      { mode = nonumber }
+    \setupnexttitle { mode = nonumber }  % \setuponetitle 改成 \setupnexttitle 可以避免参考文献未编译出来时，参考文献的 \setupnexttitle 设置影响到后面的章节标题
     \__whu_set_constant_family:n
       {
         publications =
           {
-            zh = 攻硕期间发表的科研成果目录 ,
+            zh = 攻硕期间发表的科研成果目录
           }
       }
   }
@@ -444,10 +450,7 @@
 %   }
 
 % %------------------------ Abstract & Keywords -------------------------
-% \newcommand\cnkeywords[1]{ {\heiti\zihao{-4}\cnkeywordsname: }#1}
-% \newcommand\cnkeywordsname{关键词}
-% \newcommand\enkeywords[1]{ {\bfseries\zihao{-4}\enkeywordsname: }#1}
-% \newcommand\enkeywordsname{Key words}
+
 
 % \newenvironment{cnabstract}{
 %     \newpage

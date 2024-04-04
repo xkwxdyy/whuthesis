@@ -9,6 +9,7 @@
 ### Changed
 
 - `update-from-custex.py` 适配 `cus` 的模板和库的路径移动
+- `constant` 库中的变量改为 `g`类型
 
 
 
