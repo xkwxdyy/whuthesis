@@ -311,3 +311,5 @@ script/test.py
 *.bcf-SAVE-ERROR
 
 test.tex
+
+*test/
