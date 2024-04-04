@@ -2,21 +2,28 @@
 \WHUProvideExplLibrary{abstract}{\whu@date}{\whu@version}{environment for abstract}
 
 
-\cs_new:Npn \__whu_abstract_zh_format_set: { }
-\cs_new:Npn \__whu_abstract_en_format_set: { }
-\cs_new:Npn \__whu_abstract_zh_begin: { }
-\cs_new:Npn \__whu_abstract_zh_end: { }
-\cs_new:Npn \__whu_abstract_en_begin: { }
-\cs_new:Npn \__whu_abstract_en_end: { }
-\cs_new:Npn \__whu_keywords_zh_format_set: { }
-\cs_new:Npn \__whu_keywords_en_format_set: { }
-\cs_new:Npn \__whu_keywords_zh_above_sep: { }
-\cs_new:Npn \__whu_keywords_en_above_sep: { }
-\cs_new:Npn \__whu_keywords_zh_output:
+\cs_new:Nn \__whu_abstract_zh_format_set: { }
+\cs_new:Nn \__whu_abstract_en_format_set: { }
+\cs_new:Nn \__whu_abstract_zh_begin: { }
+\cs_new:Nn \__whu_abstract_zh_end: { }
+\cs_new:Nn \__whu_abstract_en_begin: { }
+\cs_new:Nn \__whu_abstract_en_end: { }
+\cs_new:Nn \__whu_keywords_zh_format_set: { }
+\cs_new:Nn \__whu_keywords_en_format_set: { }
+\cs_new:Nn \__whu_keywords_zh_above_sep: { }
+\cs_new:Nn \__whu_keywords_en_above_sep: { }
+\cs_new:Nn \__whu_keywords_zh_output:
   {
     \group_begin:
     \__whu_keywords_zh_format_set:
     \__whu_use_constant:nn { keywords } { zh } :~
+    \group_end:
+  }
+\cs_new:Nn \__whu_keywords_en_output:
+  {
+    \group_begin:
+    \__whu_keywords_en_format_set:
+    \__whu_use_constant:nn { keywords } { en } :~
     \group_end:
   }
 \NewDocumentEnvironment { abstract } {}
@@ -49,5 +56,7 @@
     \__whu_abstract_en_begin:
   }
   { 
+    \__whu_keywords_en_above_sep:
+    \__whu_keywords_en_output:
     \__whu_abstract_en_end:
   }
