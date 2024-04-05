@@ -309,7 +309,7 @@
       \begin{tikzpicture}[ remember~picture, overlay ]
         \__whuproposal_cover_master_doctor_logo:
         \__whuproposal_cover_master_doctor_type:
-        \__whuproposal_cover_master_doctor_infomation:
+        \__whuproposal_cover_master_doctor_information:
         \__whuproposal_cover_master_doctor_time:
       \end{tikzpicture}
     % \end{titlepage}
@@ -363,7 +363,7 @@
 % 对用户输入空格引发的报错进行处理
 \prg_generate_conditional_variant:Nnn \tl_if_blank:n { v } { T }
 
-\cs_new:Npn \__whuproposal_cover_master_doctor_infomation_preset:
+\cs_new:Npn \__whuproposal_cover_master_doctor_information_preset:
   {
     \clist_map_inline:nn
       {
@@ -384,7 +384,7 @@
       }
   
   }
-\cs_new:Npn \__whuproposal_cover_master_doctor_infomation:
+\cs_new:Npn \__whuproposal_cover_master_doctor_information:
   {
     \node[] (information) at
         (
@@ -394,7 +394,7 @@
         {
           \begin{minipage} [ c ] { \textwidth }
             \centering \zihao{3} \fangsong
-            \__whuproposal_cover_master_doctor_infomation_preset:
+            \__whuproposal_cover_master_doctor_information_preset:
             \clist_set:Nn \l__whuproposal_tmpa_clist
               {
                 培养单位：,
@@ -425,11 +425,11 @@
               {
                 \clist_pop:NN \l__whuproposal_tmpa_clist \l__whuproposal_tmpa_tl
                 \clist_pop:NN \l__whuproposal_tmpb_clist \l__whuproposal_tmpb_tl
-                \__whuproposal_cover_infomation_spread_box:nn
+                \__whuproposal_cover_information_spread_box:nn
                   { \l__whuproposal_tmpa_dim }
                   { \l__whuproposal_tmpa_tl }
                 % \hspace*{1em}
-                \__whuproposal_cover_infomation_center_underline_box:Vn 
+                \__whuproposal_cover_information_center_underline_box:Vn 
                   \l__whuproposal_tmpb_dim 
                   { \l__whuproposal_tmpb_tl }
                 \skip_vertical:n { 1.5 ex }
@@ -438,7 +438,7 @@
         };
   }
 
-\cs_new_protected:Npn \__whuproposal_cover_infomation_center_underline_box:nn #1#2
+\cs_new_protected:Npn \__whuproposal_cover_information_center_underline_box:nn #1#2
   {
     \mode_leave_vertical:
     \CJKunderline*
@@ -454,9 +454,9 @@
           }
       }
   }
-\cs_generate_variant:Nn \__whuproposal_cover_infomation_center_underline_box:nn  { Vn }
+\cs_generate_variant:Nn \__whuproposal_cover_information_center_underline_box:nn  { Vn }
 
-\cs_new_protected:Npn \__whuproposal_cover_infomation_spread_box:nn #1#2
+\cs_new_protected:Npn \__whuproposal_cover_information_spread_box:nn #1#2
   {
     \mode_leave_vertical:
     \hbox_to_wd:nn {#1}
