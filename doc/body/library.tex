@@ -2,6 +2,8 @@
 
 \chapter{库}
 
+\cls{whuthesis} 并不是第一个采用模块化处理思想的 \LaTeX{} 论文模板，早在 \cls{fduthesis} 就使用了 \pkg{xtemplate} 宏包
+
 \section{\whulibrary{proposal} 库：开题报告}
 
 
@@ -20,9 +22,16 @@
 
 本库调用了与数统学院黄正华老师模板基本相同的配置，但仍有一些细节进行了调整：
 
+修改：
 \begin{enumerate}
   \item 更新了武汉大学校徽\cite{whulogo}
-  \item 去掉了 \verb|致谢| 章节标题样式中的 \cs{ziju} 设置（因为经测试比对，是否添加 \cs{ziju} 设置对排版效果没有影响）
+  \item 去掉了摘要、致谢等章节标题样式中的 \cs{ziju} 设置（因为经测试比对，是否添加 \cs{ziju} 设置对排版效果没有影响）
+  \item 专业硕士封面中“专业类别（领域）”的括号改为中文括号
+\end{enumerate}
+
+优化：
+\begin{enumerate}
+  \item 封面采用 \pkg{tikz} 的处理，避免标题长度影响封面的排版
 \end{enumerate}
 
 

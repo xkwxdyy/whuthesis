@@ -3,6 +3,10 @@
 \PassOptionsToPackage{silent}{xeCJK}
 \usepackage{ctex}
 \usepackage{fontawesome5}
+\makeatletter
+\@ifundefined{input@path}{\let\input@path\@empty}{}
+\g@addto@macro\input@path{{./module}{./library}{./library-cus}}
+\makeatother
 \usepackage[
   library={
     doc.cus,
