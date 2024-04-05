@@ -313,3 +313,5 @@ script/test.py
 test.tex
 
 *test/
+
+*.bbl-SAVE-ERROR
