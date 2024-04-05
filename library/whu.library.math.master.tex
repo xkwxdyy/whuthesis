@@ -1,9 +1,206 @@
 \WHUDependency 
   {
     package = { amsmath },
-    library = { constant, authorization }
+    library = { util, math.theorem, cover, constant, declaration, authorization, bib }
   }
 \WHUProvideExplLibrary{math-master}{\whu@date}{\whu@version}{Compatible with the configuration of Huang Zhenhua's template for master}
+
+
+% 硕士学位类型：academic, professional
+\keys_define:nn { whu/master }
+  {
+    degree-type .str_gset:N = \g__whu_master_degree_type_str,
+    degree-type .initial:n = academic,
+  }
+
+\ProcessKeyOptions [ whu/master ]
+
+
+
+% ------------ %
+% constant 设置 %
+% ------------ %
+\AtEndPreamble
+  {
+    \str_case:VnF \g__whu_master_degree_type_str
+      {
+        { academic } { \__whu_academic_master_constant_set: }
+        { professional } { \__whu_professional_master_constant_set: }
+      }
+      {
+        \msg_error:nnx { whu } { invalid-degree-type } 
+          { \str_use:N \g__whu_master_degree_type_str }
+      }
+  }
+\msg_new:nnn { whu } { invalid-degree-type }
+  {
+    Invalid~degree~type~`#1'. \\ Please~use~`academic'~or~`professional'. 
+  }
+\cs_new:Nn \__whu_academic_master_constant_set:
+  {
+    \__whu_set_information_family:n
+      {
+        thesis-type/zh = \ziju{1} 硕士学位论文,
+        title =
+          {
+            zh = 武汉大学硕士学位论文 \LaTeX{} 模板,
+            en = \LaTeX{} Template~for~Professional~Master's~Degree~of~Wuhan~University
+          },
+        department =
+          {
+            zh = 数学与统计学院,
+            en = School~of~Mathematics~and~Statistics
+          },
+        author =
+          {
+            zh = 研究生姓名,
+            en = Candidate
+          },
+        student-id =
+          {
+            zh = 学号,
+            en = Student~Number
+          },
+        supervisor =
+          {
+            zh = 指导教师姓名、职称,
+            en = Supervisor
+          },
+        major =
+          {
+            zh = 专业名称,
+            en = Major
+          },
+        professional-field =
+          {
+            zh = 研究方向,
+            en = Speciality
+          },
+      }
+    \__whu_set_information_constant_family:n
+      {
+        clc/zh          = 分类号,
+        secret-level/zh = 密级,
+        udc/zh          = UDC,
+        school-id/zh    = 编号,
+        author =
+          {
+            zh = 研究生姓名,
+            en = Candidate
+          },
+        student-id =
+          {
+            zh = 学号,
+            en = Student~Number
+          },
+        supervisor =
+          {
+            zh = 指导教师姓名、职称,
+            en = Supervisor
+          },
+        major =
+          {
+            zh = 专业名称,
+            en = Major
+          },
+        professional-field =
+          {
+            zh = 研究方向,
+            en = Speciality
+          },
+      }
+    \cs_set:Nn \__whu_cover_zh_information_content: 
+      {
+        \begin{minipage} [ c ] { 0.72\textwidth }
+          \clist_set:Nx \l__whu_tmpa_clist
+            {
+              \__whu_use_information_constant:nn { author } { zh } ,
+              \__whu_use_information_constant:nn { student-id } { zh } ,
+              \__whu_use_information_constant:nn { supervisor } { zh } ,
+              \__whu_use_information_constant:nn { major } { zh } ,
+              \__whu_use_information_constant:nn { professional-field } { zh }
+            }
+          \clist_set:Nx \l__whu_tmpb_clist
+            {
+              \__whu_use_information:nn { author } { zh },
+              \__whu_use_information:nn { student-id } { zh },
+              \__whu_use_information:nn { supervisor } { zh },
+              \__whu_use_information:nn { major } { zh },
+              \__whu_use_information:nn { professional-field } { zh }
+            }
+          \bool_until_do:nn
+            { \clist_if_empty_p:N \l__whu_tmpa_clist }
+            {
+              \clist_pop:NN \l__whu_tmpa_clist \l__whu_tmpa_tl
+              \clist_pop:NN \l__whu_tmpb_clist \l__whu_tmpb_tl
+              \__whu_spread_box:nn { 4.45cm } { \l__whu_tmpa_tl } :
+              \hspace{1.3em}
+              \l__whu_tmpb_tl
+              \skip_vertical:n { 3ex }
+            }
+        \end{minipage}
+      }
+    \cs_set:Nn \__whu_cover_en_information_content: 
+      {
+        \begin{tblr}
+          {
+            cell{1, 3}{2} = { cmd = \textsc },
+            % hlines, vlines,
+            colspec = { X[1,r] X[1,l] },
+            rowsep = 1.5pt
+          }
+          \__whu_use_information_constant:nn { author } { en } : & \__whu_use_information:nn { author } { en } \\
+          \__whu_use_information_constant:nn { student-id } { en } : & \__whu_use_information:nn { student-id } { en } \\
+          \__whu_use_information_constant:nn { supervisor } { en } : & \__whu_use_information:nn { supervisor } { en } \\
+          \__whu_use_information_constant:nn { major } { en } : & \__whu_use_information:nn { major } { en } \\
+          \__whu_use_information_constant:nn { professional-field } { en } : & \__whu_use_information:nn { professional-field } { en }
+        \end{tblr}
+      }
+  }
+\cs_new:Nn \__whu_professional_master_constant_set:
+  {
+    \__whu_set_information_family:n
+      {
+        thesis-type/zh = \ziju{0.5} 硕士专业学位论文,
+        title =
+          {
+            zh = 武汉大学硕士专业学位论文 \LaTeX{} 模板,
+            en = \LaTeX{} Template~for~Professional~Master's~Degree~of~Wuhan~University
+          },
+        department =
+          {
+            zh = 数学与统计学院,
+            en = School~of~Mathematics~and~Statistics
+          }
+      }
+    \__whu_set_information_constant_family:n
+      {
+        clc/zh          = 分类号,
+        secret-level/zh = 密级,
+        udc/zh          = UDC,
+        school-id/zh    = 编号,
+        author =
+          {
+            zh = 研究生姓名,
+            en = Candidate
+          },
+        student-id =
+          {
+            zh = 学号,
+            en = Student~Number
+          },
+        supervisor =
+          {
+            zh = 指导教师姓名、职称,
+            en = Supervisor
+          },
+        major =
+          {
+            zh = 专业类别（领域）,
+            en = Major
+          },
+      }
+  }
 
 
 % -------- %
@@ -26,62 +223,68 @@
 % ----------------- %
 % 不同文档类型下的设置 %
 % ----------------- %
-\WHULoadLibrary { type }
-\cs_set:Npn \__whu_set_type_for_electronic:
-  {
-    \PassOptionsToClass 
-      { a4paper, twoside } { book }
-  }
-\cs_set:Npn \__whu_set_type_for_print:
-  {
-    \PassOptionsToClass 
-      { a4paper, twoside } { book }
-    \AtEndPreamble { \hypersetup { allcolors = black } }
-  }
-\cs_set:Npn \__whu_set_type_for_library:
-  {
-    \PassOptionsToClass 
-      { a4paper, twoside, openany } { book }
-    \AtEndPreamble { \hypersetup { allcolors = black } }
-  }
+
+% \cs_set:Npn \__whu_set_type_electronic:
+%   {
+    
+%   }
+% \cs_set:Npn \__whu_set_type_for_print:
+%   {
+    
+%     \AtEndPreamble { \hypersetup { allcolors = black } }
+%   }
+% \cs_set:Npn \__whu_set_type_for_library:
+%   {
+    
+%     \AtEndPreamble { \hypersetup { allcolors = black } }
+%   }
 
 
 
 % ---------- %
 % 页面布局设置 %
 % ---------- %
-% TODO: 页脚距离短了，不知道是哪里的设置问题
-\cs_new:Npn \whu_math_set_layout:
+\cs_new:Npn \__whu_set_layout:
   {
     \setuplayout
       {
         papername = a4paper,
         top       = 3truecm,
+        footskip  = 0.87cm,  % 如果直接是 geometry 接口则不需要设置 footskip，可能是因为黄 load 的是 ctexbook，而本模板 load 的是 book，ctexbook 可能做了一些处理
         bottom    = 2.9truecm,
         left      = 2.8truecm,
         right     = 2.5truecm,
         % includefoot,
         % includehead,
-        xetex
+        % showframe,
+        % xetex
       }
   }
 \whu@ifmoduleloaded { layout }
-  { \whu_math_set_layout: }
-  { \whu_after_class:n { \whu_math_set_layout: } }
+  { \__whu_set_layout: }
+  { \whu_after_class:n { \__whu_set_layout: } }
 
 
 
 % ------- %
 % 页眉页脚 %
 % ------- %
-\cs_new:Npn \whu_math_set_headfoot:
+\cs_new:Npn \__whu_set_headfoot:
+  {
+    \str_case:Vn \g__whu_master_degree_type_str
+      {
+        { academic } { \__whu_academic_set_headfoot: }
+        { professional } { \__whu_professional_set_headfoot: }
+      }
+  }
+\cs_new:Nn \__whu_academic_set_headfoot:
   {
     \setpagestyle { frontmatter }
       {
         \setheadrulewidth { 0.5pt }
         \setfootrulewidth { 0pt }
         \setcenterhead
-          [ 武汉大学硕士专业学位论文 ] % TODO: \ifsmd 武汉大学硕士专业学位论文\else 武汉大学硕士学位论文
+          [ 武汉大学硕士学位论文 ]
           { 标题 } % TODO
         \sethead [LR] {}
         \setcenterfoot 
@@ -106,18 +309,52 @@
         \setuptitle [ chapter ] { pagestyle = mainmatter }
       }
   }
-\whu@ifmoduleloaded { layout }
-  { \whu_math_set_headfoot: }
-  { \whu_after_class:n { \whu_math_set_headfoot: } }
+\cs_new:Nn \__whu_professional_set_headfoot:
+  {
+    \setpagestyle { frontmatter }
+      {
+        \setheadrulewidth { 0.5pt }
+        \setfootrulewidth { 0pt }
+        \setcenterhead
+          [ 武汉大学硕士专业学位论文 ]
+          { 标题 } % TODO
+        \sethead [LR] {}
+        \setcenterfoot 
+          { 
+            -\,
+            \int_to_Roman:n { \c@page }  % 此处不能用 \thepage, 因为在 \frontmatter 和 \mainmatter 之间是小写罗马数字格式
+            \,- 
+          }
+      }
+    \setpagestyle { mainmatter } [ frontmatter ]
+      {
+        \setcenterfoot { -\, \int_to_arabic:n { \c@page } \,- }
+      }
+    \AddToHook { cmd/frontmatter/after }
+      {
+        \usepagestyle { frontmatter } 
+        \setuptitle [ chapter ] { pagestyle = frontmatter }
+      }
+    \AddToHook { cmd/mainmatter/after }
+      {
+        \usepagestyle { mainmatter } 
+        \setuptitle [ chapter ] { pagestyle = mainmatter }
+      }
+  }
+\AtEndPreamble { \__whu_set_headfoot: }
 
 
 
 % ---------- %
 % 章节标题设置 %
 % ---------- %
-\cs_new:Npn \whu_math_set_title:
+\cs_new:Npn \__whu_set_title:
   {
     \setsecnumdepth { 4 }
+    \setuponetitle { chapter }
+      {
+        break = \newpage
+      }
     \setuptitle [ chapter, section, subsection, subsubsection ]
       {
         format = \bfseries\heiti\raggedright
@@ -158,9 +395,7 @@
         \setuponetitle { chapter }  { mode = normal }
       }
   }
-\whu@ifmoduleloaded { struct }
-  { \whu_math_set_title: }
-  { \whu_after_class:n { \whu_math_set_title: } }
+\whu_after_class:n { \__whu_set_title: }
 
 
 
@@ -168,7 +403,7 @@
 % ------- %
 % 目录设置 %
 % ------- %
-\cs_new:Npn \whu_math_set_toc:
+\cs_new:Npn \__whu_math_set_toc:
   {
     % 目录标题
     \AddToHook { cmd/tableofcontents/before }
@@ -182,8 +417,8 @@
       { \pagenumbering { arabic } }
   }
 \whu@ifmoduleloaded { struct }
-  { \whu_math_set_toc: }
-  { \whu_after_class:n { \whu_math_set_toc: } }
+  { \__whu_math_set_toc: }
+  { \whu_after_class:n { \__whu_math_set_toc: } }
 
 
 
@@ -210,14 +445,88 @@
 
 
 % ------- %
+% 行距设置 %
+% ------- %
+\AddToHook { cmd/frontmatter/after }
+  {
+    \linespread{1.6} \selectfont
+  }
+
+
+
+% ------- %
+% 封面设置 %
+% ------- %
+% TODO: 下面的 cover 应该可以的融到 cover 库中
+\cs_new:Nn \__whu_cover_output:
+  {
+    \str_case:Vn \g__whu_master_degree_type_str
+      {
+        { academic } { \__whu_academic_master_cover: }
+        { professional } { \__whu_professional_master_cover: }
+      }
+  }
+\cs_new:Nn \__whu_academic_master_cover: 
+  {
+    \__whu_academic_master_cover_zh:
+    \newpage
+    \__whu_academic_master_cover_en:
+    \__whu_end_if_newpage:
+  }
+\cs_new:Nn \__whu_professional_master_cover: 
+  {
+    \__whu_professional_master_cover_zh:
+    \newpage
+    \__whu_professional_master_cover_en:
+    \__whu_end_if_newpage:
+  }
+\cs_new:Nn \__whu_academic_master_cover_zh: 
+  {
+    \__whu_academic_master_cover_zh_set:
+    \__whu_cover_zh:
+  }
+\cs_new:Nn \__whu_academic_master_cover_en: 
+  {
+    \__whu_academic_master_cover_en_set:
+    \__whu_cover_en:
+  }
+\cs_new:Nn \__whu_academic_master_cover_zh_set: { }
+\cs_new:Nn \__whu_academic_master_cover_en_set: { }
+\cs_new:Nn \__whu_professional_master_cover_zh: 
+  {
+    \__whu_professional_master_cover_zh_set:
+    \__whu_cover_zh:
+  }
+\cs_new:Nn \__whu_professional_master_cover_en: 
+  {
+    \__whu_professional_master_cover_en_set:
+    \__whu_cover_en:
+  }
+\cs_new:Nn \__whu_professional_master_cover_zh_set: { }
+\cs_new:Nn \__whu_professional_master_cover_en_set: { }
+
+
+% ----------- %
+% 论文原创性声明 %
+% ----------- %
+% 用 \AtBeginDocument 会报错
+\ctex_after_end_preamble:n
+  {
+    \usepagestyle { totalempty }
+    \__whu_cover_output:
+    \__whu_declaration_output: 
+  }
+
+
+% ------- %
 % 摘要设置 %
 % ------- %
 \WHULoadLibrary { abstract }
-\__whu_set_constant_family:n
+\__whu_set_title_constant_family:n
   {
     abstract =
       {
-        zh     = 摘 \qquad 要 ,
+        zh     = 摘 \qquad 要,
         zh-toc = 摘要,
         en     = ABSTRACT,
       },
@@ -227,18 +536,14 @@
         en = Key~words
       }
   }
-\cs_set:Nn \__whu_abstract_zh_begin: 
-  {
-    % 开头
-  }
-\cs_set:Nn \__whu_abstract_zh_end: 
-  {
-    % 结尾
-  }
-\cs_set:Nn \__whu_keywords_zh_format_set:
-  { \heiti \zihao{-4} }
-\cs_set:Nn \__whu_keywords_en_format_set:
-  { \bfseries \zihao{-4} }
+\cs_set:Nn \__whu_abstract_zh_format: 
+  { \songti \zihao { -4 } }
+\cs_set:Nn \__whu_abstract_en_format: 
+  { \songti \zihao { -4 } }
+\cs_set:Nn \__whu_keywords_constant_zh_format_set:
+  { \heiti \zihao { -4 } }
+\cs_set:Nn \__whu_keywords_constant_en_format_set:
+  { \bfseries \zihao { -4 } }
 \cs_set:Nn \__whu_keywords_zh_above_sep: 
   { \par \vfill }
 \cs_set:Nn \__whu_keywords_en_above_sep:
@@ -250,29 +555,9 @@
 % ---------- %
 % 参考文献设置 %
 % ---------- %
-\whu_after_class:n
-  {
-    \RequirePackage
-      [
-        backend      = biber,
-        bibstyle     = gb7714-2015,
-        sorting      = nty,
-        gbalign      = right,
-        citestyle    = gb7714-WHU,
-        gbnamefmt    = givenahead,
-        gbpunctin    = false
-      ]{biblatex}
-    \DefineBibliographyStrings { english } { in={} }
-    \DefineBibliographyStrings { english } { incn={} }
+\cs_set:Nn \__whu_bib_printbibliography_preset: 
+  { \setupnexttitle { format+ = \large } }
 
-    \DeclareCommandCopy { \whuprintbibliography } { \printbibliography }
-    \RenewDocumentCommand { \printbibliography } { }
-      {
-        \sloppy
-        \setupnexttitle { format+ = \large }  % 注意，只有当参考文献成功编译出来才会作用到参考文献的 chapter 上，否则就会作用到后面的比如致谢等章节上。因为 \setupnexttitle 是作用于下一个出现的章节命令上。
-        \whuprintbibliography [ heading = bibintoc ]
-      }
-  }
 
 
 
@@ -282,8 +567,8 @@
 \WHULoadLibrary { publications }
 \cs_set:Npn \__whu_publications_format_set:
   {
-    \setupnexttitle { mode = nonumber }  % \setuponetitle 改成 \setupnexttitle 可以避免参考文献未编译出来时，参考文献的 \setupnexttitle 设置影响到后面的章节标题
-    \__whu_set_constant_family:n
+    \setupnexttitle { mode = nonumber }  % \setuponetitle 改成 \setupnexttitle （注意不能是 \setupnexttitle+，这里利用的是“不带符号的 \setupnexttitle 只取最近的那个产生作用”）可以避免参考文献未编译出来时，参考文献的 \setupnexttitle 设置影响到后面的章节标题
+    \__whu_set_title_constant_family:n
       {
         publications =
           {
@@ -350,7 +635,7 @@
         mode    = nonumber,
         % format+ = \ziju{2},  % 是否添加似乎并不影响效果（可能因为只有两个字）
       }
-    \__whu_set_constant_family:n
+    \__whu_set_title_constant_family:n
       {
         acknowledgement =
           {
@@ -362,205 +647,11 @@
 
 
 
-
-% \newif\iflib\libfalse
-% \DeclareOption{forlib}{\libtrue}
-% \newif\ifsmd\smdfalse
-% \DeclareOption{smd}{\smdtrue}
-% \ProcessOptions
-
-
-
-
-% \newtoks\fenleihao      %中图分类号
-% \newtoks\bianhao         %学校编号
-% \newtoks\UDC             %《国际十进制分类法UDC》的类号
-% \newtoks\miji            %密级
-% \newtoks\Cmajor          %学科专业中文名
-% \newtoks\Emajor          %学科专业英文名
-% \newtoks\Especiality      %研究方向
-% \newtoks\Cspeciality      %研究方向
-% \newtoks\Edate           %英文日期
-% \newtoks\Etitle          %英文题目
-% \newtoks\Eauthor         %作者英文名
-% \newtoks\Esupervisor     %指导教师英文名
-% \newtoks\Csupervisor     %指导教师中文名
-% \newtoks\Schoolname      %学院英文名
-% \newtoks\StudentNumber  %学号,硕士用
-
-
-% %%%=== 封面 ===%%%
-% \def\maketitle{%
-%   \null
-%   \thispagestyle{empty}%
-%   %\vspace*{-2cm}
-%   \begin{center}\leavevmode
-%     {\fangsong \zihao{4}%
-%     \begin{tabular}{lp{2cm}p{5cm}lp{2cm}l}
-%       \raisebox{-0.5ex}[0pt]{\makebox[1.5cm][s]{分\hfill 类\hfill 号}} & {}\hfill\raisebox{-0.5ex}[0pt]{\the\fenleihao}\hfill{} &  &
-%       \raisebox{-0.5ex}[0pt]{\makebox[1.5cm][s]{密\hfill 级}} & {}\hfill\raisebox{-0.5ex}[0pt]{\the\miji}\hfill{} & \\ \cline{2-2}\cline{5-5}
-%       \raisebox{-0.5ex}[0pt]{\makebox[1.5cm][s]{U\hfill D\hfill C} } & {}\hfill\raisebox{-0.5ex}[0pt]{\the\UDC}\hfill{}      &  &
-%       \raisebox{-0.5ex}[0pt]{\makebox[1.5cm][s]{编\hfill 号}} & {}\hfill\raisebox{-0.5ex}[0pt]{\the\bianhao}\hfill{}   & \\ \cline{2-2}\cline{5-5}
-%     \end{tabular}
-%     }
-%     \par
-%     \vspace*{15mm} %插入空白
-%     {\songti \zihao{2} % 武汉大学
-%     \includegraphics[width=0.4\textwidth]{wudaname.eps}
-%     \\[3mm]   \ifsmd  \ziju{0.5} 硕士专业学位论文\else \ziju{1} 硕士学位论文\fi}\\
-%     \vspace{2cm}
-%     {\kaishu \zihao{1}  \@title \par}%
-% %    \vspace{4cm}
-%      \vfill\vfill\vfill
-%     {\songti\zihao{4}
-%     \ifsmd 
-%     \begin{tabular}{cp{5.5cm}c}
-%       \raisebox{-3ex}[0pt]{\makebox[4.8cm][s]{研\hfill 究\hfill 生\hfill 姓\hfill 名: }} & {\songti {}\raisebox{-3ex}[0pt]{\@author}\hfill{}} & \\[3ex]
-%       \raisebox{-3ex}[0pt]{\makebox[4.8cm][s]{学\hfill 号: }} & {\songti {}\raisebox{-3ex}[0pt]{\the\StudentNumber}\hfill{}} & \\[3ex]
-%       \raisebox{-3ex}[0pt]{\makebox[4.8cm][s]{指\hfill 导\hfill 教\hfill 师\hfill 姓\hfill 名、\hfill 职\hfill 称: }} & {\songti
-%       {}\raisebox{-3ex}[0pt]{\the\Csupervisor}\hfill{}} & \\[3ex] % \cline{2-2}
-%       \raisebox{-3ex}[0pt]{\makebox[4.8cm][s]{专\hfill 业\hfill 类\hfill 别\hfill (领\hfill 域): }} & {\songti {}\raisebox{-3ex}[0pt]{\the\Cmajor}\hfill{}} &
-%       \\[3ex]
-%      \end{tabular}    
-%     \else  
-%     \begin{tabular}{cp{5.5cm}c}
-%       \raisebox{-3ex}[0pt]{\makebox[4.8cm][s]{研\hfill 究\hfill 生\hfill 姓\hfill 名: }} & {\songti {}\raisebox{-3ex}[0pt]{\@author}\hfill{}} & \\[3ex]
-%       \raisebox{-3ex}[0pt]{\makebox[4.8cm][s]{学\hfill 号: }} & {\songti {}\raisebox{-3ex}[0pt]{\the\StudentNumber}\hfill{}} & \\[3ex]
-%       \raisebox{-3ex}[0pt]{\makebox[4.8cm][s]{指\hfill 导\hfill 教\hfill 师\hfill 姓\hfill 名、\hfill 职\hfill 称: }} & {\songti
-%       {}\raisebox{-3ex}[0pt]{\the\Csupervisor}\hfill{}} & \\[3ex] % \cline{2-2}
-%       \raisebox{-3ex}[0pt]{\makebox[4.8cm][s]{专\hfill 业\hfill 名\hfill 称: }} & {\songti {}\raisebox{-3ex}[0pt]{\the\Cmajor}\hfill{}} &
-%       \\[3ex]
-%       \raisebox{-3ex}[0pt]{\makebox[4.8cm][s]{研\hfill 究\hfill 方\hfill 向: }} & {\songti{}\raisebox{-3ex}[0pt]{\the\Cspeciality}\hfill{}} & \\[3ex]
-%      \end{tabular}
-%      \fi
-%     }
-%     \par
-%     \vspace{25mm}
-%     {
-%       {\heiti \zihao{3} \@date \par}%
-%     }
-%   \end{center}%
-%   \null
-%   \iflib
-%   \else
-%   \newpage
-%   \thispagestyle{empty}
-%   \cleardoublepage
-%   \fi
-%   }
-
-% %------------------------ Abstract & Keywords -------------------------
-
-
-% \newenvironment{cnabstract}{
-%     \newpage
-%     \chapter[\cnabstractname]{\ziju{2}{\cnabstractname}}   %%%终于解决了书签乱码的问题 2005-04-12.huangzh
-%     \songti\zihao{-4}
-%     \@afterheading}
-%     {\par}
-
-% \newenvironment{enabstract}{
-%     \newpage
-%     \chapter{\enabstractname}
-%     \songti\zihao{-4}
-%     \@afterheading}
-%     {\par}
-% %%------------------------常用宏包-----------------------------------
-% \RequirePackage{amsmath,amssymb}% AMSLaTeX宏包.
-% \RequirePackage[amsmath,thmmarks]{ntheorem}
-% \RequirePackage{graphicx}                 % 图形
-% \RequirePackage{color,xcolor}             %支持彩色
-% \RequirePackage{cite} % 参考文献引用, 得到形如 [3-7] 的样式.
-% \RequirePackage{url}
-% \RequirePackage{enumerate}
-% %%----------------------- Theorems -----------------------------------
-% \theoremstyle{plain}
-% \theoremheaderfont{\heiti}
-% \theorembodyfont{\songti} \theoremindent0em
-% %\theorempreskip{0pt}
-% %\theorempostskip{0pt}
-% %\theoremseparator{\hspace{1em}}
-% \theoremnumbering{arabic}
-% %\theoremsymbol{} %定理结束时自动添加的标志
-% \newtheorem{theorem}{\hspace{2em}定理}[section]
-% \newtheorem{definition}{\hspace{2em}定义}[section]
-% \newtheorem{lemma}{\hspace{2em}引理}[section]
-% \newtheorem{corollary}{\hspace{2em}推论}[section]
-% \newtheorem{proposition}{\hspace{2em}性质}[section]
-% \newtheorem{example}{\hspace{2em}例}[section]
-% \newtheorem{remark}{\hspace{2em}注}[section]
-
-% \theoremstyle{nonumberplain}
-% \theoremheaderfont{\heiti}
-% \theorembodyfont{\normalfont \rm \songti}
-% \theoremindent0em \theoremseparator{\hspace{1em}}
-% \theoremsymbol{$\square$}
-% \newtheorem{proof}{\hspace{2em}证明}
-
-% %%%--- \upcite ----------------------------------------
-% \newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}  %自定义新命令\upcite, 使参考文献引用以上标出现
-
-%%%%%%%-------------------------------------------------
-% %%%===  suppress extra inter-line spacing in \list environments
-% \makeatletter \setlength\partopsep{0pt}
-% \def\@listI{\leftmargin\leftmargini
-%             \parsep 0pt
-%             \topsep \parsep
-%             \itemsep \parsep}
-% \@listI
-% \def\@listii {\leftmargin\leftmarginii
-%               \labelwidth\leftmarginii
-%               \advance\labelwidth-\labelsep
-%               \parsep    \z@ \@plus\z@  \@minus\z@
-%               \topsep    \parsep
-%               \itemsep   \parsep}
-% \def\@listiii{\leftmargin\leftmarginiii
-%               \labelwidth\leftmarginiii
-%               \advance\labelwidth-\labelsep
-%               \parsep    \z@ \@plus\z@  \@minus\z@
-%               \topsep    \parsep
-%               \itemsep   \parsep}
-% \def\@listiv{\leftmargin\leftmarginiv
-%               \labelwidth\leftmarginiv
-%               \advance\labelwidth-\labelsep
-%               \parsep    \z@ \@plus\z@  \@minus\z@
-%               \topsep    \parsep
-%               \itemsep   \parsep}
-% \def\@listv{\leftmargin\leftmarginv
-%               \labelwidth\leftmarginv
-%               \advance\labelwidth-\labelsep
-%               \parsep    \z@ \@plus\z@  \@minus\z@
-%               \topsep    \parsep
-%               \itemsep   \parsep}
-% \def\@listvi{\leftmargin\leftmarginvi
-%               \labelwidth\leftmarginvi
-%               \advance\labelwidth-\labelsep
-%               \parsep    \z@ \@plus\z@  \@minus\z@
-%               \topsep    \parsep
-%               \itemsep   \parsep}
-% %
-% % Change default margins for \list environments
-% \setlength\leftmargini   {2\ccwd} \setlength\leftmarginii
-% {\leftmargini} \setlength\leftmarginiii {\leftmargini}
-% \setlength\leftmarginiv  {\leftmargini} \setlength\leftmarginv
-% {\ccwd} \setlength\leftmarginvi  {\ccwd} \setlength\leftmargin
-% {\leftmargini} \setlength\labelsep      {.5\ccwd}
-% \setlength\labelwidth    {\leftmargini}
-% %
-% \setlength\listparindent{2\ccwd}
-% % Change \listparindent to 2\ccwd in \list
-% \def\list#1#2{\ifnum \@listdepth >5\relax \@toodeep
-%      \else \global\advance\@listdepth\@ne \fi
-%   \rightmargin \z@ \listparindent2\ccwd \itemindent \z@
-%   \csname @list\romannumeral\the\@listdepth\endcsname
-%   \def\@itemlabel{#1}\let\makelabel\@mklab \@nmbrlistfalse #2\relax
-%   \@trivlist
-%   \parskip\parsep \parindent\listparindent
-%   \advance\linewidth -\rightmargin \advance\linewidth -\leftmargin
-%   \advance\@totalleftmargin \leftmargin
-%   \parshape \@ne \@totalleftmargin \linewidth
-%   \ignorespaces}
-
-
-% %%%=== 图片路径=== %%%
-% \graphicspath{{figures/}}        % 图片放在 figures 文件夹.
+% ------------------------- %
+% 武汉大学学位论文使用授权协议书 %
+% ------------------------- %
+\AtEndDocument { \__whu_authorization_output: }
+% 如果把 % \cs_set_eq:NN \clearpage \relax
+% \cs_set_eq:NN \cleardoublepage \relax
+% 就失效了
+% \AddToHook{env/document/end}{ \__whu_authorization_output: }

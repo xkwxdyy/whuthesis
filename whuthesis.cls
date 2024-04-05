@@ -25,24 +25,103 @@
 \def\whu@version{0.0.1}
 \ProvidesExplClass{whuthesis}{\whu@date}{\whu@version}{Thesis template for Wuhan University}
 
+
+\str_new:N \g__whu_type_str
+\clist_new:N \g__whu_to_book_clist
+\cs_new:Npn \__whu_type_for_library_setting: 
+  {
+    \PassOptionsToClass 
+      { a4paper, twoside, openany } { book }
+    % \frontmatter 和 \mainmatter 里面都含有 \clearpage 会产生空白页，要去掉
+    % https://tex.stackexchange.com/questions/583508/openany-still-producing-extra-page
+    
+  }
+\cs_set_eq:NN \__whu_clearpage: \clearpage
+% \cs_set_eq:NN \clearpage \relax
+% \cs_set_eq:NN \cleardoublepage \relax
+\cs_new:Npn \__whu_type_for_print_setting: 
+  {
+    \PassOptionsToClass 
+      { a4paper, twoside } { book }
+  }
+\cs_new:Npn \__whu_type_electronic_setting: 
+  {
+    \PassOptionsToClass 
+      { a4paper, twoside } { book }
+  }
+% \cs_new:Npn \__whu_type_for_library_setting: 
+%   {}
+% \cs_new:Npn \__whu_type_for_print_setting: { }
+% \cs_new:Npn \__whu_type_electronic_setting: { }
+
+
 \keys_define:nn { whu/class }
   {
     library .code:n = 
       { \PassOptionsToPackage { library = {#1} } { whu } }
   }
+\keys_define:nn { whu/class/type }
+  {
+    electronic .code:n = 
+      {
+        \str_gset:Nn \g__whu_type_str { electronic }
+        \clist_gput_right:Nn \g__whu_to_book_clist { a4paper, twoside }
+      }
+  , for-print .code:n = 
+    {
+      \str_gset:Nn \g__whu_type_str { for-print }
+      \clist_gput_right:Nn \g__whu_to_book_clist { a4paper, twoside }
+    }
+  , for-library .code:n = 
+    {
+      \str_gset:Nn \g__whu_type_str { for-library }
+      \clist_gput_right:Nn \g__whu_to_book_clist { a4paper, twoside, openany }
+    }
+  }
 
-
-\ProcessKeyOptions [ whu / class ]
+\ProcessKeysOptions { whu / class }
 
 % 消除 xeCJK 的警告
 \PassOptionsToPackage { silent } { xeCJK }
+
 
 
 \seq_put_right:Nx \l_file_search_path_seq { ./module }
 \seq_put_right:Nx \l_file_search_path_seq { ./library }
 \seq_put_right:Nx \l_file_search_path_seq { ./library-cus }
 \RequirePackage { whu }
-
-\LoadClass { book }
+% \str_case:Vn \g__whu_type_str
+%   {
+%     { electronic } { \__whu_type_electronic_setting: }
+%     { for-print } { \__whu_type_for_print_setting: }
+%     { for-library } { \__whu_type_for_library_setting: }
+%   }
+% \clist_gput_right:Nn \g__whu_to_book_clist 
+% \PassOptionsToClass
+%   {
+%     \g__whu_to_book_clist
+%   }
+%   { book }
+\LoadClass [ a4paper, twoside, openany ] { book }
 
 \RequirePackage { ctex }
+\RequirePackage { graphicx }
+\graphicspath { {./figures/} {./logo/} } 
+
+
+\RequirePackage { tikzpagenodes }
+\ExplSyntaxOff
+\usetikzlibrary { positioning }
+\ExplSyntaxOn
+
+\RequirePackage { tabularray }
+
+
+\renewcommand\frontmatter{%
+    % \cleardoublepage
+  \@mainmatterfalse
+  \pagenumbering{roman}}
+\renewcommand\mainmatter{%
+    % \cleardoublepage
+  \@mainmattertrue
+  \pagenumbering{arabic}}

@@ -1,0 +1,27 @@
+\WHUProvideExplLibrary{bib}{\whu@date}{\whu@version}{bib configuration}
+
+\whu_after_class:n
+  {
+    \RequirePackage
+      [
+        backend      = biber,
+        bibstyle     = gb7714-2015,
+        sorting      = nty,
+        gbalign      = right,
+        citestyle    = gb7714-WHU,
+        gbnamefmt    = givenahead,
+        gbpunctin    = false
+      ]{biblatex}
+    \DefineBibliographyStrings{english}{in={}}
+    \DefineBibliographyStrings{english}{incn={}}
+
+    \NewCommandCopy { \whuprintbibliography } { \printbibliography }
+    \RenewDocumentCommand { \printbibliography } { }
+      {
+        \sloppy
+        \__whu_bib_printbibliography_preset:
+        \whuprintbibliography [ heading = bibintoc ]
+      }
+  }
+
+\cs_new:Nn \__whu_bib_printbibliography_preset: { }

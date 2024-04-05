@@ -1,0 +1,75 @@
+\WHULibraryDelayedUntil* {}
+\WHUDependency{ package = { amsthm, thmtools } }
+\WHUProvideExplLibrary{math.theorem}{\whu@date}{\whu@version}{define math theorem environment}
+
+% 定理类环境
+% 去掉.号，但只能通过新定义 style 的方式进行
+\declaretheoremstyle
+  [
+    headpunct     = {},
+    postheadspace = { 0.5em },
+    headindent    = 2em,
+    headfont      = \heiti
+  ]
+  { whustyle }
+\cs_new:Npn \__whu_declare_theorem_with_counter_within:n #1
+  {
+    \declaretheorem
+      [
+        style = whustyle,
+        name =  \clist_item:nn {#1} {1} ,
+        refname = \clist_item:nn {#1} {2} ,
+        within = \clist_item:nn {#1} {3} ,
+      ]
+      { \clist_item:nn {#1} {4} }
+  }
+\cs_new:Npn \__whu_declare_theorem_with_counter_sibling:n #1
+  {
+    \declaretheorem
+      [
+        style   = whustyle ,
+        name    = \clist_item:nn {#1} {1} ,
+        refname = \clist_item:nn {#1} {2} ,
+        sibling = \clist_item:nn {#1} {3} ,
+      ]
+      { \clist_item:nn {#1} {4} }
+  }
+
+
+\clist_map_function:nN
+  {
+    { 定理, 定理, section, theorem },
+    { 例, 例, section, example },
+    { 问题, 问题, section, question },
+    { 定义, 定义, section, definition },
+    { 性质, 性质, section, property },
+    { 命题, 命题, section, proposition },
+    { 推论, 推论, section, corollary },
+    { 引理, 引理, section, lemma },
+    { 公理, 公理, section, axiom },
+    { 反例, 反例, section, counterexample },
+    { 猜想, 猜想, section, conjecture },
+    { 断言, 断言, section, claim },
+    { 注, 注, section, remark }
+  }
+  \__whu_declare_theorem_with_counter_within:n
+
+
+% 重定义 proof 环境的样式
+\RenewDocumentEnvironment { proof } { O{\proofname} +b }
+  {
+    \par
+    \pushQED { \qed }
+    \normalfont \topsep6 \p@ \@plus6 \p@ \relax
+    \trivlist
+    \item \relax
+    \group_begin:
+      \hspace*{2em}
+      \heiti #1
+    \group_end:
+    \hspace{1em} \ignorespaces
+    #2
+  }
+  {
+    \popQED \endtrivlist \@endpefalse
+  }

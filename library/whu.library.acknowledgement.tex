@@ -7,7 +7,9 @@
   {
     \__whu_acknowledgement_format_set:
     \chapter
-      [ \__whu_use_constant:nn { acknowledgement } { zh-toc } ]
-      { \__whu_use_constant:nn { acknowledgement } { zh } }
+      [ \__whu_use_title_constant:nn { acknowledgement } { zh-toc } ]
+      { \__whu_use_title_constant:nn { acknowledgement } { zh } }
   }
-  {}
+  {
+    % \cleardoublepage
+  }

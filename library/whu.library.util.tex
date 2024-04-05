@@ -1,0 +1,62 @@
+\WHUProvideExplLibrary{util}{\whu@date}{\whu@version}{basic utilities}
+
+
+\cs_generate_variant:Nn \msg_error:nnn { nnx }
+
+
+
+\cs_new:Npn \__whu_get_text_width:Nn #1#2
+  {
+    \hbox_set:Nn \l__whu_tmpa_box {#2}
+    \dim_set:Nn #1 { \box_wd:N \l__whu_tmpa_box }
+  }
+\cs_generate_variant:Nn \__whu_get_text_width:Nn { NV }
+
+\cs_new:Npn \__whu_get_max_text_width:NN #1#2
+  {
+    \group_begin:
+      \clist_set_eq:NN \l__whu_tmpa_clist #2
+      \bool_until_do:nn { \clist_if_empty_p:N \l__whu_tmpa_clist }
+        {
+          \clist_pop:NN \l__whu_tmpa_clist \l__whu_tmpa_tl
+          \__whu_get_text_width:NV \l__whu_tmpa_dim \l__whu_tmpa_tl
+          \dim_gset:Nn #1 { \dim_max:nn {#1} { \l__whu_tmpa_dim } }
+        }
+    \group_end:
+  }
+
+\cs_new_protected:Npn \__whu_spread_box:nn #1#2  % 需要 pretected, 否则被 x 展开时会报错
+  {
+    \mode_leave_vertical:
+    \hbox_to_wd:nn {#1}
+      { \tl_map_inline:nn {#2} { ##1 \hfil } \unskip }
+  }
+
+\prop_const_from_keyval:Nn \l__whu_month_prop
+  {
+    1  = Jan.,
+    2  = Feb.,
+    3  = Mar.,
+    4  = Apr.,
+    5  = May,
+    6  = Jun.,
+    7  = Jul.,
+    8  = Aug.,
+    9  = Sept.,
+    10 = Oct.,
+    11 = Nov.,
+    12 = Dec.,
+  }
+
+\cs_new:Npn \__whu_month_cover_to_english:n #1
+  {
+    \prop_get:NnN \l__whu_month_prop {#1} \l__whu_tmpa_tl
+    \l__whu_tmpa_tl
+  }
+\cs_generate_variant:Nn \__whu_month_cover_to_english:n { x }
+
+\cs_new:Nn \__whu_end_if_newpage:
+  {
+    \str_if_eq:VnF \g__whu_type_str { for-library }
+      { \cleardoublepage }
+  }

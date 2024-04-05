@@ -1,0 +1,76 @@
+\WHUProvideExplLibrary{information}{\whu@date}{\whu@version}{user information}
+
+
+\clist_new:N \g__whu_information_keywords_zh_clist
+\clist_new:N \g__whu_information_keywords_en_clist
+\keys_define:nn { whu/information }
+  {
+    keywords/zh .clist_gset:N = \g__whu_information_keywords_zh_clist
+  , keywords/en .clist_gset:N = \g__whu_information_keywords_en_clist
+  , keywords    .code:n = 
+    { \keys_set:nn { whu/information/keywords } { #1 } }
+  }
+
+
+% ---------------------------------------- %
+% 用于封面信息的 \g__whu_information_..._tl %
+% -----------------------------------------%
+
+\cs_new:Nn \__whu_set_information_family:n  % 不能用 protected 
+  {
+    \keys_set:nn { whu/information } {#1}
+  }
+\cs_new_protected:Nn \__whu_define_information_family:n
+  {
+    \keys_define:nn { whu/information }
+      {
+        #1/zh     .code:n =
+          { \__whu_set_information:nnn {#1} { \l_keys_key_str } {##1} }
+      , #1/en     .code:n =
+          { \__whu_set_information:nnn {#1} { \l_keys_key_str } {##1} }
+      , #1        .code:n = 
+          { \keys_set:nn { whu/information/#1 } { ##1 } }
+      }
+  }
+\cs_new_protected:Nn \__whu_set_information:nnn
+  {
+    \tl_new:c { g__whu_information_ #1/#2 _tl }
+    \tl_set:cn { g__whu_information_ #1/#2 _tl } {#3}
+  }
+\cs_new:Nn \__whu_use_information:nn
+  {
+    \tl_if_exist:cT { g__whu_information_ #1/#2 _tl }
+      { \tl_use:c { g__whu_information_ #1/#2 _tl } }
+  }
+\cs_new_protected:Nn \__whu_get_information_csname:nn
+  {
+    g__whu_information_ #1/#2 _tl
+  }
+\prg_new_conditional:Nnn \__whu_information_if_exist:nn { p , T , F , TF }
+  {
+    \tl_if_exist:cTF { \__whu_get_information_csname:nn {#1} {#2} }
+      \prg_return_true:
+      \prg_return_false:
+  }
+
+\clist_map_function:nN
+  {
+    clc,
+    thesis-type,
+    title,
+    information,
+    author,
+    student-id,
+    supervisor,
+    major,
+    professional-field,
+    department,
+    date,
+    year,
+    month
+  }
+  \__whu_define_information_family:n
+
+
+
+\ProcessKeyOptions [ whu/information ]

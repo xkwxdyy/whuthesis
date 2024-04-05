@@ -1,85 +1,122 @@
 \WHUProvideExplLibrary{constant}{\whu@date}{\whu@version}{constant tokens}
 
 
-% ----------------------- %
-% \g__whu_constant_..._tl %
-% ----------------------- %
 
+% ------------------------------------------ %
+% 用于章节标题的 \g__whu_title_constant_..._tl %
+% ------------------------------------------ %
 
 % https://github.com/CTeX-org/forum/issues/309#issuecomment-2030804140
 % by @muzimuzhi
-\NewDocumentCommand { \whudefineconstant } { m }
+\cs_new:Nn \__whu_set_title_constant_family:n  % 不能用 protected 
   {
-    \__whu_define_constant_family:n {#1}
+    \keys_set:nn { whu/constant/title } {#1}
   }
-\NewDocumentCommand { \whusetconstant } { m }
+\cs_new_protected:Nn \__whu_define_title_constant_family:n
   {
-    \__whu_set_constant_family:n {#1}
-  }
-\cs_new:Nn \__whu_set_constant_family:n  % 不能用 protected 
-  {
-    \keys_set:nn { whu/constant } {#1}
-  }
-\cs_new_protected:Nn \__whu_define_constant_family:n
-  {
-    \keys_define:nn { whu/constant }
+    \keys_define:nn { whu/constant/title }
       {
         #1/zh     .code:n =
-          { \__whu_set_constant:nnn {#1} { \l_keys_key_str } {##1} }
+          { \__whu_set_title_constant:nnn {#1} { \l_keys_key_str } {##1} }
       , #1/zh-toc .code:n =
-          { \__whu_set_constant:nnn {#1} { \l_keys_key_str } {##1} }
+          { \__whu_set_title_constant:nnn {#1} { \l_keys_key_str } {##1} }
       , #1/en     .code:n =
-          { \__whu_set_constant:nnn {#1} { \l_keys_key_str } {##1} }
+          { \__whu_set_title_constant:nnn {#1} { \l_keys_key_str } {##1} }
       , #1/en-toc .code:n =
-          { \__whu_set_constant:nnn {#1} { \l_keys_key_str } {##1} }
+          { \__whu_set_title_constant:nnn {#1} { \l_keys_key_str } {##1} }
       , #1        .code:n = 
           {
-            \keys_set:nn { whu/constant/#1 } { ##1 }
+            \keys_set:nn { whu/constant/title/#1 } { ##1 }
             % 没写 zh-toc 的话，就默认和 zh 相同
             \bool_lazy_and:nnT
-              { \__whu_constant_if_exist_p:nn {#1} {zh} }
-              { ! \__whu_constant_if_exist_p:nn {#1} {zh-toc} }
+              { \__whu_title_constant_if_exist_p:nn {#1} {zh} }
+              { ! \__whu_title_constant_if_exist_p:nn {#1} {zh-toc} }
               {
-                \__whu_set_constant:nnn {#1} {zh-toc}
-                  { \__whu_use_constant:nn {#1} {zh} }
+                \__whu_set_title_constant:nnn {#1} {zh-toc}
+                  { \__whu_use_title_constant:nn {#1} {zh} }
               }
             % 没写 en-toc 的话，就默认和 en 相同
             \bool_lazy_and:nnT
-              { \__whu_constant_if_exist_p:nn {#1} {en} }
-              { ! \__whu_constant_if_exist_p:nn {#1} {en-toc} }
+              { \__whu_title_constant_if_exist_p:nn {#1} {en} }
+              { ! \__whu_title_constant_if_exist_p:nn {#1} {en-toc} }
               {
-                \__whu_set_constant:nnn {#1} {en-toc}
-                  { \__whu_use_constant:nn {#1} {en} }
+                \__whu_set_title_constant:nnn {#1} {en-toc}
+                  { \__whu_use_title_constant:nn {#1} {en} }
               }
           }
       }
   }
-\cs_new_protected:Nn \__whu_set_constant:nnn
+\cs_new_protected:Nn \__whu_set_title_constant:nnn
   {
     % \tl_const:cn { c__whu_constant_ #1/#2 _tl } {#3}
     % @muzimuzhi: 建议改为变量类型
-    \tl_new:c { g__whu_constant_ #1/#2 _tl }
-    \tl_set:cn { g__whu_constant_ #1/#2 _tl } {#3}
+    \tl_new:c { g__whu_title_constant_ #1/#2 _tl }
+    \tl_set:cn { g__whu_title_constant_ #1/#2 _tl } {#3}
   }
 
 % https://github.com/Sophanatprime/cus/issues/17
-% 在写入目录文件、标签时，\protected 的宏不会被展开。\__whu_use_constant:nn 不能定义成 \protected。
+% 在写入目录文件、标签时，\protected 的宏不会被展开。\__whu_use_title_constant:nn 不能定义成 \protected。
 % > 一个命令能否展开、会不会展开、怎么展开和它所处的上下文有关。 interface3.pdf 里标记 ⋆ 的是可以用于 `e` 和 `f` 参数，标记 ✩ 可以用于 `e` 参数，用在这些参数中它们被完全展开。 写入目录文件、标签、书签等，和用在 `e` 参数中类似，不过用 `\DeclareRobustCommand` 定义的命令也不会展开，所以 `\textbf` 这些可以安全的写入目录文件。
-% > `\protected` 命令不会在 `e` 参数中展开，但出现在控制序列的名称中会展开（所以 `\__whu_get_constant_csname:nn` 能生效）。 所以使用 `\cs_new:Npn \__whu_use_constant:nn` 会在 `e` 参数中展开为 `\tl_use:c { g__whu_constant_ #1/#2 _tl }`，`\tl_use:c` 还可以展开，但它先把后面那个变成一个控制序列，变成了 `\tl_use:N <...>`，`\tl_use:N` 还可以展开，它的作用是展开为那个 tl 的内容，而这个 tl 的内容并没有 LaTeX3 名称的命令，所以能够正确读取。
-\cs_new:Nn \__whu_use_constant:nn
+% > `\protected` 命令不会在 `e` 参数中展开，但出现在控制序列的名称中会展开（所以 `\__whu_get_title_constant_csname:nn` 能生效）。 所以使用 `\cs_new:Npn \__whu_use_title_constant:nn` 会在 `e` 参数中展开为 `\tl_use:c { g__whu_title_constant_ #1/#2 _tl }`，`\tl_use:c` 还可以展开，但它先把后面那个变成一个控制序列，变成了 `\tl_use:N <...>`，`\tl_use:N` 还可以展开，它的作用是展开为那个 tl 的内容，而这个 tl 的内容并没有 LaTeX3 名称的命令，所以能够正确读取。
+\cs_new:Nn \__whu_use_title_constant:nn
   {
-    \tl_use:c { g__whu_constant_ #1/#2 _tl }
+    \tl_if_exist:cT { g__whu_title_constant_ #1/#2 _tl }
+      { \tl_use:c { g__whu_title_constant_ #1/#2 _tl } }
   }
-\cs_new_protected:Nn \__whu_get_constant_csname:nn
+\cs_new_protected:Nn \__whu_get_title_constant_csname:nn
   {
-    g__whu_constant_ #1/#2 _tl
+    g__whu_title_constant_ #1/#2 _tl
   }
-\prg_new_conditional:Nnn \__whu_constant_if_exist:nn { p , T , F , TF }
+\prg_new_conditional:Nnn \__whu_title_constant_if_exist:nn { p , T , F , TF }
   {
-    \tl_if_exist:cTF { \__whu_get_constant_csname:nn {#1} {#2} }
+    \tl_if_exist:cTF { \__whu_get_title_constant_csname:nn {#1} {#2} }
       \prg_return_true:
       \prg_return_false:
   }
+
+
+
+% ---------------------------------------- %
+% 用于封面信息的 \g__whu_information_constant_..._tl %
+% -----------------------------------------%
+
+\cs_new:Nn \__whu_set_information_constant_family:n  % 不能用 protected 
+  {
+    \keys_set:nn { whu/constant/information } {#1}
+  }
+\cs_new_protected:Nn \__whu_define_information_constant_family:n
+  {
+    \keys_define:nn { whu/constant/information }
+      {
+        #1/zh     .code:n =
+          { \__whu_set_information_constant:nnn {#1} { \l_keys_key_str } {##1} }
+      , #1/en     .code:n =
+          { \__whu_set_information_constant:nnn {#1} { \l_keys_key_str } {##1} }
+      , #1        .code:n = 
+          { \keys_set:nn { whu/constant/information/#1 } { ##1 } }
+      }
+  }
+\cs_new_protected:Nn \__whu_set_information_constant:nnn
+  {
+    \tl_new:c { g__whu_information_constant_ #1/#2 _tl }
+    \tl_set:cn { g__whu_information_constant_ #1/#2 _tl } {#3}
+  }
+\cs_new:Nn \__whu_use_information_constant:nn
+  {
+    \tl_if_exist:cT { g__whu_information_constant_ #1/#2 _tl }
+      { \tl_use:c { g__whu_information_constant_ #1/#2 _tl } }
+  }
+\cs_new_protected:Nn \__whu_get_information_constant_csname:nn
+  {
+    g__whu_information_constant_ #1/#2 _tl
+  }
+\prg_new_conditional:Nnn \__whu_information_constant_if_exist:nn { p , T , F , TF }
+  {
+    \tl_if_exist:cTF { \__whu_get_information_constant_csname:nn {#1} {#2} }
+      \prg_return_true:
+      \prg_return_false:
+  }
+
 
 
 % 初始化一些 constant
@@ -90,4 +127,26 @@
     publications,
     acknowledgement
   }
-  \__whu_define_constant_family:n
+  \__whu_define_title_constant_family:n
+\clist_map_function:nN
+  {
+    clc,  % 分类号:《中国图书资料分类法》的类号
+    secret-level,  % 密级
+    udc,  % 《国际十进制分类法UDC》的类号
+    school-id,  % 学校编号，10486 是武汉大学的编号
+    author,  % 作者
+    student-id,  % 学号
+    supervisor,  % 导师
+    major,  % 专业
+    professional-field,  % 研究方向
+    universityname,  % 大学名称
+  }
+  \__whu_define_information_constant_family:n
+\__whu_set_information_constant_family:n
+  {
+    universityname = 
+      {
+        zh = 武汉大学,
+        en = Wuhan~University
+      }
+  }

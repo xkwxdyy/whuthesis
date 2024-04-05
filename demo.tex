@@ -1,18 +1,25 @@
 \documentclass[library = {math.master}]{whuthesis}
 \usepackage{zhlipsum}
-\usepackage{xcolor}
-\whusetup[type]{electronic}
 
+
+\whusetup[master]{degree-type = academic}
+% \whusetup[master]{degree-type = professional}
+
+\whusetup[information]{
+  keywords = {
+    zh = {测试, 模板},
+    en = {test, template}
+  }
+}
 
 \addbibresource{demo.bib}
 \enablecombinedlist
 
 
-
-
+% \ExplSyntaxOn
+% \AtEndDocument { \__whu_authorization_output: }
+% \ExplSyntaxOff
 \begin{document}
-
-
 \frontmatter
 
 \begin{abstract}
@@ -30,20 +37,21 @@
 
 
 \begin{abstract*}
-  摘要分中文和英文两种，中文在前，英文在后，博士论文中文摘要一般 800～1500 个汉字，硕士论文中文摘要一般 500～1000 个汉字。
-  英文摘要的篇幅参照中文摘要。
+  Abstracts are in Chinese and English, with Chinese in the front and English in the back. The Chinese abstracts of doctoral dissertations are generally 800-1500 Chinese characters, and the Chinese abstracts of master's dissertations are generally 500-1000 Chinese characters.
+  The length of the English abstract should refer to that of the Chinese abstract.
 
-  关键词另起一行并隔行排列于摘要下方，左顶格，中文关键词间空一字或用分号“，”隔开，英文关键词之间用逗号“,”或分号“;”隔开。
+  The keywords are arranged in a separate line below the abstract, top left, with one word between the Chinese keywords or separated by a semicolon ",", and the English keywords are separated by a comma "," or a semicolon ";".
 
-  中文摘要是论文内容的总结概括，应简要说明论文的研究目的、基本研究内容、研究方法或过程、结果和结论，突出论文的创新之处。
-  摘要应具有独立性和自明性，即不用阅读全文，就能获得论文必要的信息。
-  摘要中不宜使用公式、图表，不引用文献。
+  The Chinese abstract is a summary of the content of the paper, which should briefly explain the research purpose, basic research content, research method or process, results and conclusions, and highlight the innovation of the paper.
+  The abstract should be independent and self-explanatory, i.e. the necessary information of the thesis can be obtained without reading the whole text.
+  Formulas and charts should not be used in the abstract, and literature should not be cited.
 
-  中文关键词是为了文献标引工作从论文中选取出来用以表示全文主题内容信息的单词和术语，一般 3～8 个词，要求能够准确概括论文的核心内容。
+  Chinese keywords are words and terms selected from the dissertation for the purpose of citation to express the information of the whole paper, generally 3-8 words, which are required to summarize the core content of the dissertation accurately.
 \end{abstract*}
 
-\tableofcontents
 
+\newpage
+\tableofcontents
 
 \mainmatter
 
@@ -73,6 +81,31 @@
 \section{测试}
 \section{测试}
 \section{测试}
+\section{测试}
+\section{测试}
+\section{测试}
+% \section{测试}
+% \section{测试}
+% \section{测试}
+% \section{测试}
+
+% \section{测试}
+% \section{测试}
+% \section{测试}
+% \section{测试}
+% \section{测试}
+% \section{测试}
+% \section{测试}
+% \section{测试}
+\section{测试}
+\section{测试}
+\section{测试}
+\section{测试}
+
+\input{body/list-test.tex}
+\section{测试}
+\input{body/theorem-test.tex}
+\section{测试}
 \zhlipsum[1-4]
 \section{测试}
 \zhlipsum[1-4]
@@ -87,7 +120,6 @@
 \nocite{*}
 
 
-
 \printbibliography
 
 \backmatter
@@ -97,7 +129,11 @@
 \end{publications}
 
 \begin{acknowledgement}
-  \zhlipsum[1-4]
+  \zhlipsum[1-2]
 \end{acknowledgement}
+
+% \ExplSyntaxOn
+% \__whu_authorization_output:
+% \ExplSyntaxOff
 
 \end{document}
