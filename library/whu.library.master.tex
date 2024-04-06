@@ -5,20 +5,17 @@
   }
 \WHUProvideExplLibrary{master}{\whu@date}{\whu@version}{setting for normal master thesis of Wuhan University}
 
-
-% 硕士学位类型：academic, professional
-\msg_new:nnn { whu } { invalid-degree-type }
+\cs_set:Nn \__whu_type_for_library_additional_setting:
   {
-    Invalid~degree~type~`#1'. \\ Please~type~`academic'~or~`professional'. 
+    % 用 \AtBeginDocument 可以在 \AtEndPreamble 之后执行，可以覆盖 hyperref 的原始设置
+    % https://github.com/Sophanatprime/cus/issues/24#issuecomment-2041074019
+    \AtBeginDocument
+      { \hypersetup { allcolors = black } }
   }
-\str_new:N \g__whu_master_degree_type_str
-\keys_define:nn { whu/master }
+\cs_set:Nn \__whu_type_for_print_additional_setting:
   {
-    degree-type .choice:,
-    degree-type / academic .code:n = { \str_gset:Nn \g__whu_master_degree_type_str { academic } },
-    degree-type / professional .code:n = { \str_gset:Nn \g__whu_master_degree_type_str { professional } },
-    degree-type .initial:n = academic,
-    degree-type / unknown .code:n = { \msg_error:nnn { whu } { invalid-degree-type } {#1} },
+    \AtBeginDocument
+      { \hypersetup { allcolors = black } }
   }
 
 
