@@ -20,41 +20,29 @@
     \__whu_authorization_after_information_before_date:
     \__whu_authorization_date:
     \__whu_authorization_end:
-    \__whu_end_if_newpage:
+    \__whu_if_cleardoublepage:
   }
 \cs_new:Nn \__whu_authorization_begin: { }
 \cs_new:Nn \__whu_authorization_end: { }
 \cs_new:Nn \__whu_authorization_before_title: 
   {
-    % \newpage
-    % \null
-    % \vspace { 13pt }
-    % \begin{center}
     \setupnexttitle
       {
-        format = \zihao { -2 } \heiti \centering,
-        mode   = starred
+        format     = \__whu_authorization_title_format:,
+        mode       = starred,
+        beforeskip = 5pt
       }
   }
 \cs_new:Nn \__whu_authorization_title:
   {
-    % TODO: 完善，并和黄正华的比较
-    % \group_begin:
-    %   \__whu_authorization_title_format:
-    %   \__whu_authorization_title_content:
-    % \group_end:
     \chapter { 武汉大学学位论文使用授权协议书 }
   }
 \cs_new:Nn \__whu_authorization_title_format:
-  { \zihao { -2 } \heiti }
+  { \zihao { -2 } \heiti \centering }
 \cs_new:Nn \__whu_authorization_title_content: 
   { 武汉大学学位论文使用授权协议书 }
 \cs_new:Nn \__whu_authorization_after_title_before_body: 
-  {
-    % \end{center}
-    % \par
-    % \vspace* { 20pt }
-  }
+  { }
 \cs_new:Nn \__whu_authorization_body:
   {
     \group_begin:
@@ -64,27 +52,8 @@
   }
 \cs_new:Nn \__whu_authorization_body_format:
   {
-    \baselineskip = 20pt  % TODO: 换成 linespread
-    \cs_if_exist:NTF \checkedbox
-      {
-        \cs_set_eq:NN \__whu_checkedbox: \checkedbox
-      }
-      {
-        \box_if_exist:NF \l__whu_checkedbox_box
-          { \box_new:N \l__whu_checkedbox_box }
-        \cs_if_exist:NF \__whu_checkedbox:
-          {
-            \cs_new:Nn \__whu_checkedbox: 
-              {
-                \dim_set:Nn \fboxsep { 0pt }
-                \hbox_set:Nn \l__whu_checkedbox_box { \framebox [ 0.6em ] { \rule { 0pt } { 0.55em } } }
-                \box_resize_to_ht:Nn \l__whu_checkedbox_box { 0.66em }
-                \kern1pt
-                \box_use:N \l__whu_checkedbox_box
-                \kern1pt
-              } 
-          }
-      }
+    \linespread { 1.57 } \selectfont
+    \setlist { nosep }
   }
 \cs_new:Nn \__whu_authorization_body_content: 
   {
@@ -92,21 +61,18 @@
     即：学校有权保存学位论文的印刷本和电子版, 并提供文献检索与阅览服务；
     学校可以采用影印、缩印、数字化或其它复制手段保存论文；
     在以教学与科研服务为目的前提下, 学校可以在校园网内公布部分及全部内容.
-    \setlist{nosep}
     \begin{enumerate}
       [
         label=\arabic*、,
         leftmargin=2em,
-        partopsep=0pt,
-        topsep=0pt,
-        parsep=0pt
       ]
       \item  在本论文提交当年, 同意在校园网内以及中国高等教育文献保障系统(CALIS)高校学位论文系统提供查询及前十六页浏览服务.
-      \item  在本论文提交~$\__whu_checkedbox:$~当年/~$\__whu_checkedbox:$~一年/~$\__whu_checkedbox:$~两年/~$\__whu_checkedbox:$~三年/~$\__whu_checkedbox:$~五年以后, 同意在校园网内允许读者在线浏览并下载全文, 学校可以为存在馆际合作关系的兄弟高校用户提供文献传递服务和交换服务.(保密论文解密后遵守此规定)
+      \item  在本论文提交 $\__whu_checkedbox:$ 当年/ $\__whu_checkedbox:$ 一年/ $\__whu_checkedbox:$ 两年/ $\__whu_checkedbox:$ 三年/ $\__whu_checkedbox:$ 五年以后, 同意在校园网内允许读者在线浏览并下载全文, 学校可以为存在馆际合作关系的兄弟高校用户提供文献传递服务和交换服务.(保密论文解密后遵守此规定)
     \end{enumerate}
+    \par
   }
 \cs_new:Nn \__whu_authorization_after_body_before_information: 
-  { \vspace* { 16mm } \par }
+  { \vspace* { 15mm } \par }
 \cs_new:Nn \__whu_authorization_information:
   {
     \group_begin:
@@ -117,16 +83,24 @@
 \cs_new:Nn \__whu_authorization_information_format: { }
 \cs_new:Nn \__whu_authorization_information_content: 
   {
-    论文作者(签名)：         \__whu_authorization_information_underline:
-    \par \vspace{2.5em}
-    学\qquad\qquad\quad 号：\__whu_authorization_information_underline:
-    \par \vspace{2.3em}
-    学\qquad\qquad\quad 院：\__whu_authorization_information_underline:
+    \dim_set:Nn \l__whu_tmpb_dim { 2em }
+    \__whu_get_max_text_width_and_store:nN
+      {
+        论文作者(签名),
+        学号,
+        学院
+      }
+      \l__whu_tmpa_dim
+    \__whu_spread_box:nn { \l__whu_tmpa_dim } { 论文作者(签名) }：         \__whu_authorization_information_underline:
+    \par \vspace { \l__whu_tmpb_dim }
+    \__whu_spread_box:nn { \l__whu_tmpa_dim } { 学号 }： \__whu_authorization_information_underline:
+    \par \vspace { \l__whu_tmpb_dim }
+    \__whu_spread_box:nn { \l__whu_tmpa_dim } { 学院 }： \__whu_authorization_information_underline:
   }
 \cs_new:Nn \__whu_authorization_information_underline: 
   { \raisebox { -1ex } { \underline{ \makebox [ 5cm ] [c] { } } } }
 \cs_new:Nn \__whu_authorization_after_information_before_date:
-  { \vspace { 1.84cm } }
+  { \vspace { 17mm } }
 \cs_new:Nn \__whu_authorization_date: 
   {
     \begin{flushright}

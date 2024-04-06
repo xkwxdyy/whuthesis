@@ -5,48 +5,42 @@
 \cs_new:Nn \__whu_declaration_output:
   {
     \__whu_declaration_begin:
-    \__whu_declaration_pagestyle:
     \__whu_declaration_before_title:
     \__whu_declaration_title:
+    \__whu_declaration_pagestyle:
     \__whu_declaration_after_title_before_body:
     \__whu_declaration_body:
     \__whu_declaration_after_body_before_information:
     \__whu_declaration_information:
     \__whu_declaration_after_information_before_date:
     \__whu_declaration_date:
+    \__whu_declaration_after_date:
     \__whu_declaration_end:
-    \__whu_end_if_newpage:
+    \__whu_if_cleardoublepage:
   }
 \cs_new:Nn \__whu_declaration_begin: { \begingroup }
 \cs_new:Nn \__whu_declaration_end: { \endgroup }
 \cs_new:Nn \__whu_declaration_pagestyle:
   { \usethispagestyle { totalempty } } 
 \cs_new:Nn \__whu_declaration_before_title: 
-  {
-    % \newpage
-    % \null
-    % \vspace { 10pt }
-    % \begin{center}
-
+  { 
+    \setupnexttitle 
+      {
+        mode   = starred,
+        format = \__whu_declaration_title_format:,
+        beforeskip = 10pt
+      }
   }
 \cs_new:Nn \__whu_declaration_title:
   {
-    % \group_begin:
-    %   \__whu_declaration_title_format:
-    %   \__whu_declaration_title_content:
-    % \group_end:
-    \chapter{\__whu_declaration_title_content:}
+    \chapter { \__whu_declaration_title_content: }
   }
 \cs_new:Nn \__whu_declaration_title_format:
-  { \ziju { 0.8 } \zihao { -2 } \heiti }
+  { \ziju { 0.8 } \zihao { -2 } \heiti \centering }
 \cs_new:Nn \__whu_declaration_title_content: 
   { 论文原创性声明 }
 \cs_new:Nn \__whu_declaration_after_title_before_body: 
-  {
-    % \end{center}
-    % \par
-    % \vspace { 20pt }
-  }
+  { }
 \cs_new:Nn \__whu_declaration_body:
   {
     \group_begin:
@@ -57,11 +51,11 @@
 \cs_new:Nn \__whu_declaration_body_format:
   {
     \zihao { 4 } \songti
-    % \renewcommand \baselinestretch { 2 }
     \linespread { 2 } \selectfont
   } 
 \cs_new:Nn \__whu_declaration_body_content: 
   {
+    % TODO: 此处 hzh 用的是点号，而 word 版本的是。号
     本人郑重声明: 所呈交的学位论文, 是本人在导师指导下, 独立进行研究工作所取得的研究成果.
     除文中已经标明引用的内容外, 本论文不包含任何其他个人或集体已经发表或撰写过的研究成果.
     对本文的研究做出贡献的个人和集体, 均已在文中以明确方式标明. 本声明的法律结果由本人承担. 
@@ -77,13 +71,15 @@
     \group_end:
   }
 \cs_new:Nn \__whu_declaration_information_format: 
-  { \hspace* { 4cm } \zihao { 4 } \songti }
+  { \hspace* { 5cm } \zihao { 4 } \songti }
 \cs_new:Nn \__whu_declaration_information_content: 
   {
-    学位论文作者(签名): \hspace{4cm} \hfill
+    % TODO: 这里的括号也和 word 版本的有出入
+    学位论文作者(签名):
   }
 \cs_new:Nn \__whu_declaration_after_information_before_date:
   {
+    \hspace{4cm} \hfill
     \par \vspace { 1.6cm } \noindent
   }
 \cs_new:Nn \__whu_declaration_date:
@@ -94,8 +90,12 @@
     \group_end:
   }
 \cs_new:Nn \__whu_declaration_date_format:
-  { \hspace* { 10cm } \zihao { 4 } \songti }
+  { \hspace* { 10.8cm } \zihao { 4 } \songti }
 \cs_new:Nn \__whu_declaration_date_content:
   {
-    年 \hfill  月 \hfill 日 \hspace { 1cm } \hfill
+    年 \hfill  月 \hfill 日
+  }
+\cs_new:Nn \__whu_declaration_after_date:
+  {
+    \hspace*{2em} \hfill
   }

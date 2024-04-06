@@ -11,6 +11,8 @@
 ### Changed
 
 - 增加和完善一些库
+- 更新了一些 `TODO` 的内容
+- 将 `declaration` 和 `authorization` 改成 `chapter` 处理
 
 ### Fixed
 
