@@ -15,8 +15,8 @@
 - 更新了一些 `TODO` 的内容
 - 将 `declaration` 和 `authorization` 改成 `chapter` 处理
 - 优化 `for-library` 的 `cleardoublepage` 的处理为局部处理
-- Readme: 改为以库为核心
-- 优化 master 的 degree-type 键值
+- Readme: 改为"以库为核心"
+- 优化 `master` 的 `degree-type` 键值
 
 ### Fixed
 
@@ -28,6 +28,7 @@
 - 移除 `whuclass.cls`
 
 
+
 ## [v0.0.2] - 2024-04-04
 
 ### Added
@@ -36,12 +37,10 @@
 - 增加关键词的格式调整
 - `type` 库增加字符串处理
 
-
 ### Changed
 
 - `update-from-custex.py` 适配 `cus` 的模板和库的路径移动
 - `constant` 库中的变量改为 `g`类型
-
 
 
 
@@ -60,7 +59,6 @@
 - 增加本硕博库（未开始）
 - 增加 `math` 库的参考资料
 
-
 ### Changed
 
 - 文件名采用 `pgf` 规范（https://github.com/Sophanatprime/cus/issues/13#issuecomment-2029553021）
@@ -72,13 +70,11 @@
 
 
 
-
 ## [v0.0.1] - 2024-03-29
 
 ### Added
 
 - 增加 `update-from-custex.py` 脚本功能：增加文件版权说明
-
 
 ### Fixed
 
@@ -93,17 +89,16 @@
 
 - 增加用户手册，完成简介部分
 
-
 ### Changed
 
 - 将 `whuthesis` 的日期和版本号与 `CusTeX` 的分开
-
 
 ### Fixed
 
 - 重写 `update-from-custex.py` 脚本，完善功能，处理文件后缀，防止模块和库名称和 `CusTeX` 的冲突
 - `update-from-custex.py` 脚本处理 `\WHUDependency` 里的模块后缀和库后缀
- 
+
+
 
 ## [v0.0.1] - 2024-03-27
 
