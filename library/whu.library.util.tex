@@ -11,16 +11,28 @@
     \dim_set:Nn #1 { \box_wd:N \l__whu_tmpa_box }
   }
 \cs_generate_variant:Nn \__whu_get_text_width:Nn { NV }
-
-\cs_new:Npn \__whu_get_max_text_width:NN #1#2
+% 下面两个 cs 中的 tmpa 改成 tmpc，为了防止与实际调用过程中使用 tmpa 冲突
+\cs_new:Npn \__whu_get_max_text_width_and_store:NN #1#2
   {
     \group_begin:
-      \clist_set_eq:NN \l__whu_tmpa_clist #2
-      \bool_until_do:nn { \clist_if_empty_p:N \l__whu_tmpa_clist }
+      \clist_set_eq:NN \l__whu_tmpc_clist #1
+      \bool_until_do:nn { \clist_if_empty_p:N \l__whu_tmpc_clist }
         {
-          \clist_pop:NN \l__whu_tmpa_clist \l__whu_tmpa_tl
-          \__whu_get_text_width:NV \l__whu_tmpa_dim \l__whu_tmpa_tl
-          \dim_gset:Nn #1 { \dim_max:nn {#1} { \l__whu_tmpa_dim } }
+          \clist_pop:NN \l__whu_tmpc_clist \l__whu_tmpc_tl
+          \__whu_get_text_width:NV \l__whu_tmpc_dim \l__whu_tmpc_tl
+          \dim_gset:Nn #2 { \dim_max:nn {#2} { \l__whu_tmpc_dim } }
+        }
+    \group_end:
+  }
+\cs_new:Npn \__whu_get_max_text_width_and_store:nN #1#2
+  {
+    \group_begin:
+      \clist_set:Nn \l__whu_tmpc_clist { #1 }
+      \bool_until_do:nn { \clist_if_empty_p:N \l__whu_tmpc_clist }
+        {
+          \clist_pop:NN \l__whu_tmpc_clist \l__whu_tmpc_tl
+          \__whu_get_text_width:NV \l__whu_tmpc_dim \l__whu_tmpc_tl
+          \dim_gset:Nn #2 { \dim_max:nn {#2} { \l__whu_tmpc_dim } }
         }
     \group_end:
   }
@@ -55,8 +67,30 @@
   }
 \cs_generate_variant:Nn \__whu_month_cover_to_english:n { x }
 
-\cs_new:Nn \__whu_end_if_newpage:
+\cs_new:Nn \__whu_if_cleardoublepage:
   {
-    \str_if_eq:VnF \g__whu_type_str { for-library }
+    \str_if_eq:VnTF \g__whu_type_str { for-library }
+      { \newpage }
       { \cleardoublepage }
+  }
+
+\cs_if_exist:NTF \checkedbox
+  {
+    \cs_set_eq:NN \__whu_checkedbox: \checkedbox
+  }
+  {
+    \box_if_exist:NF \l__whu_checkedbox_box
+      { \box_new:N \l__whu_checkedbox_box }
+    \cs_if_exist:NF \__whu_checkedbox:
+      {
+        \cs_new:Nn \__whu_checkedbox: 
+          {
+            \dim_set:Nn \fboxsep { 0pt }
+            \hbox_set:Nn \l__whu_checkedbox_box { \framebox [ 0.6em ] { \rule { 0pt } { 0.55em } } }
+            \box_resize_to_ht:Nn \l__whu_checkedbox_box { 0.66em }
+            \kern3pt
+            \box_use:N \l__whu_checkedbox_box
+            \kern1pt
+          } 
+      }
   }

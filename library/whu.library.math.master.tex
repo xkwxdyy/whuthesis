@@ -5,6 +5,7 @@
   }
 \WHUProvideExplLibrary{math-master}{\whu@date}{\whu@version}{Compatible with the configuration of Huang Zhenhua's template for master}
 
+% TODO: 思考什么内容可以融到库中
 
 % 硕士学位类型：academic, professional
 \keys_define:nn { whu/master }
@@ -351,10 +352,6 @@
 \cs_new:Npn \__whu_set_title:
   {
     \setsecnumdepth { 4 }
-    \setuponetitle { chapter }
-      {
-        break = \newpage
-      }
     \setuptitle [ chapter, section, subsection, subsubsection ]
       {
         format = \bfseries\heiti\raggedright
@@ -457,7 +454,6 @@
 % ------- %
 % 封面设置 %
 % ------- %
-% TODO: 下面的 cover 应该可以的融到 cover 库中
 \cs_new:Nn \__whu_cover_output:
   {
     \str_case:Vn \g__whu_master_degree_type_str
@@ -469,16 +465,16 @@
 \cs_new:Nn \__whu_academic_master_cover: 
   {
     \__whu_academic_master_cover_zh:
-    \newpage
+    \__whu_if_cleardoublepage:
     \__whu_academic_master_cover_en:
-    \__whu_end_if_newpage:
+    \__whu_if_cleardoublepage:
   }
 \cs_new:Nn \__whu_professional_master_cover: 
   {
     \__whu_professional_master_cover_zh:
-    \newpage
+    \__whu_if_cleardoublepage:
     \__whu_professional_master_cover_en:
-    \__whu_end_if_newpage:
+    \__whu_if_cleardoublepage:
   }
 \cs_new:Nn \__whu_academic_master_cover_zh: 
   {

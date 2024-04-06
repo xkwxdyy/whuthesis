@@ -21,40 +21,13 @@
 \RequirePackage{l3keys2e}
 % \whu@date 和 \whu@version 为 whuthesis 的日期和版本号
 % \whu@d@te 和 \whu@versi@n 为上游的 CusTeX 的日期和版本号
-\def\whu@date{2024/04/02}
-\def\whu@version{0.0.1}
+\def\whu@date{2024/04/06}
+\def\whu@version{0.0.3}
 \ProvidesExplClass{whuthesis}{\whu@date}{\whu@version}{Thesis template for Wuhan University}
 
 
 \str_new:N \g__whu_type_str
 \clist_new:N \g__whu_to_book_clist
-% \cs_new:Npn \__whu_type_for_library_setting: 
-%   {
-%     \PassOptionsToClass 
-%       { a4paper, twoside, openany } { book }
-%     % \frontmatter 和 \mainmatter 里面都含有 \clearpage 会产生空白页，要去掉
-%     % https://tex.stackexchange.com/questions/583508/openany-still-producing-extra-page
-    
-%   }
-% \cs_set_eq:NN \__whu_clearpage: \clearpage
-% % \cs_set_eq:NN \clearpage \relax
-% % \cs_set_eq:NN \cleardoublepage \relax
-% \cs_new:Npn \__whu_type_for_print_setting: 
-%   {
-%     \PassOptionsToClass 
-%       { a4paper, twoside } { book }
-%   }
-% \cs_new:Npn \__whu_type_electronic_setting: 
-%   {
-%     \PassOptionsToClass 
-%       { a4paper, twoside } { book }
-%   }
-% \cs_new:Npn \__whu_type_for_library_setting: 
-%   {}
-% \cs_new:Npn \__whu_type_for_print_setting: { }
-% \cs_new:Npn \__whu_type_electronic_setting: { }
-
-
 
 \keys_define:nn { whu/class }
   {
