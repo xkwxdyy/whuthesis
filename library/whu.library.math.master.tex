@@ -5,7 +5,6 @@
   }
 \WHUProvideExplLibrary{math-master}{\whu@date}{\whu@version}{Compatible with the configuration of Huang Zhenhua's template for master}
 
-% TODO: 思考什么内容可以融到库中
 
 % 硕士学位类型：academic, professional
 \keys_define:nn { whu/master }
@@ -172,7 +171,27 @@
           {
             zh = 数学与统计学院,
             en = School~of~Mathematics~and~Statistics
-          }
+          },
+        author =
+          {
+            zh = 研究生姓名,
+            en = Candidate
+          },
+        student-id =
+          {
+            zh = 学号,
+            en = Student~Number
+          },
+        supervisor =
+          {
+            zh = 指导教师姓名、职称,
+            en = Supervisor
+          },
+        major =
+          {
+            zh = 专业名称,
+            en = Major
+          },
       }
     \__whu_set_information_constant_family:n
       {
@@ -200,6 +219,50 @@
             zh = 专业类别（领域）,
             en = Major
           },
+      }
+    \cs_set:Nn \__whu_cover_zh_information_content: 
+      {
+        \begin{minipage} [ c ] { 0.72\textwidth }
+          \clist_set:Nx \l__whu_tmpa_clist
+            {
+              \__whu_use_information_constant:nn { author } { zh } ,
+              \__whu_use_information_constant:nn { student-id } { zh } ,
+              \__whu_use_information_constant:nn { supervisor } { zh } ,
+              \__whu_use_information_constant:nn { major } { zh } ,
+            }
+          \clist_set:Nx \l__whu_tmpb_clist
+            {
+              \__whu_use_information:nn { author } { zh },
+              \__whu_use_information:nn { student-id } { zh },
+              \__whu_use_information:nn { supervisor } { zh },
+              \__whu_use_information:nn { major } { zh },
+            }
+          \bool_until_do:nn
+            { \clist_if_empty_p:N \l__whu_tmpa_clist }
+            {
+              \clist_pop:NN \l__whu_tmpa_clist \l__whu_tmpa_tl
+              \clist_pop:NN \l__whu_tmpb_clist \l__whu_tmpb_tl
+              \__whu_spread_box:nn { 4.45cm } { \l__whu_tmpa_tl } :
+              \hspace{1.3em}
+              \l__whu_tmpb_tl
+              \skip_vertical:n { 3ex }
+            }
+        \end{minipage}
+      }
+    \cs_set:Nn \__whu_cover_en_information_content: 
+      {
+        \begin{tblr}
+          {
+            cell{1, 3}{2} = { cmd = \textsc },
+            % hlines, vlines,
+            colspec = { X[1,r] X[1,l] },
+            rowsep = 1.5pt
+          }
+          \__whu_use_information_constant:nn { author } { en } : & \__whu_use_information:nn { author } { en } \\
+          \__whu_use_information_constant:nn { student-id } { en } : & \__whu_use_information:nn { student-id } { en } \\
+          \__whu_use_information_constant:nn { supervisor } { en } : & \__whu_use_information:nn { supervisor } { en } \\
+          \__whu_use_information_constant:nn { major } { en } : & \__whu_use_information:nn { major } { en } \\
+        \end{tblr}
       }
   }
 
@@ -445,9 +508,7 @@
 % 行距设置 %
 % ------- %
 \AddToHook { cmd/frontmatter/after }
-  {
-    \linespread{1.6} \selectfont
-  }
+  { \linespread{1.6} \selectfont }
 
 
 
