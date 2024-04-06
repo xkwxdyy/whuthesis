@@ -16,32 +16,35 @@
   \item[\Done] 写项目介绍
   \item[\ToBeSpecified] 构思论文模板的模块、库的设计
     \begin{enumerate}
-      \item 模块
+      \item 模块类型的库
         \begin{itemize}[midpenalty=-1000,
           label=\protect\raisebox{-.3ex}{\NotDone}]
-          \item 信息
-          \item 页面设置与组织
-          \item 目录
-          \item 摘要
-          \item 章节标题样式
-          \item 字体
-          \item 页眉页脚
-          \item 参考文献
-          \item 成果
+          \item \whulibrary{abstract}: 摘要
+          \item \whulibrary{acknowledgement}: 致谢
+          \item \whulibrary{authorization}: 授权协议书
+          \item \whulibrary{bib}: 参考文献
+          \item \whulibrary{constant}: 常量
+          \item \whulibrary{cover}: 封面
+          \item \whulibrary{declaration}: 原创性声明
+          \item \whulibrary{information}: 用户信息
+          \item \whulibrary{toc}: 目录
+          \item \whulibrary{font}: 字体
+          \item \whulibrary{publications}: 成果
+          \item \whulibrary{util}: 工具库
         \end{itemize}
-      \item 库
+      \item 综合类型的库
         \begin{itemize}[midpenalty=-1000,
           label=\protect\raisebox{-.3ex}{\NotDone}]
           \item \whulibrary{proposal}: 开题报告。移植于我开发的 \href{https://github.com/whutug/whu-proposal}{whu-proposal 项目}
-          \item \whulibrary{bachelor}: 本科
+          \item \whulibrary{bachelor}: 本科。参考最新的 2024 的本科模板。
           \item \whulibrary{master}: 硕士
           \item \whulibrary{doctor}: 博士
-          \item \whulibrary{math}: 数学与统计学院。参考
+          \item \whulibrary{math}: 数学与统计学院，兼容黄正华老师的模板配置。参考
             \begin{itemize}
               \item \cls{whu-thesis}
               \item 黄正华老师的模板
             \end{itemize}
-          \item \whulibrary{math-hzh}: 数学与统计学院。完全兼容黄正华老师的模板配置
+            子库：
             \begin{itemize}
               \item \whulibrary{math.bachelor}
               \item \whulibrary{math.master}
@@ -54,4 +57,8 @@
   \item 整理参考资料，设置要有依据
   \item[\Done] 防止模块和库名称和 \CusTeX 的冲突
   \item 写 \file{build.py} 文件打包压缩模板
+  \item 参考文献库：\whulibrary{bib}
+  \item 字体设置库：\whulibrary{font}
+  \item 处理句号的 mapping
+  \item 解决 \cls{whu-thesis} GitHub 里的 issues 和 discussions 的问题
 \end{itemize}
