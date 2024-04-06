@@ -71,8 +71,15 @@
 \cs_new:Nn \__whu_type_for_library_setting: 
   {
     % 这样设置可以防止 \frontmatter 和 \mainmatter 里面的 \cleardoublepage 产生空白页
-    \cs_set_eq:NN \clearpage \newpage
-    \cs_set_eq:NN \cleardoublepage \newpage
+    \cs_set_eq:NN \__whu_cleardoublepage: \cleardoublepage
+    \AddToHook { cmd / frontmatter / before }
+      { \cs_set_eq:NN \cleardoublepage \newpage }
+    \AddToHook { cmd / frontmatter / after }
+      { \cs_set_eq:NN \cleardoublepage \__whu_cleardoublepage: }
+    \AddToHook { cmd / mainmatter / before }
+      { \cs_set_eq:NN \cleardoublepage \newpage }
+    \AddToHook { cmd / mainmatter / after }
+      { \cs_set_eq:NN \cleardoublepage \__whu_cleardoublepage: }
   }
 \str_case:Vn \g__whu_type_str
   {
