@@ -7,10 +7,18 @@
 
 
 % 硕士学位类型：academic, professional
+\msg_new:nnn { whu } { invalid-degree-type }
+  {
+    Invalid~degree~type~`#1'. \\ Please~type~`academic'~or~`professional'. 
+  }
+\str_new:N \g__whu_master_degree_type_str
 \keys_define:nn { whu/master }
   {
-    degree-type .str_gset:N = \g__whu_master_degree_type_str,
+    degree-type .choice:,
+    degree-type / academic .code:n = { \str_gset:Nn \g__whu_master_degree_type_str { academic } },
+    degree-type / professional .code:n = { \str_gset:Nn \g__whu_master_degree_type_str { professional } },
     degree-type .initial:n = academic,
+    degree-type / unknown .code:n = { \msg_error:nnn { whu } { invalid-degree-type } {#1} },
   }
 
 \ProcessKeyOptions [ whu/master ]
@@ -22,19 +30,11 @@
 % ------------ %
 \AtEndPreamble
   {
-    \str_case:VnF \g__whu_master_degree_type_str
+    \str_case:Vn \g__whu_master_degree_type_str
       {
         { academic } { \__whu_academic_master_constant_set: }
         { professional } { \__whu_professional_master_constant_set: }
       }
-      {
-        \msg_error:nnx { whu } { invalid-degree-type } 
-          { \str_use:N \g__whu_master_degree_type_str }
-      }
-  }
-\msg_new:nnn { whu } { invalid-degree-type }
-  {
-    Invalid~degree~type~`#1'. \\ Please~use~`academic'~or~`professional'. 
   }
 \cs_new:Nn \__whu_academic_master_constant_set:
   {

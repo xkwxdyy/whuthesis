@@ -16,6 +16,7 @@
 - 将 `declaration` 和 `authorization` 改成 `chapter` 处理
 - 优化 `for-library` 的 `cleardoublepage` 的处理为局部处理
 - Readme: 改为以库为核心
+- 优化 master 的 degree-type 键值
 
 ### Fixed
 
