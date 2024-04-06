@@ -1,27 +1,204 @@
 \WHUDependency 
   {
-    package = { amsmath },
-    library = { master, math.theorem, cover, declaration, authorization, bib }
+    library = { util, math.theorem, cover, constant, declaration, authorization, bib }
   }
 \WHUProvideExplLibrary{math-master}{\whu@date}{\whu@version}{Compatible with the configuration of Huang Zhenhua's template for master}
 
-% TODO: 封面加入书签
-% 看 hzh 的 master 模板的 tex 文件的设置和 PDF 的内容
+
+
+% 硕士学位类型：academic, professional
+\keys_define:nn { whu/master }
+  {
+    degree-type .str_gset:N = \g__whu_master_degree_type_str,
+    degree-type .initial:n = academic,
+  }
+
+\ProcessKeyOptions [ whu/master ]
 
 
 
 % ------------ %
 % constant 设置 %
 % ------------ %
-\cs_set:Nn \__whu_academic_master_constant_additional_set:
+\AtEndPreamble
+  {
+    \str_case:VnF \g__whu_master_degree_type_str
+      {
+        { academic } { \__whu_academic_master_constant_set: }
+        { professional } { \__whu_professional_master_constant_set: }
+      }
+      {
+        \msg_error:nnx { whu } { invalid-degree-type } 
+          { \str_use:N \g__whu_master_degree_type_str }
+      }
+  }
+\msg_new:nnn { whu } { invalid-degree-type }
+  {
+    Invalid~degree~type~`#1'. \\ Please~use~`academic'~or~`professional'. 
+  }
+\cs_new:Nn \__whu_academic_master_constant_set:
   {
     \__whu_set_information_family:n
       {
+        thesis-type/zh = \ziju{1} 硕士学位论文,
+        title =
+          {
+            zh = 武汉大学硕士学位论文 \LaTeX{} 模板,
+            en = \LaTeX{} Template~for~Professional~Master's~Degree~of~Wuhan~University
+          },
+        department =
+          {
+            zh = 数学与统计学院,
+            en = School~of~Mathematics~and~Statistics
+          },
+        author =
+          {
+            zh = 研究生姓名,
+            en = Candidate
+          },
+        student-id =
+          {
+            zh = 学号,
+            en = Student~Number
+          },
+        supervisor =
+          {
+            zh = 指导教师姓名、职称,
+            en = Supervisor
+          },
+        major =
+          {
+            zh = 专业名称,
+            en = Major
+          },
+        professional-field =
+          {
+            zh = 研究方向,
+            en = Speciality
+          },
+      }
+    \__whu_set_information_constant_family:n
+      {
+        clc/zh          = 分类号,
+        secret-level/zh = 密级,
+        udc/zh          = UDC,
+        school-id/zh    = 编号,
+        author =
+          {
+            zh = 研究生姓名,
+            en = Candidate
+          },
+        student-id =
+          {
+            zh = 学号,
+            en = Student~Number
+          },
+        supervisor =
+          {
+            zh = 指导教师姓名、职称,
+            en = Supervisor
+          },
+        major =
+          {
+            zh = 专业名称,
+            en = Major
+          },
+        professional-field =
+          {
+            zh = 研究方向,
+            en = Speciality
+          },
+      }
+    \cs_set:Nn \__whu_cover_zh_information_content: 
+      {
+        \begin{minipage} [ c ] { 0.72\textwidth }
+          \clist_set:Nx \l__whu_tmpa_clist
+            {
+              \__whu_use_information_constant:nn { author } { zh } ,
+              \__whu_use_information_constant:nn { student-id } { zh } ,
+              \__whu_use_information_constant:nn { supervisor } { zh } ,
+              \__whu_use_information_constant:nn { major } { zh } ,
+              \__whu_use_information_constant:nn { professional-field } { zh }
+            }
+          \clist_set:Nx \l__whu_tmpb_clist
+            {
+              \__whu_use_information:nn { author } { zh },
+              \__whu_use_information:nn { student-id } { zh },
+              \__whu_use_information:nn { supervisor } { zh },
+              \__whu_use_information:nn { major } { zh },
+              \__whu_use_information:nn { professional-field } { zh }
+            }
+          \bool_until_do:nn
+            { \clist_if_empty_p:N \l__whu_tmpa_clist }
+            {
+              \clist_pop:NN \l__whu_tmpa_clist \l__whu_tmpa_tl
+              \clist_pop:NN \l__whu_tmpb_clist \l__whu_tmpb_tl
+              \__whu_spread_box:nn { 4.45cm } { \l__whu_tmpa_tl } :
+              \hspace{1.3em}
+              \l__whu_tmpb_tl
+              \skip_vertical:n { 3ex }
+            }
+        \end{minipage}
+      }
+    \cs_set:Nn \__whu_cover_en_information_content: 
+      {
+        \begin{tblr}
+          {
+            cell{1, 3}{2} = { cmd = \textsc },
+            % hlines, vlines,
+            colspec = { X[1,r] X[1,l] },
+            rowsep = 1.5pt
+          }
+          \__whu_use_information_constant:nn { author } { en } : & \__whu_use_information:nn { author } { en } \\
+          \__whu_use_information_constant:nn { student-id } { en } : & \__whu_use_information:nn { student-id } { en } \\
+          \__whu_use_information_constant:nn { supervisor } { en } : & \__whu_use_information:nn { supervisor } { en } \\
+          \__whu_use_information_constant:nn { major } { en } : & \__whu_use_information:nn { major } { en } \\
+          \__whu_use_information_constant:nn { professional-field } { en } : & \__whu_use_information:nn { professional-field } { en }
+        \end{tblr}
+      }
+  }
+\cs_new:Nn \__whu_professional_master_constant_set:
+  {
+    \__whu_set_information_family:n
+      {
+        thesis-type/zh = \ziju{0.5} 硕士专业学位论文,
+        title =
+          {
+            zh = 武汉大学硕士专业学位论文 \LaTeX{} 模板,
+            en = \LaTeX{} Template~for~Professional~Master's~Degree~of~Wuhan~University
+          },
         department =
           {
             zh = 数学与统计学院,
             en = School~of~Mathematics~and~Statistics
           }
+      }
+    \__whu_set_information_constant_family:n
+      {
+        clc/zh          = 分类号,
+        secret-level/zh = 密级,
+        udc/zh          = UDC,
+        school-id/zh    = 编号,
+        author =
+          {
+            zh = 研究生姓名,
+            en = Candidate
+          },
+        student-id =
+          {
+            zh = 学号,
+            en = Student~Number
+          },
+        supervisor =
+          {
+            zh = 指导教师姓名、职称,
+            en = Supervisor
+          },
+        major =
+          {
+            zh = 专业类别（领域）,
+            en = Major
+          },
       }
   }
 
@@ -36,19 +213,8 @@
 % ----------------- %
 % 不同文档类型下的设置 %
 % ----------------- %
-% 因为根据论文的不同用途的设置中会包含 \hyperref 的设置，所以需要在 \hyperref 之后设置
-% 其实还有一个方式，就是把关于 \hyperref 的设置 hook 在 hyprref 的 package 后面
-% 而不是 hook 在 \AtEndPreamble，因为 hook 在 \AtEndPreamble 里面还需要考虑这个 hook 和 \RequirePackage { hyperref } 时的 \AtEndPreamble 顺序，但是 hook 在 hyperref 的 package 后面就不需要考虑这个问题
-\cs_set:Nn \__whu_type_for_print_additional_setting: 
-  {
-    \AddToHook { package / hyperref / after }
-      { \hypersetup { allcolors = black } }
-  }
-\cs_set:Nn \__whu_type_for_library_additional_setting: 
-  {
-    \AddToHook { package / hyperref / after }
-      { \hypersetup { allcolors = black } }
-  }
+
+
 
 
 % ---------- %
