@@ -34,7 +34,8 @@
   }
 \cs_new_protected:Nn \__whu_set_information:nnn
   {
-    \tl_new:c { g__whu_information_ #1/#2 _tl }
+    \tl_if_exist:cF { g__whu_information_ #1/#2 _tl }
+      { \tl_new:c { g__whu_information_ #1/#2 _tl } }
     \tl_set:cn { g__whu_information_ #1/#2 _tl } {#3}
   }
 \cs_new:Nn \__whu_use_information:nn
