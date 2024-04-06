@@ -1,6 +1,6 @@
 # whuthesis
 
-基于 [CusTeX](https://github.com/Sophanatprime/cus) 的以模块和库为核心的武汉大学毕业论文 LaTeX 模板
+基于 [CusTeX](https://github.com/Sophanatprime/cus) 的以库为核心的武汉大学毕业论文 LaTeX 模板
 
 ## Attention
 - 本模板仍处于开发阶段，出现问题为正常现象，请及时与开发者联系，比如在 GitHub 上提 [issue](https://github.com/xkwxdyy/whuthesis)
