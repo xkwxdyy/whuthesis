@@ -1,4 +1,4 @@
-\WHULibraryDelayedUntil{tikzpagenodes}
+\WHULibraryDelayedUntil { tikzpagenodes }
 \WHUDependency{ library = { util, constant, information } }
 \WHUProvideExplLibrary{cover}{\whu@date}{\whu@version}{covers of chinese and english type}
 
@@ -11,7 +11,7 @@
       \__whu_cover_zh_thesis_type:
       \__whu_cover_zh_title:
       \__whu_cover_zh_date:
-      \__whu_cover_zh_information:
+      \__whu_cover_zh_information:  % 因为 information 是用了 tikz 的 above of date，所以 date 要在前面
     \end{tikzpicture}
   }
 \cs_new:Nn \__whu_cover_en: 
@@ -19,22 +19,23 @@
     \begin{tikzpicture}[remember~picture, overlay]
       \__whu_cover_en_title:
       \__whu_cover_en_universitylogo:
-      \__whu_cover_en_information:
+      \__whu_cover_en_information:  % 因为 information 是用了 tikz 的 above of universitylogo，所以 universitylogo 要在前面
       \__whu_cover_en_department:
       \__whu_cover_en_universityname:
       \__whu_cover_en_date:
     \end{tikzpicture}
   }
 
-\keys_define:nn { whu/cover/sep/zh }
+\keys_define:nn { whu/cover/zh/sep }
   {
+    top-head .dim_gset:N = \g__whu_cover_zh_top_head_sep_dim,
     head-universitynamelogo .dim_gset:N = \g__whu_cover_zh_head_and_unversitynamelogo_sep_dim,
     universitynamelogo-thesistype .dim_gset:N = \g__whu_cover_zh_universitynamelogo_thesis_type_sep_dim,
     thesistype-title .dim_gset:N = \g__whu_cover_zh_thesis_type_title_sep_dim,
     title-information .dim_gset:N = \g__whu_cover_zh_title_information_sep_dim,
   }
 \dim_new:N \g__whu_cover_en_head_title_sep_dim  % 如果不 new 的话，用 keys_define 来定义的话，\dim_gset:Nn 会失效（但有些又不会）
-\keys_define:nn { whu/cover/sep/en }
+\keys_define:nn { whu/cover/en/sep }
   {
     head-title .dim_gset:N = \g__whu_cover_en_head_title_sep_dim,
     information-universitylogo .dim_gset:N = \g__whu_cover_en_information_universitylogo_sep_dim,
@@ -42,12 +43,12 @@
     department-universityname .dim_gset:N = \g__whu_cover_en_department_universityname_sep_dim,
     universityname-date .dim_gset:N = \g__whu_cover_en_universityname_date_sep_dim,
   }
-\keys_define:nn { whu/cover/width }
+\keys_define:nn { whu/cover/zh/width }
   {
     universitynamelogo .dim_gset:N = \g__whu_cover_zh_universitynamelogo_width_dim,
+    information .dim_gset:N = \g__whu_cover_zh_information_width_dim,
   }
 
-\ProcessKeyOptions [ whu/cover ]
 
 \__whu_set_information_family:n 
   {
@@ -82,34 +83,29 @@
         en = \__whu_cover_en_information_content:,
       }
   }
-\cs_new:Nn \__whu_cover_zh_information_content: { }
-\cs_new:Nn \__whu_cover_en_information_content: { }
 
 
 \cs_new:Nn \__whu_cover_zh_head: 
   {
-    \node [ anchor = north ] ( zh-head ) at ([ shift = { (0em, -1.1em) } ] current~page~text~area.north)
+    \node [ anchor = north ] ( zh-head ) at ([ shift = { (0em, -\g__whu_cover_zh_top_head_sep_dim) } ] current~page~text~area.north)
       { \__whu_cover_zh_head_content: };
   }
 \cs_new:Nn \__whu_cover_zh_head_content:
   {
-    \begin{tblr}
-      {
-        % hlines,vlines,
-        width   = 0.95\textwidth,
-        rows    = { f },
-        row{2}  = { abovesep += 0.1em },
-        colspec = { X[1,l] X[4.6cm] X[1,l] },
-        columns = { preto = \__whu_cover_zh_head_format: },
-      }
-      \__whu_spread_box:nn { 1.5cm } { 分类号 } \__whu_cover_zh_head_underline:n { \__whu_use_information:nn { clc } { zh } }
-        & & \__whu_spread_box:nn { 1.5cm } { 密级 } \__whu_cover_zh_head_underline: \\
-        \__whu_spread_box:nn { 1.5cm } { UDC } \__whu_cover_zh_head_underline: 
-        & & \__whu_spread_box:nn { 1.5cm } { 编号 }  \__whu_cover_zh_head_underline:n { 10486 }
-    \end{tblr}
+    \__whu_cover_zh_proposal_head_content:
+    \__whu_cover_zh_bachelor_head_content:
+    \__whu_cover_zh_master_head_content:
+    \__whu_cover_zh_doctor_head_content:
   }
-\cs_new:Nn \__whu_cover_zh_head_format:
-  { \zihao{4} \fangsong }
+\clist_map_function:nN
+  {
+    \__whu_cover_zh_proposal_head_content:,
+    \__whu_cover_zh_bachelor_head_content:,
+    \__whu_cover_zh_master_head_content:,
+    \__whu_cover_zh_doctor_head_content:,
+    \__whu_cover_zh_head_format:
+  }\__whu_ensure_cs_exist:N
+
 \cs_new:Nn \__whu_cover_zh_head_underline:
   {
     \Replicate {2} { \c_space_tl } 
@@ -216,6 +212,19 @@
         \__whu_use_information:nn { information } { zh }
       };
   }
+\cs_new:Nn \__whu_cover_zh_information_content: 
+  { 
+    % 调用其中一种时，其余为空
+    \__whu_cover_zh_proposal_information_content:
+    \__whu_cover_zh_bachelor_information_content:
+    \__whu_cover_zh_master_information_content:
+    \__whu_cover_zh_doctor_information_content:
+  }
+\cs_new:Nn \__whu_cover_zh_proposal_information_content: { }
+\cs_new:Nn \__whu_cover_zh_bachelor_information_content: { }
+\cs_new:Nn \__whu_cover_zh_master_information_content: { }
+\cs_new:Nn \__whu_cover_zh_doctor_information_content: { }
+
 \cs_new:Nn \__whu_cover_zh_information_format:
   { \zihao { 4 } }
 \cs_new:Nn \__whu_cover_zh_date: 
@@ -298,6 +307,18 @@
   }
 \cs_new:Nn \__whu_cover_en_information_format:
   { \zihao { 4 } }
+\cs_new:Nn \__whu_cover_en_information_content: 
+  {
+    % 调用其中一种时，其余为空
+    \__whu_cover_en_proposal_information_content:
+    \__whu_cover_en_bachelor_information_content:
+    \__whu_cover_en_master_information_content:
+    \__whu_cover_en_doctor_information_content:
+  }
+\cs_new:Nn \__whu_cover_en_proposal_information_content: { }
+\cs_new:Nn \__whu_cover_en_bachelor_information_content: { }
+\cs_new:Nn \__whu_cover_en_master_information_content: { }
+\cs_new:Nn \__whu_cover_en_doctor_information_content: { }
 \cs_new:Nn \__whu_cover_en_universitylogo: 
   {
     \__whu_cover_en_universitylogo_aux:
@@ -376,3 +397,7 @@
   }
 \cs_new:Nn \__whu_cover_en_date_format: 
   { \zihao { -2 } }
+
+
+
+\ProcessKeyOptions [ whu/cover ]

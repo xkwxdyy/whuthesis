@@ -4,6 +4,12 @@
 \cs_generate_variant:Nn \msg_error:nnn { nnx }
 
 
+% 检测 cs 是否存在，不存在就新建
+\cs_new:Npn \__whu_ensure_cs_exist:N #1
+  {
+    \cs_if_exist:NF #1 { \cs_new:Npn #1 { } }
+  }
+
 
 \cs_new:Npn \__whu_get_text_width:Nn #1#2
   {
