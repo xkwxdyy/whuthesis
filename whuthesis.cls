@@ -25,7 +25,6 @@
 \def\whu@version{0.0.3}
 \ProvidesExplClass{whuthesis}{\whu@date}{\whu@version}{Thesis template for Wuhan University}
 
-
 \str_new:N \g__whu_type_str
 \clist_new:N \g__whu_to_book_clist
 
@@ -54,20 +53,17 @@
 
 \ProcessKeysOptions { whu/class }
 
-% 消除 xeCJK 的警告
-\PassOptionsToPackage { silent } { xeCJK }
-
-
-
-\seq_put_right:Nx \l_file_search_path_seq { ./module }
-\seq_put_right:Nx \l_file_search_path_seq { ./library }
-\seq_put_right:Nx \l_file_search_path_seq { ./library-cus }
-\RequirePackage { whu }
-
-\PassOptionsToClass{ \g__whu_to_book_clist }{ book }
-\LoadClass { book }
-\cs_new:Nn \__whu_type_electronic_setting: { }
-\cs_new:Nn \__whu_type_for_print_setting: { }
+\cs_new:Nn \__whu_type_electronic_additional_setting: { }
+\cs_new:Nn \__whu_type_for_print_additional_setting: { }
+\cs_new:Nn \__whu_type_for_library_additional_setting: { }
+\cs_new:Nn \__whu_type_electronic_setting: 
+  {
+    \__whu_type_electronic_additional_setting:
+  }
+\cs_new:Nn \__whu_type_for_print_setting: 
+  {
+    \__whu_type_for_print_additional_setting:
+  }
 \cs_new:Nn \__whu_type_for_library_setting: 
   {
     % 这样设置可以防止 \frontmatter 和 \mainmatter 里面的 \cleardoublepage 产生空白页
@@ -81,17 +77,29 @@
       { \cs_set_eq:NN \cleardoublepage \clearpage }
     \AddToHook { cmd / mainmatter / after }
       { \cs_set_eq:NN \cleardoublepage \__whu_cleardoublepage: }
+    \__whu_type_for_library_additional_setting:
   }
+% 消除 xeCJK 的警告
+\PassOptionsToPackage { silent } { xeCJK }
+
+\seq_put_right:Nx \l_file_search_path_seq { ./module }
+\seq_put_right:Nx \l_file_search_path_seq { ./library }
+\seq_put_right:Nx \l_file_search_path_seq { ./library-cus }
+\RequirePackage { whu }
+
+\PassOptionsToClass{ \g__whu_to_book_clist }{ book }
+\LoadClass { book }
+
 \str_case:Vn \g__whu_type_str
   {
     { electronic } { \__whu_type_electronic_setting: }
     { for-print } { \__whu_type_for_print_setting: }
     { for-library } { \__whu_type_for_library_setting: }
   }
+
 \RequirePackage { ctex }
 \RequirePackage { graphicx }
 \graphicspath { {./figures/} {./logo/} } 
-
 
 \RequirePackage { tikzpagenodes }
 \ExplSyntaxOff
@@ -99,3 +107,16 @@
 \ExplSyntaxOn
 
 \RequirePackage { tabularray }
+
+
+\AtEndPreamble
+  {
+    \RequirePackage { hyperref }
+    \hypersetup
+      { 
+        pdfencoding = auto,
+        citecolor   = magenta,
+        linkcolor   = blue,
+        hidelinks
+      }
+  }
