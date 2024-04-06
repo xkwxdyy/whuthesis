@@ -1,9 +1,9 @@
 """
 update-from-custex.py
 Author: 夏大鱼羊
-Date: 2024/04/04
+Date: 2024/04/06
 Description:
-    - [✔] 从 custex 仓库中复制 `.sty`, `.cls`, `cus.module.xxx.tex` 和 `cus.library.xxx.tex` 文件
+    - [✔] 从 custex 仓库中复制 `.sty`, `cus.module.xxx.tex` 和 `cus.library.xxx.tex` 文件
         - [✔]`cus.module.xxx.tex` 和 `whu.library.xxx.tex` 文件改名为 `whu.module.xxx.cus.tex` 和 `cus.library.xxx.cus.tex` 文件
         - [✔]`cus.sty` 和 `cusclass.cls` 文件改名为 `whu.sty` 和 `whuclass.cls`
     - [✔]修改这些文件中的字符串:
@@ -51,7 +51,7 @@ def modify_cus_to_whu(file_path: str):
 
 
 """
-从 custex 仓库中复制 `.sty`, `.cls`, `cus.module.xxx.tex` 和 `cus.library.xxx.tex` 文件
+从 custex 仓库中复制 `.sty`, `cus.module.xxx.tex` 和 `cus.library.xxx.tex` 文件
 
 - `cus.module.xxx.tex` 和 `whu.library.xxx.tex` 文件改名为 `whu.module.xxx.cus.tex` 和 `cus.library.xxx.cus.tex` 文件
 
@@ -62,8 +62,8 @@ for file in os.listdir(cus_directory):
     file_path = os.path.join(cus_directory, file)
     # 判断 file_path 是否是文件还是文件夹，只处理文件
     if os.path.isfile(file_path):
-        # 如果文件是 'cus.sty' 或 'cusclass.cls'，则修改标题后复制到 whu 目录
-        if file == 'cus.sty' or file == 'cusclass.cls':
+        # 如果文件是 'cus.sty' ，则修改标题后复制到 whu 目录
+        if file == 'cus.sty' :
             source_file_path = file_path
             target_file_path = os.path.join(whu_directory, file.replace('cus', 'whu'))
             shutil.copy(source_file_path, target_file_path)

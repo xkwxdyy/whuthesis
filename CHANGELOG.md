@@ -22,6 +22,10 @@
 
 - 修复 `for-library` 的空白页问题
 
+### Removed
+
+- 移除 `whuclass.cls`
+
 
 ## [v0.0.2] - 2024-04-04
 
