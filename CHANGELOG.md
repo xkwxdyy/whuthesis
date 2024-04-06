@@ -22,6 +22,7 @@
 
 - 修复 `for-library` 的空白页问题
 - 修复 `information` 和 `constant`不能二次 `set` 的问题
+- 修复超链接的设置问题
 
 ### Removed
 
