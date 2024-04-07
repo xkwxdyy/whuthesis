@@ -72,6 +72,9 @@
       { \cs_set_eq:NN \cleardoublepage \newpage }
     \AddToHook { cmd / mainmatter / after }
       { \cs_set_eq:NN \cleardoublepage \__whu_cleardoublepage: }
+
+    % 2024-04-07 zepinglee 建议不用上面那样 hook，直接加一个 \@twosidefalse 即可，但是这样会影响页眉
+    % \@twosidefalse
     \__whu_type_for_library_additional_setting:
   }
 \cs_new:Nn \__whu_type_for_library_additional_setting: { } 
