@@ -90,6 +90,10 @@
 \RequirePackage { whu }
 
 
+
+\PassOptionsToClass{ \g__whu_to_book_clist }{ book }
+\LoadClass { book }
+
 % 要放在 whu 加载之后
 \str_case:Vn \g__whu_type_str
   {
@@ -97,9 +101,6 @@
     { for-print } { \__whu_type_for_print_setting: }
     { for-library } { \__whu_type_for_library_setting: }
   }
-\PassOptionsToClass{ \g__whu_to_book_clist }{ book }
-\LoadClass { book }
-
 
 \RequirePackage { ctex }
 \RequirePackage { graphicx }
