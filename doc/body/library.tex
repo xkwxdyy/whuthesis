@@ -32,6 +32,7 @@
 优化：
 \begin{enumerate}
   \item 封面采用 \pkg{tikz} 的处理，避免标题长度影响封面的排版
+  \item 基于 \pkg{amsthm} 宏包里的 \env{proof} 环境进行格式修改，可以使用 \cs{qedhere} 命令改变证明结束符的位置（黄正华老师模板中无法使用 \cs{qedhere} 命令）
   \item 解决了黄正华老师模板中未完全解决的消除空白页问题（\verb|type = for-library| 可以去除所有空白页）
 \end{enumerate}
 

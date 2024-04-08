@@ -1,19 +1,8 @@
 \WHUDependency 
   {
-    library = { util, math.theorem, cover, constant, declaration, authorization, bib }
+    library = { master, math.theorem, declaration, authorization, bib }
   }
 \WHUProvideExplLibrary{math-master}{\whu@date}{\whu@version}{Compatible with the configuration of Huang Zhenhua's template for master}
-
-
-
-% 硕士学位类型：academic, professional
-\keys_define:nn { whu/master }
-  {
-    degree-type .str_gset:N = \g__whu_master_degree_type_str,
-    degree-type .initial:n = academic,
-  }
-
-\ProcessKeyOptions [ whu/master ]
 
 
 
@@ -31,10 +20,6 @@
         \msg_error:nnx { whu } { invalid-degree-type } 
           { \str_use:N \g__whu_master_degree_type_str }
       }
-  }
-\msg_new:nnn { whu } { invalid-degree-type }
-  {
-    Invalid~degree~type~`#1'. \\ Please~use~`academic'~or~`professional'. 
   }
 \cs_new:Nn \__whu_academic_master_constant_set:
   {
@@ -410,12 +395,6 @@
 
 
 % ------- %
-% 数学设置 %
-% ------- %
-
-
-
-% ------- %
 % 行距设置 %
 % ------- %
 \AddToHook { cmd/frontmatter/after }
@@ -426,52 +405,7 @@
 % ------- %
 % 封面设置 %
 % ------- %
-\cs_new:Nn \__whu_cover_output:
-  {
-    \str_case:Vn \g__whu_master_degree_type_str
-      {
-        { academic } { \__whu_academic_master_cover: }
-        { professional } { \__whu_professional_master_cover: }
-      }
-  }
-\cs_new:Nn \__whu_academic_master_cover: 
-  {
-    \__whu_academic_master_cover_zh:
-    \__whu_if_cleardoublepage:
-    \__whu_academic_master_cover_en:
-    \__whu_if_cleardoublepage:
-  }
-\cs_new:Nn \__whu_professional_master_cover: 
-  {
-    \__whu_professional_master_cover_zh:
-    \__whu_if_cleardoublepage:
-    \__whu_professional_master_cover_en:
-    \__whu_if_cleardoublepage:
-  }
-\cs_new:Nn \__whu_academic_master_cover_zh: 
-  {
-    \__whu_academic_master_cover_zh_set:
-    \__whu_cover_zh:
-  }
-\cs_new:Nn \__whu_academic_master_cover_en: 
-  {
-    \__whu_academic_master_cover_en_set:
-    \__whu_cover_en:
-  }
-\cs_new:Nn \__whu_academic_master_cover_zh_set: { }
-\cs_new:Nn \__whu_academic_master_cover_en_set: { }
-\cs_new:Nn \__whu_professional_master_cover_zh: 
-  {
-    \__whu_professional_master_cover_zh_set:
-    \__whu_cover_zh:
-  }
-\cs_new:Nn \__whu_professional_master_cover_en: 
-  {
-    \__whu_professional_master_cover_en_set:
-    \__whu_cover_en:
-  }
-\cs_new:Nn \__whu_professional_master_cover_zh_set: { }
-\cs_new:Nn \__whu_professional_master_cover_en_set: { }
+
 
 
 % ----------- %

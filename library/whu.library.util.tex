@@ -4,10 +4,10 @@
 \cs_generate_variant:Nn \msg_error:nnn { nnx }
 
 
-% 检测 cs 是否存在，不存在就新建
-\cs_new:Npn \__whu_ensure_cs_exist:N #1
+
+\cs_new:Npn \__whu_new_cs_empty:N #1
   {
-    \cs_if_exist:NF #1 { \cs_new:Npn #1 { } }
+    \cs_new:Nn #1 { }
   }
 
 
@@ -66,13 +66,23 @@
     12 = Dec.,
   }
 
-\cs_new:Npn \__whu_month_cover_to_english:n #1
+\cs_new:Npn \__whu_month_convert_to_english:n #1
   {
     \prop_get:NnN \l__whu_month_prop {#1} \l__whu_tmpa_tl
     \l__whu_tmpa_tl
   }
-\cs_generate_variant:Nn \__whu_month_cover_to_english:n { x }
+\cs_generate_variant:Nn \__whu_month_convert_to_english:n { x }
 
+\cs_new:Npn \__whu_date_convert_to_chinese:nn #1#2
+  {
+    \zhdigits { #1 }
+    % \, 
+    年
+    % \,
+    \zhnumber { #2 }
+    % \, 
+    月
+  }
 \cs_new:Nn \__whu_if_cleardoublepage:
   {
     \str_if_eq:VnTF \g__whu_type_str { for-library }

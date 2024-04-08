@@ -1,7 +1,7 @@
-\WHUDependency{ library = { util, constant, information } }
+\WHUDependency{ library = { constant, information } }
 \WHUProvideExplLibrary{cover}{\whu@date}{\whu@version}{covers of chinese and english type}
 
-
+\cs_new:Nn \__whu_cover_output: { }
 \cs_new:Nn \__whu_cover_zh: 
   {
     \begin{tikzpicture}[remember~picture, overlay]
@@ -44,45 +44,10 @@
   }
 \keys_define:nn { whu/cover/zh/width }
   {
+    head-underline .dim_gset:N = \g__whu_cover_zh_head_underline_width_dim,
     universitynamelogo .dim_gset:N = \g__whu_cover_zh_universitynamelogo_width_dim,
     information .dim_gset:N = \g__whu_cover_zh_information_width_dim,
   }
-
-
-\__whu_set_information_family:n 
-  {
-    year =
-      {
-        zh = \int_use:N \c_sys_year_int,
-        en = \int_use:N \c_sys_year_int
-      },
-    month =
-      {
-        zh = \int_use:N \c_sys_month_int,
-        en = \int_use:N \c_sys_month_int
-      },
-    date =
-      {
-        zh = 
-          {
-            \__whu_cover_zh_date_transform:nn
-              { \__whu_use_information:nn { year } { zh } }
-              { \__whu_use_information:nn { month } { zh } }
-          },
-        en = 
-          {
-            \__whu_month_cover_to_english:x { \__whu_use_information:nn { month } { en } }  % 需要用 x 展开，否则编译会卡住
-            , \c_space_tl
-            \__whu_use_information:nn { year } { en }
-          }
-      },
-    information =
-      {
-        zh = \__whu_cover_zh_information_content:,
-        en = \__whu_cover_en_information_content:,
-      }
-  }
-
 
 \cs_new:Nn \__whu_cover_zh_head: 
   {
@@ -103,12 +68,12 @@
     \__whu_cover_zh_master_head_content:,
     \__whu_cover_zh_doctor_head_content:,
     \__whu_cover_zh_head_format:
-  }\__whu_ensure_cs_exist:N
+  }\__whu_new_cs_empty:N
 
 \cs_new:Nn \__whu_cover_zh_head_underline:
   {
     \Replicate {2} { \c_space_tl } 
-    \raisebox { -0.3ex } { \underline { \hspace*{2.4cm} } }
+    \raisebox { -0.3ex } { \underline { \hspace*{ \g__whu_cover_zh_head_underline_width_dim } } }
   }
 \cs_new:Nn \__whu_cover_zh_head_underline:n 
   {
@@ -117,7 +82,7 @@
       {
         \underline 
           {
-            \raisebox { 0.3ex } { \makebox[2.4cm] { \hfil #1 \hfil } } 
+            \raisebox { 0.3ex } { \makebox[ \g__whu_cover_zh_head_underline_width_dim ] { \hfil #1 \hfil } } 
           } 
       }
   }
@@ -211,6 +176,14 @@
         \__whu_use_information:nn { information } { zh }
       };
   }
+\__whu_set_information_family:n 
+  {
+    information =
+      {
+        zh = \__whu_cover_zh_information_content:,
+        en = \__whu_cover_en_information_content:,
+      }
+  }
 \cs_new:Nn \__whu_cover_zh_information_content: 
   { 
     % 调用其中一种时，其余为空
@@ -244,16 +217,7 @@
   }
 \cs_new:Nn \__whu_cover_zh_date_format:
   { \heiti \zihao { 3 } }
-\cs_new:Npn \__whu_cover_zh_date_transform:nn #1#2
-  {
-    \zhdigits { #1 }
-    % \, 
-    年
-    % \,
-    \zhnumber { #2 }
-    % \, 
-    月
-  }
+
 \cs_new:Nn \__whu_cover_en_title: 
   {
     \__whu_cover_en_head_title_sep_set:

@@ -1,10 +1,41 @@
 \WHUDependency 
   {
     package = { tabularray },
-    library = { cover, util, constant, information }
+    library = { cover }
   }
 \WHUProvideExplLibrary{master}{\whu@date}{\whu@version}{setting for normal master thesis of Wuhan University}
 
+
+% ---------------------------------- %
+% 硕士学位类型：academic, professional %
+% ---------------------------------- %
+\msg_new:nnn { whu } { invalid-degree-type }
+  {
+    Invalid~degree~type~`#1'. \\ Please~type~`academic'~or~`professional'. 
+  }
+\str_new:N \g__whu_master_degree_type_str
+\keys_define:nn { whu/master }
+  {
+    degree-type .choice:,
+    degree-type / academic .code:n = { \str_gset:Nn \g__whu_master_degree_type_str { academic } },
+    degree-type / professional .code:n = { \str_gset:Nn \g__whu_master_degree_type_str { professional } },
+    degree-type .initial:n = academic,
+    degree-type / unknown .code:n = { \msg_error:nnn { whu } { invalid-degree-type } {#1} },
+  }
+
+
+\cs_new:Nn \__whu_master_new_cs_academic_and_professional_zh_and_en:nn 
+  {
+    \cs_new:cn  { __whu_academic_master_ #1 _zh_ #2 : } { }
+    \cs_new:cn  { __whu_academic_master_ #1 _en_ #2 : } { }
+    \cs_new:cn  { __whu_professional_master_ #1 _zh_ #2 : } { }
+    \cs_new:cn  { __whu_professional_master_ #1 _en_ #2 : } { }
+  }
+
+
+% -------------- %
+% 不同 type 的设置 %
+% -------------- %
 \cs_set:Nn \__whu_type_for_library_additional_setting:
   {
     % 用 \AtBeginDocument 可以在 \AtEndPreamble 之后执行，可以覆盖 hyperref 的原始设置
@@ -20,99 +51,232 @@
 
 
 
+% ------- %
+% 封面设置 %
+% ------- %
+\cs_set:Nn \__whu_cover_output:
+  {
+    \str_case:Vn \g__whu_master_degree_type_str
+      {
+        { academic } { \__whu_academic_master_cover: }
+        { professional } { \__whu_professional_master_cover: }
+      }
+  }
+\cs_new:Nn \__whu_academic_master_cover: 
+  {
+    \__whu_academic_master_cover_zh:
+    \__whu_if_cleardoublepage:
+    \__whu_academic_master_cover_en:
+    \__whu_if_cleardoublepage:
+  }
+\cs_new:Nn \__whu_academic_master_cover_zh: 
+  {
+    \__whu_academic_master_cover_zh_set:
+    \__whu_cover_zh:
+  }
+\cs_new:Nn \__whu_academic_master_cover_en: 
+  {
+    \__whu_academic_master_cover_en_set:
+    \__whu_cover_en:
+  }
+\cs_new:Nn \__whu_academic_master_cover_zh_set: 
+  {
+    \__whu_academic_master_constant_zh_set:
+    \__whu_academic_master_information_zh_set:
+  }
+\cs_new:Nn \__whu_academic_master_cover_en_set: 
+  {
+    \__whu_academic_master_constant_en_set:
+    \__whu_academic_master_information_en_set:
+  }
+\cs_new:Nn \__whu_academic_master_constant_zh_set: 
+  {
+    \__whu_master_cover_zh_common_set:
+    \__whu_academic_master_constant_zh_initial_set:
+    \__whu_academic_master_constant_zh_additional_set:
+  }
+\cs_new:Nn \__whu_academic_master_constant_en_set: 
+  {
+    \__whu_master_cover_en_common_set:
+    \__whu_academic_master_constant_en_initial_set:
+    \__whu_academic_master_constant_en_additional_set:
+  }
+\cs_new:Nn \__whu_academic_master_information_zh_set:
+  {
+    \__whu_academic_master_information_zh_initial_set:
+    \__whu_academic_master_information_zh_additional_set:
+  }
+\cs_new:Nn \__whu_academic_master_information_en_set:
+  {
+    \__whu_academic_master_information_en_initial_set:
+    \__whu_academic_master_information_en_additional_set:
+  }
+\cs_new:Nn \__whu_master_cover_zh_common_set: 
+  {
+    \__whu_set_information_constant_family:n
+      {
+        clc/zh                = 分类号,
+        secret-level/zh       = 密级,
+        udc/zh                = UDC,
+        school-id/zh          = 编号,
+        author/zh             = 研究生姓名
+        student-id/zh         = 学号,
+        supervisor/zh         = 指导教师姓名、职称,
+        major/zh              = 专业名称,
+      }
+    \__whu_set_information_family:n
+      {
+        thesis-type/zh         = 硕士学位论文,
+        title/zh               = 武汉大学硕士学位论文 \LaTeX{} 模板,
+        department/zh          = 学院,
+        author/zh              = 研究生姓名,
+        student-id/zh          = 学号,
+        supervisor/zh          = 指导教师姓名、职称,
+        major/zh               = 专业名称,
+      }
+  }
+\cs_new:Nn \__whu_master_cover_en_common_set:
+  {
+    \__whu_set_information_constant_family:n
+      {
+        author/en             = Candidate,
+        student-id/en         = Student~Number,
+        supervisor/en         = Supervisor,
+        major/en              = Major,
+        professional-field/en = Speciality,
+      }
+    \__whu_set_information_family:n
+      {
+        title/en               = \LaTeX{} Template~for~Master's~Degree~Thesis~of~Wuhan~University,
+        department/en          = School,
+        author/en              = Candidate,
+        student-id/en          = Student~Number,
+        supervisor/en          = Supervisor,
+        major/en               = Major,
+        professional-field/en  = Speciality,
+      }
+  }
+\cs_new:Nn \__whu_academic_master_constant_zh_initial_set: 
+  {
+    \__whu_set_information_constant_family:n
+      {
+        professional-field/zh = 研究方向,
+      }
+  }
+\cs_new:Nn \__whu_academic_master_information_zh_initial_set: 
+  {
+    \__whu_set_information_family:n
+      {
+        professional-field/zh  = 研究方向,
+      }
+  }
+\cs_new:Nn \__whu_academic_master_constant_en_initial_set: 
+  {
+    \__whu_set_information_constant_family:n
+      {
+        professional-field/en = Speciality,
+      }
+    \__whu_set_information_family:n
+      {
+        professional-field/en  = Speciality,
+      }
+  }
+\clist_map_function:nN
+  {
+    \__whu_academic_master_constant_zh_additional_set:,
+    \__whu_academic_master_constant_en_additional_set:,
+    \__whu_academic_master_information_en_initial_set:,
+    \__whu_academic_master_information_zh_additional_set:,
+    \__whu_academic_master_information_en_additional_set:,
+  }\__whu_new_cs_empty:N
 
 
-% ------------ %
-% constant 设置 %
-% ------------ %
-% \AtEndPreamble
-%   {
-%     \str_case:Vn \g__whu_master_degree_type_str
-%       {
-%         { academic } { \__whu_academic_master_constant_set: }
-%         { professional } { \__whu_professional_master_constant_set: }
-%       }
-%   }
-% \cs_new:Nn \__whu_academic_master_constant_set: 
-%   {
-%     \__whu_academic_master_constant_initial_set:
-%     \__whu_academic_master_constant_additional_set:
-%   }
-% \cs_new:Nn \__whu_academic_master_constant_additional_set: { }
+\cs_new:Nn \__whu_professional_master_cover: 
+  {
+    \__whu_professional_master_cover_zh:
+    \__whu_if_cleardoublepage:
+    \__whu_professional_master_cover_en:
+    \__whu_if_cleardoublepage:
+  }
+\cs_new:Nn \__whu_professional_master_cover_zh:
+  {
+    \__whu_professional_master_cover_zh_set:
+    \__whu_cover_zh:
+  }
+\cs_new:Nn \__whu_professional_master_cover_en: 
+  {
+    \__whu_professional_master_cover_en_set:
+    \__whu_cover_en:
+  }
+\cs_new:Nn \__whu_professional_master_cover_zh_set: 
+  {
+    \__whu_master_cover_zh_common_set:
+    \__whu_professional_master_constant_zh_set:
+    \__whu_professional_master_information_zh_set:
+  }
+\cs_new:Nn \__whu_professional_master_cover_en_set: 
+  {
+    \__whu_master_cover_en_common_set:
+    \__whu_professional_master_constant_en_set:
+    \__whu_professional_master_information_en_set:
+  }
+\cs_new:Nn \__whu_professional_master_constant_zh_set: 
+  {
+    \__whu_professional_master_constant_zh_initial_set:
+    \__whu_professional_master_constant_zh_additional_set:
+  }
+\cs_new:Nn \__whu_professional_master_information_zh_set:
+  {
+    \__whu_professional_master_information_zh_initial_set:
+    \__whu_professional_master_information_zh_additional_set:
+  }
+\cs_new:Nn \__whu_professional_master_constant_zh_initial_set: 
+  {
+    \__whu_set_information_constant_family:n
+      {
+        major/zh = 专业类别（领域）,
+      }
+  }
+\cs_new:Nn \__whu_professional_master_constant_zh_additional_set: { }
+\cs_new:Nn \__whu_professional_master_information_zh_initial_set: 
+  {
+    \__whu_set_information_family:n
+      {
+        major/zh = 专业类别（领域）,
+      }
+  }
+\cs_new:Nn \__whu_professional_master_information_zh_additional_set: { }
+\cs_new:Nn \__whu_professional_master_constant_en_set: 
+  {
+    \__whu_professional_master_constant_en_initial_set:
+    \__whu_professional_master_constant_en_additional_set:
+  }
+\cs_new:Nn \__whu_professional_master_constant_en_initial_set: { }
+\cs_new:Nn \__whu_professional_master_constant_en_additional_set: { }
+\cs_new:Nn \__whu_professional_master_information_en_set:
+  {
+    \__whu_professional_master_information_en_initial_set:
+    \__whu_professional_master_information_en_additional_set:
+  }
+\cs_new:Nn \__whu_professional_master_information_en_initial_set: { }
+\cs_new:Nn \__whu_professional_master_information_en_additional_set: { }
+
+\keys_set:nn { whu/cover/zh/width }
+  {
+    head-underline     = 2.4cm,
+    universitynamelogo = 10cm,
+    information        = 0.72\textwidth
+  }
+
+
+
+
+
 % \cs_new:Nn \__whu_academic_master_constant_initial_set:
 %   {
 %     \cs_set:Nn \__whu_cover_zh_thesis_type_format: { \zihao { 2 } \ziju{1} }
-%     \__whu_set_information_family:n
-%       {
-%         thesis-type/zh = 硕士学位论文,
-%         title =
-%           {
-%             zh = 武汉大学硕士学位论文 \LaTeX{} 模板,
-%             en = \LaTeX{} Template~for~Professional~Master's~Degree~of~Wuhan~University
-%           },
-%         department =
-%           {
-%             zh = 学院,
-%             en = School
-%           },
-%         author =
-%           {
-%             zh = 研究生姓名,
-%             en = Candidate
-%           },
-%         student-id =
-%           {
-%             zh = 学号,
-%             en = Student~Number
-%           },
-%         supervisor =
-%           {
-%             zh = 指导教师姓名、职称,
-%             en = Supervisor
-%           },
-%         major =
-%           {
-%             zh = 专业名称,
-%             en = Major
-%           },
-%         professional-field =
-%           {
-%             zh = 研究方向,
-%             en = Speciality
-%           },
-%       }
-%     \__whu_set_information_constant_family:n
-%       {
-%         clc/zh          = 分类号,
-%         secret-level/zh = 密级,
-%         udc/zh          = UDC,
-%         school-id/zh    = 编号,
-%         author =
-%           {
-%             zh = 研究生姓名,
-%             en = Candidate
-%           },
-%         student-id =
-%           {
-%             zh = 学号,
-%             en = Student~Number
-%           },
-%         supervisor =
-%           {
-%             zh = 指导教师姓名、职称,
-%             en = Supervisor
-%           },
-%         major =
-%           {
-%             zh = 专业名称,
-%             en = Major
-%           },
-%         professional-field =
-%           {
-%             zh = 研究方向,
-%             en = Speciality
-%           },
-%       }
+%     
+%     
 %     \cs_set:Nn \__whu_cover_zh_master_information_content: 
 %       {
 %         \begin{minipage} [ c ] { \g__whu_cover_zh_information_width_dim }
@@ -170,66 +334,6 @@
 % \cs_new:Nn \__whu_professional_master_constant_initial_set:
 %   {
 %     \cs_set:Nn \__whu_cover_zh_thesis_type_format: { \zihao { 2 } \ziju{0.5} }
-%     \__whu_set_information_family:n
-%       {
-%         thesis-type/zh = 硕士专业学位论文,
-%         title =
-%           {
-%             zh = 武汉大学硕士专业学位论文 \LaTeX{} 模板,
-%             en = \LaTeX{} Template~for~Professional~Master's~Degree~of~Wuhan~University
-%           },
-%         department =
-%           {
-%             zh = 数学与统计学院,
-%             en = School~of~Mathematics~and~Statistics
-%           },
-%         author =
-%           {
-%             zh = 研究生姓名,
-%             en = Candidate
-%           },
-%         student-id =
-%           {
-%             zh = 学号,
-%             en = Student~Number
-%           },
-%         supervisor =
-%           {
-%             zh = 指导教师姓名、职称,
-%             en = Supervisor
-%           },
-%         major =
-%           {
-%             zh = 专业名称,
-%             en = Major
-%           },
-%       }
-%     \__whu_set_information_constant_family:n
-%       {
-%         clc/zh          = 分类号,
-%         secret-level/zh = 密级,
-%         udc/zh          = UDC,
-%         school-id/zh    = 编号,
-%         author =
-%           {
-%             zh = 研究生姓名,
-%             en = Candidate
-%           },
-%         student-id =
-%           {
-%             zh = 学号,
-%             en = Student~Number
-%           },
-%         supervisor =
-%           {
-%             zh = 指导教师姓名、职称,
-%             en = Supervisor
-%           },
-%         major =
-%           {
-%             zh = 专业类别（领域）,
-%             en = Major
-%           },
 %       }
 %     \cs_set:Nn \__whu_cover_zh_information_content: 
 %       {
@@ -299,11 +403,5 @@
     \end{tblr}
   }
 
-\whusetup[cover/zh/sep]
-  { top-head = 1.1em }
-\keys_set:nn { whu/cover/zh/width }
-  {
-    universitynamelogo = 10cm,
-    information = 0.72\textwidth
-  }
+
 \ProcessKeyOptions [ whu/master ]

@@ -1,3 +1,4 @@
+\WHUDependency{ library = { util } }
 \WHUProvideExplLibrary{information}{\whu@date}{\whu@version}{user information}
 
 
@@ -75,3 +76,32 @@
 
 
 \ProcessKeyOptions [ whu/information ]
+
+\__whu_set_information_family:n 
+  {
+    year =
+      {
+        zh = \int_use:N \c_sys_year_int,
+        en = \int_use:N \c_sys_year_int
+      },
+    month =
+      {
+        zh = \int_use:N \c_sys_month_int,
+        en = \int_use:N \c_sys_month_int
+      },
+    date =
+      {
+        zh = 
+          {
+            \__whu_date_convert_to_chinese:nn
+              { \__whu_use_information:nn { year } { zh } }
+              { \__whu_use_information:nn { month } { zh } }
+          },
+        en = 
+          {
+            \__whu_month_convert_to_english:x { \__whu_use_information:nn { month } { en } }  % 需要用 x 展开，否则编译会卡住
+            , \c_space_tl
+            \__whu_use_information:nn { year } { en }
+          }
+      }
+  }
