@@ -77,6 +77,7 @@
   }
 %%
 
+\cs_if_exist:NF \DeclareObjectType { \RequirePackage{xtemplate} }
 \RequirePackage{ctexhook,ctexpatch}
 \RequirePackage{etl}
 \RequirePackage{lt3ekeysext}[2024/03/31]
@@ -218,6 +219,15 @@
   }
 \cs_new:Npn \whu@iflibraryloaded #1 { \cs_if_exist:cTF { whu/library~#1 } }
 \prop_new:N \g__whu_library_delayed_prop
+\prop_new_linked:N \g__whu_library_dependency_prop
+\cs_new_protected:Npn \__whu_library_add_dependency:n #1
+  {
+    \tl_set:Nx \l__whu_tmpc_tl 
+      { \prop_item:No \g__whu_library_dependency_prop \CurrentFile }
+    \clist_set:No \l__whu_tmpc_tl { \l__whu_tmpc_tl , #1 }
+    \clist_remove_duplicates:N \l__whu_tmpc_tl
+    \prop_gput:Noo \g__whu_library_dependency_prop \CurrentFile { \l__whu_tmpc_tl }
+  }
 \ekeysdeclarecmd \WHULibraryDelayedUntil { s m }
   {
     \tl_set:Nx \l__whu_tmp_tl { \tl_range:Nnn \CurrentFile { 13 } { -5 } }
@@ -232,7 +242,10 @@
     \tl_if_blank:nF {#2}
       {
         \prop_if_in:NoTF \g__whu_library_delayed_prop \l__whu_tmp_tl
-          { }
+          { 
+            \@ifpackageloaded {#2} { } 
+              { \__whu_load_library_hook:nn { \use_none:n } \l__whu_tmp_tl \file_input_stop: } 
+          }
           {
             \prop_gput:Nxx \g__whu_library_delayed_prop \l__whu_tmp_tl {#2}
             \@ifpackageloaded {#2} 
@@ -246,36 +259,54 @@
       }
   }
 \cs_new_protected:Npn \__whu_load_library_hook:nn #1#2
-  { 
+  {
     \cs_undefine:c { whu/library~#2 }
     \cs_undefine:c { @pkg-disable@whu.library.#2.tex }
     \cs_undefine:c { ver@whu.library.#2.tex }
     \exp_args:Nne \use:n {#1}
       {
-        % \file_input:n { whu.library.#2.tex }
         \__whu_load_library_delayed:nnn { #2 }
           { \exp_not:v { whu/library-options~#2 } }
           { \exp_not:v { whu/library-version~#2 } }
       }
   }
+\cs_new_protected:Npn \__whu_load_library_check:nT #1#2
+  { 
+    \exp_args:Nne \__whu_load_library_check:nnTF {#1}
+      { \prop_item:Nn \g__whu_library_dependency_prop { whu.library.#1.tex } }
+      {#2} { }
+  }
+\cs_new_protected:Npn \__whu_load_library_check:nnTF #1#2
+  {
+    \bool_set_true:N \l__whu_tmpc_bool
+    \clist_map_inline:nn {#2}
+      {
+        \whu@iflibraryloaded {##1} { }
+          {
+            \bool_set_false:N \l__whu_tmpc_bool
+            \__whu_load_library_hook:nn 
+              { \hook_gput_code:nnn { file/whu.library.##1.tex/after } { whu/load } }
+              {#1}
+          }
+      }
+    \bool_if:NTF \l__whu_tmpc_bool
+  }
 \cs_new_protected:Npn \__whu_load_library_delayed:nnn #1#2#3
   {
-    \whu@iflibraryloaded {#1} { }
-      { 
-        \file_if_exist:nTF { whu.library.#1.tex }
-          { 
-            \exp_last_unbraced:Ne \elkernel_file_with_options:nnn 
+    \__whu_load_library_check:nT {#1}
+      {
+        \use:e
+          {
+            \elkernel_file_with_options:nnn { whu.library.#1.tex }
               {
-                { whu.library.#1.tex } 
-                {#3} 
-                {
-                  \clist_if_exist:cT { whu/library-options-passed~#1 }
-                    { \exp_not:v { whu/library-options-passed~#1 } , }
-                  \exp_not:n {#2} 
-                }
+                \cs_if_exist:cTF { whu/library-version~#1 }
+                  { \exp_not:v { whu/library-version~#1 } } {#3}
+              }
+              {
+                \cs_if_exist:cT { whu/library-options~#1 }
+                  { \exp_not:v { whu/library-options~#1 } , } \exp_not:n {#2}
               }
           }
-          { \msg_error:nnn { whu } { library-not-exist } {#1} }
       }
   }
 \cs_new_protected:Npn \WHUPassOptionsToLibrary #1#2
@@ -290,8 +321,8 @@
       {
         \tl_gset:cn { whu/library-options~#2 } {#1}
         \tl_gset:cn { whu/library-version~#2 } {#3}
-        \__whu_load_library_delayed:nnn {#2} {#1} {#3}
       }
+    \__whu_load_library_delayed:nnn {#2} {#1} {#3}
   }
 %% fmt (fmt version), engine, package, library of package, class, module, library
 \cs_new_protected_nopar:Npn \WHUDependency { \keys_set:nn { whu/dependency } }
@@ -330,8 +361,23 @@
       }
   }
 \cs_new_nopar:Npn \__whu_load_module:n #1 { }
-\cs_new_nopar:Npn \__whu_load_library:n
-  { \keyval_parse:NNn \__whu_load_library_aux:n \__whu_load_library_aux:nn }
+\cs_new_nopar:Npn \__whu_load_library:n #1
+  { 
+    \__whu_library_add_dependency:n {#1}
+    \keyval_parse:NNn \__whu_load_library_aux:n \__whu_load_library_aux:nn {#1}
+    \exp_args:No \str_if_in:nnT
+      { \exp_after:wN \s__whu_mark \CurrentFile } { \s__whu_mark whu.library. }
+      {
+        \exp_args:Ne \__whu_load_library_check:nnTF 
+          { \tl_range:Nnn \CurrentFile { 13 } { -5 } } {#1} 
+          { } 
+          { 
+            \__whu_load_library_hook:nn { \use_none:n } 
+              { \tl_range:Nnn \CurrentFile { 13 } { -5 } }
+            \file_input_stop: 
+          } 
+      }
+  }
 \cs_new:Npn \__whu_load_library_aux:n #1 { \__whu_load_library_aux:nn {#1} { } }
 \cs_new:Npn \__whu_load_library_aux:nn #1
   { 
