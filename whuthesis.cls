@@ -21,8 +21,8 @@
 \RequirePackage{l3keys2e}
 % \whu@date 和 \whu@version 为 whuthesis 的日期和版本号
 % \whu@d@te 和 \whu@versi@n 为上游的 CusTeX 的日期和版本号
-\def\whu@date{2024/04/06}
-\def\whu@version{0.0.3}
+\def\whu@date{2024/04/08}
+\def\whu@version{0.0.4}
 \ProvidesExplClass{whuthesis}{\whu@date}{\whu@version}{Thesis template for Wuhan University}
 
 
@@ -72,6 +72,9 @@
       { \cs_set_eq:NN \cleardoublepage \newpage }
     \AddToHook { cmd / mainmatter / after }
       { \cs_set_eq:NN \cleardoublepage \__whu_cleardoublepage: }
+
+    % 2024-04-07 zepinglee 建议不用上面那样 hook，直接加一个 \@twosidefalse 即可，但是这样会影响页眉
+    % \@twosidefalse
     \__whu_type_for_library_additional_setting:
   }
 \cs_new:Nn \__whu_type_for_library_additional_setting: { } 
@@ -87,6 +90,10 @@
 \RequirePackage { whu }
 
 
+
+\PassOptionsToClass{ \g__whu_to_book_clist }{ book }
+\LoadClass { book }
+
 % 要放在 whu 加载之后
 \str_case:Vn \g__whu_type_str
   {
@@ -94,9 +101,6 @@
     { for-print } { \__whu_type_for_print_setting: }
     { for-library } { \__whu_type_for_library_setting: }
   }
-\PassOptionsToClass{ \g__whu_to_book_clist }{ book }
-\LoadClass { book }
-
 
 \RequirePackage { ctex }
 \RequirePackage { graphicx }

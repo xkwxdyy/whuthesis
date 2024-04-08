@@ -1,5 +1,7 @@
-\WHULibraryDelayedUntil* {}
-\WHUDependency{ package = { amsthm, thmtools } }
+% https://tex.stackexchange.com/a/130655/246645
+% amsthm 要在 amsmath 后面载入，否则 \qedhere 会在 align* 中失效
+\WHULibraryDelayedUntil*{amsmath}
+\WHUDependency { package = { amsthm, thmtools } }
 \WHUProvideExplLibrary{math.theorem}{\whu@date}{\whu@version}{define math theorem environment}
 
 % 定理类环境
