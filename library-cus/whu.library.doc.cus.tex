@@ -9,12 +9,23 @@
   module={index.cus,box.cus},library={logo.cus}}
 \WHUProvideExplLibrary{doc.cus}{\whu@d@te}{\whu@versi@n}{documentation}
 
+\keys_define:nn { whu/doc-options }
+  {
+    no-index-file .bool_set_inverse:N = \l__whu_doc_index_file_bool,
+    no-index-file .initial:n = false,
+  }
+
+\ProcessKeyOptions[whu/doc-options]
+
 \whu_add_pdf_disable:n 
   { 
     \cs_set_eq:NN \whumodule \use:n 
     \cs_set_eq:NN \whulibrary \use:n 
   }
 
+
+\bool_if:NT \l__whu_doc_index_file_bool
+  {
 \providecommand* \dowhuageindexname { Code~Index }
 \providecommand* \docchangeindexname { History }
 
@@ -35,6 +46,7 @@
 ]{docchange}
 \setindexinit[docchange]{\let\theglossary\theindex \let\endtheglossary\endtheindex}
 \def\PrintChanges{\printindex[docchange]}
+  }
 
 \colorlet { whu/color/doc~cs } { red }
 \colorlet { whu/color/doc~env } { red }
@@ -97,7 +109,7 @@
 \bool_new:N \g__whu_doc_cs_break_bool
 \bool_set_true:N \g__whu_doc_cs_break_bool
 \bool_new:N \l__whu_doc_allow_indexing_bool
-\bool_set_true:N \l__whu_doc_allow_indexing_bool
+\bool_set_eq:NN \l__whu_doc_allow_indexing_bool \l__whu_doc_index_file_bool
 \bool_new:N \l__whu_doc_macro_visible_space_bool
 \tl_new:N \l__whu_doc_framed_setting_tl
 \tl_set:Nn \l__whu_doc_framed_setting_tl
