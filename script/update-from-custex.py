@@ -1,7 +1,7 @@
 """
 update-from-custex.py
 Author: 夏大鱼羊
-Date: 2024/04/06
+Date: 2024/04/12
 Description:
     - [✔] 从 custex 仓库中复制 `.sty`, `cus.module.xxx.tex` 和 `cus.library.xxx.tex` 文件
         - [✔]`cus.module.xxx.tex` 和 `whu.library.xxx.tex` 文件改名为 `whu.module.xxx.cus.tex` 和 `cus.library.xxx.cus.tex` 文件
@@ -17,7 +17,8 @@ Description:
         - [✔]将 `Chinese User Scheme (WHU) basic file` 修改为 `Basic file of thesis template for Wuhan university`
         - [✔]将 `\WHULoadModule { xxx }` 命令修改为 `\WHULoadModule { xxx.cus }`
         - [✔]版权申明修改
-    - `.cus.tex` 文件开头增加版权申明
+    - [✔]`.cus.tex` 文件开头增加版权申明
+    - 将 `cus` 的 `example` 文件夹中的文件复制到 `whu` 的 `example-cus` 文件夹中
 """
 import os
 import shutil
@@ -27,9 +28,11 @@ import re
 
 # 源目录和目标目录
 cus_directory = "/Users/xiakangwei/Nutstore/Github/repository/custex"
+cus_example_directory = "/Users/xiakangwei/Nutstore/Github/repository/custex/example"
 cus_module_directory = "/Users/xiakangwei/Nutstore/Github/repository/custex/module"
 cus_library_directory = "/Users/xiakangwei/Nutstore/Github/repository/custex/library"
 whu_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis"
+whu_example_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/example-cus"
 module_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/module"
 library_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/library-cus"
 
@@ -264,3 +267,15 @@ for file in os.listdir(library_directory):
                 file_content = '%% ' + file + '\n' + cus_file_copyright + '\n' + file_content
             with open(file_path , 'w', encoding='utf-8') as f:
                 f.write(file_content)
+
+
+
+"""
+将 `cus` 的 `example` 文件夹中的文件复制到 `whu` 的 `example-cus` 文件夹中
+"""
+for file in os.listdir(cus_example_directory):
+    file_path = os.path.join(cus_example_directory, file)
+    if os.path.isfile(file_path):
+        source_file_path = file_path
+        target_file_path = os.path.join(whu_example_directory, file)
+        shutil.copy(source_file_path, target_file_path)

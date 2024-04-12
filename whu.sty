@@ -5,8 +5,8 @@
 % come originally from the CusTeX project (https://github.com/Sophanatprime/cus)
 %%
 \NeedsTeXFormat{LaTeX2e}[2023/06/01]
-\def\whu@d@te{2024/04/03}
-\def\whu@versi@n{0.0.4g}
+\def\whu@d@te{2024/04/11}
+\def\whu@versi@n{0.0.4h}
 \ProvidesExplPackage{whu}{\whu@d@te}{\whu@versi@n}{Basic file of thesis template for Wuhan university}
 
 \def\WhuTeX{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.15em\TeX}
@@ -224,10 +224,17 @@
   {
     \tl_set:Nx \l__whu_tmpc_tl 
       { \prop_item:No \g__whu_library_dependency_prop \CurrentFile }
-    \clist_set:No \l__whu_tmpc_tl { \l__whu_tmpc_tl , #1 }
+    \keyval_parse:NNn 
+      \__whu_library_add_dependency_aux:n
+      \__whu_library_add_dependency_aux:nn
+      {#1}
     \clist_remove_duplicates:N \l__whu_tmpc_tl
     \prop_gput:Noo \g__whu_library_dependency_prop \CurrentFile { \l__whu_tmpc_tl }
   }
+\cs_new:Npn \__whu_library_add_dependency_aux:n #1
+  { \clist_put_right:Nn \l__whu_tmpc_tl {#1} }
+\cs_new:Npn \__whu_library_add_dependency_aux:nn #1#2
+  { \clist_put_right:Nn \l__whu_tmpc_tl {#1} }
 \ekeysdeclarecmd \WHULibraryDelayedUntil { s m }
   {
     \tl_set:Nx \l__whu_tmp_tl { \tl_range:Nnn \CurrentFile { 13 } { -5 } }
@@ -508,6 +515,7 @@
 \keys_define:nn { whu/option }
   {
     library .code:n = \__whu_load_library:n {#1} ,
+    draft .bool_set:N = \l_whu_draft_bool ,
   }
 
 
