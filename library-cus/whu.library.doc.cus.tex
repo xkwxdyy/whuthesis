@@ -24,11 +24,12 @@
   }
 
 
-\bool_if:NT \l__whu_doc_index_file_bool
-  {
 \providecommand* \dowhuageindexname { Code~Index }
 \providecommand* \docchangeindexname { History }
-
+\protected\def\PrintUsages{}
+\protected\def\PrintChanges{}
+\bool_if:NT \l__whu_doc_index_file_bool
+  {
 \newindextype[filename=\jobname.dowhuage.idx, output=\jobname.dowhuage.ind,
   exec={makeindex~-s~gind.ist~-o~\jobname.dowhuage.ind~\jobname.dowhuage.idx},
   title={代码索引}, heading*={\section}, auto=true, 
@@ -908,6 +909,8 @@
           { MMMMI - \thepage }
       }
   }
+\bool_if:NF \l__whu_doc_index_file_bool
+  { \cs_set_protected:Npn \__whu_doc_index_page_hc:nn #1#2 { } }
 \group_begin:
 \char_set_active_eq:NN - \scan_stop:
 \tl_const:Nx \c__whu_doc_active_minus_tl { \char_generate:nn { `- } { 13 } }
@@ -979,6 +982,8 @@
 \tl_new:N \saved@indexname 
 \tl_new:N \saved@macroname 
 \tl_const:Nn \generalname { General }
+\cs_new_protected:Npn \removegeneralname
+  { \def\generalname{\expandafter \use_none:nn } }
 \cs_set_protected:Npn \changes
   {
     \@bsphack \group_begin: \@sanitize
@@ -1013,6 +1018,8 @@
       }
     \@tempa \group_end: \@esphack
   }
+\bool_if:NF \l__whu_doc_index_file_bool
+  { \cs_set_protected:Npn \__whu_doc_ltx_changes:nnn #1#2#3 { \group_end: \@esphack } }
 \cs_set_protected:Npn \changes@ #1#2
   {
     \__whu_doc_save_version_date:nn {#1} {#2}
@@ -1109,6 +1116,10 @@
       {
         \tl_remove_all:Nx \l__whu_doc_tmpa_tl
           { \iow_char:N \^^M \c_percent_str }
+        \tl_remove_all:Nx \l__whu_doc_tmpa_tl
+          { \token_to_str:N \obeyedline \c_space_tl \c_percent_str }
+        \tl_remove_all:Nx \l__whu_doc_tmpa_tl
+          { \token_to_str:N \obeyedline \c_space_tl }
         \tl_remove_all:Nx \l__whu_doc_tmpa_tl { \tl_to_str:n { ^ ^ A } }
         \tl_remove_all:Nx \l__whu_doc_tmpa_tl { \iow_char:N \^^I }
         \tl_remove_all:Nx \l__whu_doc_tmpa_tl { \iow_char:N \^^M }
@@ -1770,33 +1781,49 @@
     \bool_lazy_and:nnF
       { \tl_if_empty_p:N \l__whu_doc_date_added_tl }
       { \tl_if_empty_p:N \l__whu_doc_date_updated_tl }
-      { \midrule }
-    \tl_if_empty:NF \l__whu_doc_date_added_tl
       {
-        %\bool_lazy_and:nnTF { \legacy_if_p:n { @twoside } } { \c@page }
-        \legacy_if:nTF { @twoside } { \IfPageOdd \use_i:nn \use_ii:nn } { \use_ii:nn }
-          {
-            \multicolumn { 2 } { @{} l @{} } 
-              { \scriptsize New: \, \l__whu_doc_date_added_tl } \\
-          }
-          {
-            \multicolumn { 2 } { @{} r @{} }
-              { \scriptsize New: \, \l__whu_doc_date_added_tl } \\
-          }
-      }
+        \tl_set:Nn \l__whu_doc_tmpa_tl { &\\[-\normalbaselineskip]\midrule }
 
-    \tl_if_empty:NF \l__whu_doc_date_updated_tl
-      {
-        %\bool_lazy_and:nnTF { \legacy_if_p:n { @twoside } } { \c@page }
-        \legacy_if:nTF { @twoside } { \IfPageOdd \use_i:nn \use_ii:nn } { \use_ii:nn }
+        \tl_if_empty:NF \l__whu_doc_date_added_tl
           {
-            \multicolumn { 2 } { @{} l @{} }
-              { \scriptsize Updated: \, \l__whu_doc_date_updated_tl } \\
+            \legacy_if:nTF { @twoside } 
+              { \IfPageOdd \use_i:nn \use_ii:nn } { \use_ii:nn }
+              {
+                \tl_put_right:Nn \l__whu_doc_tmpa_tl
+                  {
+                    \multicolumn { 2 } { @{} l @{} } 
+                      { \scriptsize New: \, \l__whu_doc_date_added_tl } \\
+                  }
+              }
+              {
+                \tl_put_right:Nn \l__whu_doc_tmpa_tl
+                  {
+                    \multicolumn { 2 } { @{} r @{} }
+                      { \scriptsize New: \, \l__whu_doc_date_added_tl } \\
+                  }
+              }
           }
+    
+        \tl_if_empty:NF \l__whu_doc_date_updated_tl
           {
-            \multicolumn { 2 } { @{} r @{} }
-              { \scriptsize Updated: \, \l__whu_doc_date_updated_tl } \\
+            \legacy_if:nTF { @twoside } 
+              { \IfPageOdd \use_i:nn \use_ii:nn } { \use_ii:nn }
+              {
+                \tl_put_right:Nn \l__whu_doc_tmpa_tl
+                  {
+                    \multicolumn { 2 } { @{} l @{} }
+                      { \scriptsize Updated: \, \l__whu_doc_date_updated_tl } \\
+                  }
+              }
+              {
+                \tl_put_right:Nn \l__whu_doc_tmpa_tl
+                  {
+                    \multicolumn { 2 } { @{} r @{} }
+                      { \scriptsize Updated: \, \l__whu_doc_date_updated_tl } \\
+                  }
+              }
           }
+        \l__whu_doc_tmpa_tl
       }
   }
 \dim_new:N \l__whu_doc_syntax_dim
