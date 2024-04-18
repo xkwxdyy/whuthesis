@@ -1,7 +1,7 @@
 """
 update-from-custex.py
 Author: 夏大鱼羊
-Date: 2024/04/12
+Date: 2024/04/18
 Description:
     - [✔] 从 custex 仓库中复制 `.sty`, `cus.module.xxx.tex` 和 `cus.library.xxx.tex` 文件
         - [✔]`cus.module.xxx.tex` 和 `whu.library.xxx.tex` 文件改名为 `whu.module.xxx.cus.tex` 和 `cus.library.xxx.cus.tex` 文件
@@ -18,7 +18,8 @@ Description:
         - [✔]将 `\WHULoadModule { xxx }` 命令修改为 `\WHULoadModule { xxx.cus }`
         - [✔]版权申明修改
     - [✔]`.cus.tex` 文件开头增加版权申明
-    - 将 `cus` 的 `example` 文件夹中的文件复制到 `whu` 的 `example-cus` 文件夹中
+    - [✔]将 `cus` 的 `example` 文件夹中的文件复制到 `whu` 的 `example-cus` 文件夹中
+    - [✔]复制 `cusdoc.cls` 和 `cusdoc.cfg` 文件并处理替换
 """
 import os
 import shutil
@@ -33,8 +34,8 @@ cus_module_directory = "/Users/xiakangwei/Nutstore/Github/repository/custex/modu
 cus_library_directory = "/Users/xiakangwei/Nutstore/Github/repository/custex/library"
 whu_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis"
 whu_example_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/example-cus"
-module_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/module"
-library_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/library-cus"
+whu_module_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/module"
+whu_library_directory = "/Users/xiakangwei/Nutstore/Github/repository/whuthesis/library-cus"
 
 
 def modify_cus_to_whu(file_path: str):
@@ -65,8 +66,8 @@ for file in os.listdir(cus_directory):
     file_path = os.path.join(cus_directory, file)
     # 判断 file_path 是否是文件还是文件夹，只处理文件
     if os.path.isfile(file_path):
-        # 如果文件是 'cus.sty' ，则修改标题后复制到 whu 目录
-        if file == 'cus.sty' :
+        # 如果文件是 cus 开头的 sty, cls, cfg 文件 ，则修改标题后并且替换文件中 cus 后复制到 whu 目录
+        if file.startswith('cus') and (file.endswith('.sty') or file.endswith('.cls') or file.endswith('.cfg')):
             source_file_path = file_path
             target_file_path = os.path.join(whu_directory, file.replace('cus', 'whu'))
             shutil.copy(source_file_path, target_file_path)
@@ -93,7 +94,7 @@ for file in os.listdir(cus_module_directory):
     file_path = os.path.join(cus_module_directory, file)
     if os.path.isfile(file_path):
         source_file_path = file_path
-        target_file_path = os.path.join(module_directory, file.replace('cus', 'whu').replace('.tex', '.cus.tex'))
+        target_file_path = os.path.join(whu_module_directory, file.replace('cus', 'whu').replace('.tex', '.cus.tex'))
         shutil.copy(source_file_path, target_file_path)
         modify_cus_to_whu(target_file_path)
 
@@ -101,7 +102,7 @@ for file in os.listdir(cus_library_directory):
     file_path = os.path.join(cus_library_directory, file)
     if os.path.isfile(file_path):
         source_file_path = file_path
-        target_file_path = os.path.join(library_directory, file.replace('cus', 'whu').replace('.tex', '.cus.tex'))
+        target_file_path = os.path.join(whu_library_directory, file.replace('cus', 'whu').replace('.tex', '.cus.tex'))
         shutil.copy(source_file_path, target_file_path)
         modify_cus_to_whu(target_file_path)
 
@@ -109,8 +110,8 @@ for file in os.listdir(cus_library_directory):
 """
 修改 `whu.module.xxx.cus.tex` 中的 `\WHUProvideModule{xxx}` 或 `\WHUProvideExplModule{xxx}` 的 `xxx` 为 `xxx.cus`
 """
-for file in os.listdir(module_directory):
-    file_path = os.path.join(module_directory, file)
+for file in os.listdir(whu_module_directory):
+    file_path = os.path.join(whu_module_directory, file)
     # 文件夹不处理
     if os.path.isfile(file_path):
         # 处理 module 文件
@@ -127,8 +128,8 @@ for file in os.listdir(module_directory):
 """
 修改 `whu.library.xxx.cus.tex` 中的 `\WHUProvideLibrary{xxx}` 或 `\WHUProvideExplLibrary{xxx}` 的 `xxx` 为 `xxx.cus`
 """
-for file in os.listdir(library_directory):
-    file_path = os.path.join(library_directory, file)
+for file in os.listdir(whu_library_directory):
+    file_path = os.path.join(whu_library_directory, file)
     # 文件夹不处理
     if os.path.isfile(file_path):
         # 处理 library 文件
@@ -170,8 +171,8 @@ def replace_dependency(input_str):
 
     return input_str
 
-for file in os.listdir(module_directory):
-    file_path = os.path.join(module_directory, file)
+for file in os.listdir(whu_module_directory):
+    file_path = os.path.join(whu_module_directory, file)
     # 文件夹不处理
     if os.path.isfile(file_path):
         # 处理 module 文件
@@ -183,8 +184,8 @@ for file in os.listdir(module_directory):
                     file_content = replace_dependency(file_content)
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(file_content)
-for file in os.listdir(library_directory):
-    file_path = os.path.join(library_directory, file)
+for file in os.listdir(whu_library_directory):
+    file_path = os.path.join(whu_library_directory, file)
     # 文件夹不处理
     if os.path.isfile(file_path):
         # 处理 library 文件
@@ -247,8 +248,8 @@ with open(whu_sty_path, 'w') as file:
 `.cus.tex` 文件开头增加版权申明
 """
 cus_file_copyright = "%% Copyright 2023, 2024 Wenjian Chern.\n%% \n% This file comes originally from the CusTeX project (https://github.com/Sophanatprime/cus)\n%%"
-for file in os.listdir(module_directory):
-    file_path = os.path.join(module_directory, file)
+for file in os.listdir(whu_module_directory):
+    file_path = os.path.join(whu_module_directory, file)
     # 文件夹不处理
     if os.path.isfile(file_path):
         if file.endswith('.cus.tex'):
@@ -257,8 +258,8 @@ for file in os.listdir(module_directory):
                 file_content = '%% ' + file + '\n' + cus_file_copyright + '\n' + file_content
             with open(file_path , 'w', encoding='utf-8') as f:
                 f.write(file_content)
-for file in os.listdir(library_directory):
-    file_path = os.path.join(library_directory, file)
+for file in os.listdir(whu_library_directory):
+    file_path = os.path.join(whu_library_directory, file)
     # 文件夹不处理
     if os.path.isfile(file_path):
         if file.endswith('.cus.tex'):
@@ -267,7 +268,17 @@ for file in os.listdir(library_directory):
                 file_content = '%% ' + file + '\n' + cus_file_copyright + '\n' + file_content
             with open(file_path , 'w', encoding='utf-8') as f:
                 f.write(file_content)
-
+# 增加 `cusdoc.cls` 和 `cusdoc.cfg` 文件的版权声明
+for file in os.listdir(whu_directory):
+    file_path = os.path.join(whu_directory, file)
+    if os.path.isfile(file_path):
+        if file in ['whudoc.cls','whudoc.cfg']:
+            with open(file_path
+                        , 'r', encoding='utf-8') as f:
+                    file_content = f.read()
+                    file_content = '%% ' + file + '\n' + cus_file_copyright + '\n' + file_content
+            with open(file_path , 'w', encoding='utf-8') as f:
+                f.write(file_content)
 
 
 """
