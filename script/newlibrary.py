@@ -18,7 +18,7 @@ try:
         print('The name of the new library will be: ' + library_name + '. Are you sure?')
         answer = pyip.inputYesNo()
         if answer == 'no':
-            version = input('Please type the name the new library: ')
+            library_name = input('Please type the name the new library: ')
             continue
         else:
             break
