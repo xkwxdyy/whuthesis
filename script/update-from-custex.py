@@ -1,7 +1,7 @@
 """
 update-from-custex.py
 Author: 夏大鱼羊
-Date: 2024/04/18
+Date: 2024/04/24
 Description:
     - [✔] 从 custex 仓库中复制 `.sty`, `cus.module.xxx.tex` 和 `cus.library.xxx.tex` 文件
         - [✔]`cus.module.xxx.tex` 和 `whu.library.xxx.tex` 文件改名为 `whu.module.xxx.cus.tex` 和 `cus.library.xxx.cus.tex` 文件
@@ -20,6 +20,7 @@ Description:
     - [✔]`.cus.tex` 文件开头增加版权申明
     - [✔]将 `cus` 的 `example` 文件夹中的文件复制到 `whu` 的 `example-cus` 文件夹中
     - [✔]复制 `cusdoc.cls` 和 `cusdoc.cfg` 文件并处理替换
+    - [✔] 处理 `whudoc.cls` : 若有 `\WHUDependency{}`，且 `{}` 中包含 `module={xxx,yyy}` 或者 `library={zzz,www}`，则将 `...` 改为 `....cus`
 """
 import os
 import shutil
@@ -150,10 +151,12 @@ def replace_dependency(input_str):
     # 查找匹配 module 和 library 的正则表达式
     module_pattern = r'module={([^}]*)}'
     library_pattern = r'library={([^}]*)}'
+    disable_pattern = r'disable_pattern={([^}]*)}'
 
     # 查找 module 和 library 中的所有项
     module_match = re.search(module_pattern, input_str)
     library_match = re.search(library_pattern, input_str)
+    disable_match = re.search(disable_pattern, input_str)
 
     if module_match:
         # 将 module 中的项替换为带有 .cus 后缀的项
@@ -168,6 +171,13 @@ def replace_dependency(input_str):
         new_library_items = [item.strip() + '.cus' for item in old_library_items]
         # 替换原始字符串中的 library 部分
         input_str = re.sub(library_pattern, 'library={' + ','.join(new_library_items) + '}', input_str)
+    
+    if disable_match:
+        # 将 library 中的项替换为带有 .cus 后缀的项
+        old_disable_items = disable_match.group(1).split(',')
+        new_disable_items = [item.strip() + '.cus' for item in old_disable_items]
+        # 替换原始字符串中的 library 部分
+        input_str = re.sub(disable_pattern, 'disable={' + ','.join(new_disable_items) + '}', input_str)
 
     return input_str
 
@@ -290,3 +300,16 @@ for file in os.listdir(cus_example_directory):
         source_file_path = file_path
         target_file_path = os.path.join(whu_example_directory, file)
         shutil.copy(source_file_path, target_file_path)
+
+
+"""
+处理 `whudoc.cls` : 若有 `\WHUDependency{}`，且 `{}` 中包含 `module={xxx,yyy}` 或者 `library={zzz,www}`，则将 `...` 改为 `....cus`
+"""
+doc_file_path = os.path.join(whu_directory, 'whudoc.cls')
+with open(doc_file_path, 'r', encoding='utf-8') as f:
+    file_content = f.read()
+    # 修改文件中的字符串
+    if "WHUDependency" in file_content:
+        file_content = replace_dependency(file_content)
+with open(doc_file_path, 'w', encoding='utf-8') as f:
+    f.write(file_content)
