@@ -5,8 +5,8 @@
 % come originally from the CusTeX project (https://github.com/Sophanatprime/cus)
 %%
 \NeedsTeXFormat{LaTeX2e}[2023/06/01]
-\def\whu@d@te{2024/04/17}
-\def\whu@versi@n{0.0.5a}
+\def\whu@d@te{2024/04/21}
+\def\whu@versi@n{0.0.5b}
 \ProvidesExplPackage{whu}{\whu@d@te}{\whu@versi@n}{Basic file of thesis template for Wuhan university}
 
 \def\WhuTeX{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.15em\TeX}
@@ -338,9 +338,10 @@
   }
 \bool_new:N \l__whu_load_library_dependency_bool
 %% fmt (fmt version), engine, package, library of package, class, module, library
-\cs_new_protected_nopar:Npn \WHUDependency 
+\ekeysdeclarecmd \WHUDependency { s }
   {
-    \bool_set:Nn \l__whu_load_library_dependency_bool { \tl_if_empty_p:N \CurrentFile }
+    \bool_set:Nn \l__whu_load_library_dependency_bool 
+      { \bool_lazy_or_p:nn {#1} { \tl_if_empty_p:N \CurrentFile } }
     \keys_set:nn { whu/dependency } 
   }
 %%TODO:

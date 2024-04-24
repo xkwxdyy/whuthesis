@@ -21,7 +21,7 @@
 
 \InputIfFileExists{whudoc.cfg}{}{}
 \RequirePackage{whu}
-\WHUDependency{library={doc,box,bnf,ref,counter,pgf}}
+\WHUDependency{library={doc.cus,box.cus,bnf.cus,ref.cus,counter.cus,pgf.cus}}
 \SetKeys[updatemarks]{multicol}
 
 \RequirePackage{graphicx}
@@ -256,8 +256,26 @@
 
 \msg_redirect_name:nnn { tabularray } { table-width-too-small } { log }
 
-\cs_new:Npn \UseList { \whu_tl_use:nn }
-\cs_new:Npn \UseClist { \clist_use:nn }
+\NewExpandableDocumentCommand \UseList { +O{} +m +O{} +m }
+  {
+    \tl_if_empty:nTF {#3}
+      { \whu_tl_use:nn {#2} {#4} }
+      {
+        \exp_args:Ne \whu_tl_use:nn
+          { \tl_map_tokens:nn {#2} { \__whudoc_tl_use_aux:nn {#3} } } {#4}
+      }
+  }
+\NewExpandableDocumentCommand \UseClist { +O{} +m +O{} +m }
+  {
+    \tl_if_empty:nTF {#3}
+      { \clist_use:nn {#2} {#4} }
+      {
+        \exp_args:Ne \whu_tl_use:nn
+          { \clist_map_tokens:nn {#2} { \__whudoc_tl_use_aux:nn {#3} } } {#4}
+      }
+  }
+\cs_new:Npn \__whudoc_tl_use_aux:nn #1#2 { { \exp_not:n { #1{#2} } } }
+
 
 \tl_const:Nn \whudoctoc
   {

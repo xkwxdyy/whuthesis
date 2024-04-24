@@ -6,7 +6,7 @@
 \WHUDependency{ module={util.cus}, package={framedmulticol, varwidth, rotating, lscape, (ROTpdf)pdflscape} }
 \WHUProvideExplModule{box.cus}{\whu@d@te}{\whu@versi@n}{box, breakable box}
 
-\ekeysdeclarecmd \spreadtext { s m }
+\ekeysdeclarecmd \spreadtext { s @O{1} m }
   {
     \tl_set:Nx \__whu_spreadtext_auxii: 
       { 
@@ -14,21 +14,24 @@
         \c_group_end_token 
         \mode_leave_vertical: \box_use_drop:N \l__whu_tmpa_box 
       }
+    \tl_set:Nx \l__whu_spreadtext_ratio_tl { \fp_eval:n {#2} }
     \bool_if:nTF {#1}
       { \tex_afterassignment:D \__whu_spreadtext_auxi_hss: }
       { \tex_afterassignment:D \__whu_spreadtext_auxi: }
     \tex_setbox:D \l__whu_tmpa_box 
-      \elkernel_hbox:w to \elkernel_dim_expr:w #2 \scan_stop:
+      \elkernel_hbox:w to \elkernel_dim_expr:w #3 \scan_stop:
   }
+\ekeysdeclarecmd \useinfiniteskip { m } { \__whu_spreadtext_set_skip:n {#1} }
+\tl_new:N \l__whu_spreadtext_ratio_tl
 \cs_new:Npn \__whu_spreadtext_auxi:
   {
-    \__whu_spreadtext_set_skip:
+    \__whu_spreadtext_set_skip:n { \l__whu_spreadtext_ratio_tl fil }
     \c_group_begin_token
     \group_insert_after:N \__whu_spreadtext_auxii:
   }
 \cs_new:Npn \__whu_spreadtext_auxi_hss:
   {
-    \__whu_spreadtext_set_skip:
+    \__whu_spreadtext_set_skip:n { \l__whu_spreadtext_ratio_tl fil }
     \hss
     \c_group_begin_token
     \group_insert_after:N \__whu_spreadtext_auxii:
@@ -37,39 +40,39 @@
   {
     \sys_if_engine_uptex_p:
       {
-        \cs_new_protected:Npn \__whu_spreadtext_set_skip:
+        \cs_new_protected:Npn \__whu_spreadtext_set_skip:n #1
           {
-            \skip_set:Nn \spaceskip { 0pt plus 1fil }
-            \skip_set:Nn \xspaceskip { 0pt plus 1fil }
-            \skip_set:Nn \kanjiskip { 0pt plus 1fil }
-            \skip_set:Nn \xkanjiskip { 0pt plus 1fil }
+            \skip_set:Nn \spaceskip { 0pt plus #1 }
+            \skip_set:Nn \xspaceskip { 0pt plus #1 }
+            \skip_set:Nn \kanjiskip { 0pt plus #1 }
+            \skip_set:Nn \xkanjiskip { 0pt plus #1 }
           }
       }
     \sys_if_engine_luatex_p:
       {
-        \cs_new_protected:Npn \__whu_spreadtext_set_skip:
+        \cs_new_protected:Npn \__whu_spreadtext_set_skip:n #1
           {
-            \skip_set:Nn \spaceskip { 0pt plus 1fil }
-            \skip_set:Nn \xspaceskip { 0pt plus 1fil }
-            \ltjsetparameter { kanjiskip=0pt plus 1fil, xkanjiskip=0pt plus 1fil }
+            \skip_set:Nn \spaceskip { 0pt plus #1 }
+            \skip_set:Nn \xspaceskip { 0pt plus #1 }
+            \ltjsetparameter { kanjiskip=0pt plus #1, xkanjiskip=0pt plus #1 }
           }
       }
     \sys_if_engine_xetex_p:
       {
-        \cs_new_protected:Npn \__whu_spreadtext_set_skip:
+        \cs_new_protected:Npn \__whu_spreadtext_set_skip:n #1
           {
-            \def\CJKglue{\hskip 0pt plus 1fil\relax}
-            \def\CJKecglue{\hskip 0pt plus 1fil\relax}
-            \skip_set:Nn \spaceskip { 0pt plus 1fil }
-            \skip_set:Nn \xspaceskip { 0pt plus 1fil }
+            \def\CJKglue{\hskip 0pt plus #1\relax}
+            \def\CJKecglue{\hskip 0pt plus #1\relax}
+            \skip_set:Nn \spaceskip { 0pt plus #1 }
+            \skip_set:Nn \xspaceskip { 0pt plus #1 }
           }
       }
   }
   { 
-    \cs_new_protected:Npn \__whu_spreadtext_set_skip: 
+    \cs_new_protected:Npn \__whu_spreadtext_set_skip:n #1
       {
-        \skip_set:Nn \spaceskip { 0pt plus 1fil }
-        \skip_set:Nn \xspaceskip { 0pt plus 1fil }
+        \skip_set:Nn \spaceskip { 0pt plus #1 }
+        \skip_set:Nn \xspaceskip { 0pt plus #1 }
       }
   }
 
