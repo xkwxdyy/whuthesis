@@ -1,34 +1,41 @@
 % !TeX root = ../../whuthesis-doc.tex
 
-\chapter{whuthesis 简介}
+\chapter{简介}
 
 
-\section{已有的关于武汉大学的毕业论文 \LaTeX{} 模板}
+\section{武汉大学论文 \LaTeX{} 模板的开发现状}
 
-其实目前可以在网上找到不少武汉大学毕业论文的 \LaTeX{} 模板：
+目前可以在网上找到不少武汉大学论文的 \LaTeX{} 模板：
 \begin{itemize}
   \item 目前数学与统计学院学生用的比较多的是武汉大学 \href{http://aff.whu.edu.cn/huangzh/}{黄正华老师} 开发的 \href{http://aff.whu.edu.cn/huangzh/#:~:text=%E4%B8%8B%E5%88%97-,%E6%AF%95%E4%B8%9A%E8%AE%BA%E6%96%87%E6%A8%A1%E6%9D%BF,-%2C%20%E9%80%82%E7%94%A8%E4%BA%8E%20TeX}{本硕博 \LaTeX{} 模版}；
-  \item 其次就是 GitHub 的 \href{https://github.com/whutug}{whu-tug} 组织开发的 \href{https://github.com/whutug/whu-thesis}{\cls{whu-thesis}}：
+  \item GitHub 的 \href{https://github.com/whutug}{whu-tug} 组织开发了 \href{https://github.com/whutug/whu-thesis}{\cls{whu-thesis}}：
     \begin{itemize}
-      \item \href{https://github.com/imfing}{imfing} 于 2019 年首先开发了 \cls{whu-thesis}
-      \item \href{https://github.com/T0nyX1ang}{Tony Xiang} 参与小部分开发
-      \item 最后 \href{https://github.com/tanukihee}{ListLee} 于 2020 年\href{https://github.com/whutug/whu-thesis/commit/d488438b7819ddf5a128081a50b118d8fd4ec1ef}{用 \LaTeX3 重构了 \cls{whu-thesis}}
-      \item 但由于维护者工作原因，于 2021 年六月份后无人继续维护 \cls{whu-thesis}。\href{https://github.com/xkwxdyy}{我(xkwxdyy)} 在 2022 年接手 \cls{whu-thesis} 的维护，于 \href{https://github.com/whutug/whu-thesis/commit/bfaf2c235e7490fa16ce40ec6eb20ce060592a9d}{2022 年 8 月} 重新梳理教务处规范、已有的部分学院的需求差异，基于黄正华老师的模板、历史版本的 \cls{whu-thesis} 以及部分 issues 和 discussions 中的问题和需求，对 \cls{whu-thesis} 进行重构工作（框架完成，但一些小细节还没弄完）。随后 \href{https://github.com/Eliaul}{Eliaul} 和 \href{https://github.com/SwitWu}{SwitWu} 也加入了维护工作。
+      \item \href{https://github.com/imfing}{imfing} 于 2019 年首先开发了 \cls{whu-thesis}；
+      \item \href{https://github.com/T0nyX1ang}{Tony Xiang} 参与小部分开发；
+      \item 最后 \href{https://github.com/tanukihee}{ListLee} 于 2020 年\href{https://github.com/whutug/whu-thesis/commit/d488438b7819ddf5a128081a50b118d8fd4ec1ef}{用 \LaTeX3 重构了 \cls{whu-thesis}}；
+      \item 但由于维护者工作原因，于 2021 年六月份后无人继续维护 \cls{whu-thesis}。\href{https://github.com/xkwxdyy}{夏大鱼羊(xkwxdyy)} 在 2022 年接手 \cls{whu-thesis} 的维护，于 \href{https://github.com/whutug/whu-thesis/commit/bfaf2c235e7490fa16ce40ec6eb20ce060592a9d}{2022 年 8 月} 重新梳理教务处规范、已有的部分学院的需求差异，基于黄正华老师的模板、历史版本的 \cls{whu-thesis} 以及部分 issues 和 discussions 中的问题和需求，对 \cls{whu-thesis} 进行重构工作（框架完成，但一些小细节还没弄完）。随后 \href{https://github.com/Eliaul}{Eliaul} 和 \href{https://github.com/SwitWu}{SwitWu} 也加入了维护工作。
     \end{itemize}
-  \item 还可以找到一些针对具体需求改 \cls{whu-thesis} 产生的模板：
+  \item 还有一些基于 \cls{whu-thesis} 改的模板：
     \begin{itemize}
-      \item \href{https://github.com/cylqqqcyl/whu-thesis-2024}{cylqqqcyl 针对计算机学院改的}
-      \item \href{https://github.com/BenjaminHb/whu-thesis}{BenjaminHb 针对学术硕士改的}
+      \item \href{https://github.com/cylqqqcyl/whu-thesis-2024}{cylqqqcyl 针对计算机学院修改（但其实是基于 2024 版的本科生模板）}
+      \item \href{https://github.com/BenjaminHb/whu-thesis}{BenjaminHb 针对学术硕士修改}
     \end{itemize}
 \end{itemize}
 
 
-\section{为什么要开发 whuthesis}
+\section{为什么还要开发 \cls{whuthesis}}
 
-根据 \cls{whu-thesis} 的 GitHub （当然还有一些其它学校的 \LaTeX 模板 GitHub）上的\href{https://github.com/whutug/whu-thesis/issues}{问题}和\href{https://github.com/whutug/whu-thesis/discussions}{讨论}，以及自己一些毕业论文模板开发经验，可以看到一些不仅是 \cls{whu-thesis}，甚至是大部分毕业论文 \LaTeX{} 模板都存在的问题。
+既然如上一节所说已经有不少模板了，为什么还要开发新模板呢？
+
+根据 \cls{whu-thesis} 的 GitHub 上的\href{https://github.com/whutug/whu-thesis/issues}{问题}和\href{https://github.com/whutug/whu-thesis/discussions}{讨论}，以及自己一些毕业论文模板开发经验\footnote{夏大鱼羊同时也是华中师范大学论文 \LaTeX 模板 \href{https://github.com/xkwxdyy/CCNUthesis}{\cls{CCNUthesis}} 的开发与维护者}，可以看到一些不仅是 \cls{whu-thesis}，甚至是大部分毕业论文 \LaTeX{} 模板都存在的问题。
 
 
 \subsection{模板很难适配每一个学院的需求}
+
+
+\begin{quotation}
+  大部分学校的官方模板都是 word 版本，甚至一些学校没有专门的模板，而只有教务处网站有一些文字版本的论文规范说明。能找到的的一些 \LaTeX{} 模板基本上都是开发者（有一定部分都是模板对应学校的校内学生）基于这些参考开发而来。
+\end{quotation}
 
 大部分学校的官方模板都是 word 版本，甚至一些学校没有专门的模板，而只有教务处网站有一些文字版本的论文规范说明。能找到的的一些 \LaTeX{} 模板基本上都是开发者（有一定部分都是模板对应学校的校内学生）基于这些参考开发而来。
   

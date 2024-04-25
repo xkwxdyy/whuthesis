@@ -13,7 +13,9 @@
 
 \InputIfFileExists{xdyydoc.cfg}{}{}
 
-\LoadClass{cusdoc}
+\PassOptionsToPackage { most } { tcolorbox }
+
+\LoadClass{whudoc}
 
 
 % 定义键值对输出
@@ -28,4 +30,33 @@
   }
 
 
-\RequirePackage { dirtree }  % 排模板构成的目录树
+\RequirePackage { dirtree }  % 排版模板构成的目录树
+
+
+
+\DeclareDocumentEnvironment { quotation } { +b }
+  {
+    \begin{Framed}
+    #1
+  }
+  {
+    \end{Framed}
+  }
+
+\tcolorboxenvironment { quotation }
+  {
+    enhanced~jigsaw, 
+    parbox = false,
+    breakable,
+    left = 3mm,
+    top  = 1mm,
+    bottom = 4mm,
+    right = 3mm,
+    % blanker,
+    frame~hidden,
+    % boxrule = 0pt,
+    before~skip = 10pt,
+    after~skip = 10pt,
+    borderline~west = {1mm}{0pt}{gray},
+    colback = lightgray!20!white,
+  }

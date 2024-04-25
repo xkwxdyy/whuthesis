@@ -1,37 +1,180 @@
 \DocumentMetadata{}
-\documentclass[twoside]{book}
+\documentclass{xdyydoc}
+\newcommand{\DocDate}{2024-04-25}
+\newcommand{\DocVersion}{v0.0.1}
+
+\usepackage{xpinyin}
+\usepackage{xcolor-material}
+
+\hypersetup{pdfauthor={夏大鱼羊},
+  pdftitle= whuthesis 手册,
+  pdfcreator={\XeLaTeX} with hyperref and whuthesis}
+
+\title{
+  \textcolor{MaterialIndigo800}{%
+  \textbf{whuthesis: 武汉大学学位论文\LaTeX\xpinyin[font=\sffamily,format=\color{MaterialIndigo800}]{模}{mu2}板}}
+}
+\author{\bfseries\color{MaterialIndigo800}夏大鱼羊}
+\date{\color{MaterialIndigo800}\DocDate\quad \DocVersion}
+
 \makeatletter
-\newcommand{\whu@version}{0.0.1}
+\setpagestyle*{fancy}[totalempty]{
+  \sethead [ol,er] {whuthesis 手册}
+  \sethead [or,el] {\headlink@warp\marked@title}
+  % \setfoot [or,el] {\texttt{longaster@163.com}}
+  \setfoot [ol,er] {第\thepage 页}
+  \setheadrulewidth {1pt}
+}
 \makeatother
 
-\input{./doc/setting/whuthesis-doc-setting-preamble.tex}
+\setgraphicspath+{{./doc/assets}}
+% \newsavebox\WaterMarkBox
+% \sbox{\WaterMarkBox}{\transparent{0.2}\includegraphics[width = 20cm]{background.png}}
+\background+(tikz)[./watermark]{
+  \node[anchor = south west, text opacity = 0.2] at (page.south west) {
+    \includegraphics[width = 17cm]{background.png}
+  };
+}
+% \backgroundpicture+*[width = 20cm](lb)[./watermark]{background.png}
+
+\newindextype[auto=true,filename=\jobname.idx,heading*={\section}]{\empty}
+\setupindex[\empty,docchange]{auto=true}
+\removegeneralname  % 去掉 Changelog 前面的“General:”
+
+\makeatletter
+\protected\def\normalsize{%
+  \@setfontsize \normalsize {10.53937}{12.64725}%
+  \abovedisplayskip 1\p@ \@plus 4\p@ \@minus 2\p@ 
+  \abovedisplayshortskip \z@ \@plus 2\p@ 
+  \belowdisplayskip \abovedisplayskip 
+  \belowdisplayshortskip \abovedisplayshortskip
+  \let \@listi \@listI
+}
+\makeatother
+
+\def\nofuncskip{\par\vskip-\bigskipamount\vskip\parskip\par}
+\def\zhslash{／}
+\newcommand\UNEXPANDEDRESULT{最终结果使用 \tn{unexpanded} （\cs{exp_not:n}）包裹起来。}
+
+\raggedbottom \hfuzz=2.5pt \vfuzz=10pt 
+
+
+\makeatletter
+\renewcommand{\maketitle}{
+  \begin{titlepage}%
+    \let\footnotesize\small
+    \let\footnoterule\relax
+    \let \footnote \thanks
+    \null\vfil
+    \vskip 60\p@
+    \begin{center}%
+      {\fontsize{24pt}{0pt}\selectfont \@title \par}%
+      \vskip 3em%
+      {\Large
+        \lineskip .75em%
+        \begin{tabular}[t]{c}%
+          \@author
+        \end{tabular}\par}%
+        \vskip 1.5em%
+      {\large \@date \par}%       % Set date in \large size.
+    \end{center}\par
+    \@thanks
+    \vfil
+    \color{MaterialIndigo800}
+    \begin{flushleft}
+      \Large
+      \textbf{特别声明：}
+    \end{flushleft}
+    
+    \large \bfseries
+    \begin{enumerate}
+      \item 本模板仍处于开发阶段，若出现问题请及时与开发者联系，比如在 GitHub 上提 \href{https://github.com/xkwxdyy/whuthesis}{issue}；
+      \item 本模板为个人开发者所开发，\textcolor{red}{\emph{非官方模板}}，使用前请谨慎选择，任何由于使用本模板引起的论文格式审查问题均与本模板作者无关；
+      \item 若确定使用本模板，可以自行参考官方资料核查规范。
+      % 可以参考手册第 \pageref{chap:开发参考} 页的项目开发参考自行核查规范；
+    \end{enumerate}
+  \end{titlepage}%
+  \setcounter{footnote}{0}%
+  \global\let\thanks\relax
+  \global\let\maketitle\relax
+  \global\let\@thanks\@empty
+  \global\let\@author\@empty
+  \global\let\@date\@empty
+  \global\let\@title\@empty
+  \global\let\title\relax
+  \global\let\author\relax
+  \global\let\date\relax
+  \global\let\and\relax
+}
+\makeatother
+
+\def\CusTeX{C\kern-.12em \raise.0466ex\hbox{u}\kern-.1em\lower .4ex\hbox{S}\kern-.15em\TeX}
+
+\usepackage[
+  % backref      = true,
+  backend      = biber,
+  bibstyle     = gb7714-2015,
+  sorting      = nty,
+  gbalign      = right,
+  citestyle    = gb7714-WHU,
+  gbnamefmt    = givenahead,
+  gbpunctin    = false,
+  % mergedate    = false,
+  % urldate      = long
+]{biblatex}
+
+\addbibresource{whuthesis-doc.bib}
+
+\enablecombinedlist 
+
+
+% \ExplSyntaxOn
+% \cs_set_eq:NN \cleardoublepage \clearpage
+% \ExplSyntaxOff
 
 
 \begin{document}
 
-\input{./doc/setting/whuthesis-doc-setting-titlepage.tex}
+\usepagestyle{totalempty}
+\setlength{\lineskiplimit}{4pt}
+\setlength{\lineskip}{4pt}
 
-
-
+\def\thepage{t.\arabic{page}}
+\setuplayout{preset=balance}
+\maketitle
 
 \frontmatter
-\input{./doc/setting/whuthesis-doc-setting-frontmatter.tex}
-
-
-
+\whudoctoc
 
 
 \mainmatter
-\input{./doc/setting/whuthesis-doc-setting-mainmatter.tex}
+\usepagestyle{fancy}
+\setuptitle[chapter]{numbering=true,pagestyle=fancy}
+\removebackground[./watermark]
+\background+(tikz)[./commonlogo]{
+  % 两种都可以
+  % \node at (text.east) {{\transparent{0.1}\includegraphics[height = \textheight]{logo-black}}};
+  \node[text opacity = 0.05] at ([shift={(-10em,0em)}]text.east) {\includegraphics[height = \textheight]{logo-black}};
+}
 
 
-\setuplayout{preset=balance}
-% 介绍
 \input{./doc/body/introduction.tex}
 
 
+\newpage
 \setuplayout{preset=main}
-% 安装与更新
+\removebackground[./commonlogo]
+\makeatletter
+\background+(tikz)[./oddevenlogo]{
+  % 两种都可以
+  % \ifodd\c@page
+    \node[text opacity = 0.05] at ([shift={(-10em,0em)}]text.east) {\includegraphics[height = \textheight]{logo-black}};
+  % \else
+  %   \node[text opacity = 0.05] at ([shift={(0em,0em)}]text.west) {\includegraphics[height = \textheight]{logo-black}};
+  % \fi
+}
+\makeatother
+
 \input{./doc/body/installation.tex}
 
 
@@ -43,32 +186,24 @@
 
 
 
-
-
-
-\input{./doc/back/TODO.tex}
-
 \cleardoublepage 
 \whusetup[doc/cmd]{hyper=false}
 \vbadness=10000 \hbadness=10000 \vfuzz=\maxdimen \hfuzz=\maxdimen
 \backmatter
 \long\def\sectionmark#1{}
+\setuplayout{preset=balance}
 \chapter{索引}
 \vskip-14pt 
-% \printindex 
-% \PrintChanges 
+\printindex 
+\PrintChanges 
 \PrintUsages 
 
-\input{./doc/back/reference.tex}
-
-% \input{./doc/back/list-of-hackings.tex}
 
 
+\input{./doc/back/TODO.tex}
+
+\newpage
 % 参考文献
 \printbibliography[heading=bibintoc]
-
-
-
-
 
 \end{document}
