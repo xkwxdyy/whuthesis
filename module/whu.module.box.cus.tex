@@ -6,6 +6,11 @@
 \WHUDependency{ module={util.cus}, package={framedmulticol, varwidth, rotating, lscape, (ROTpdf)pdflscape} }
 \WHUProvideExplModule{box.cus}{\whu@d@te}{\whu@versi@n}{box, breakable box}
 
+\ekeysdeclarecmd \fwidthbox { &@O{} &@O{} &@O{} m m }
+  { \begin{minipage}#1#2#3{#4} #5 \end{minipage} }
+\ekeysdeclarecmd \vwidthbox { &@O{} &@O{} &@O{} m m }
+  { \begin{varwidth}#1#2#3{#4} #5 \end{varwidth} }
+
 \ekeysdeclarecmd \spreadtext { s @O{1} m }
   {
     \tl_set:Nx \__whu_spreadtext_auxii: 
@@ -210,7 +215,7 @@
 % cannot be used in math mode!
 \cs_new_protected:Npn \whu_box_start:nn #1#2
   {
-    \par
+    \par \mode_if_inner:F { \goodbreak }
     \nointerlineskip 
     \group_begin:
     \cs_set:Npn \footnotemark 
@@ -266,6 +271,7 @@
     \vbox_set:Nw \@tempboxa 
       #2 % Modifications to \hsize (can use \width and \height)
       \dim_set_eq:NN \textwidth \tex_hsize:D 
+      \dim_set_eq:NN \linewidth \tex_hsize:D 
       \dim_set_eq:NN \columnwidth \tex_hsize:D
       \l__whu_box_init_tl
   }

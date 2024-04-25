@@ -16,9 +16,15 @@
     \put (\Gm@layouthoffset,-\Gm@layoutvoffset) 
       { \vbox_to_zero:n { \box_use_drop:N \l__whu_bgfg_box \tex_vss:D } }
   }
+\cs_new_protected:Npn \__whu_bfground_ct:n #1
+  {
+    \hbox_set:Nn \l__whu_bgfg_box { \hbox_overlap_center:n {#1} }
+    \put (\Gm@layouthoffset+.5\Gm@layoutwidth,-\Gm@layoutvoffset)
+      { \vbox_to_zero:n { \box_use_drop:N \l__whu_bgfg_box \tex_vss:D } }
+  }
 \cs_new_protected:Npn \__whu_bfground_rt:n #1
   {
-    \hbox_set_to_wd:Nnn \l__whu_bgfg_box { \Gm@layoutwidth } { \tex_hfil:D #1 }
+    \hbox_set_to_wd:Nnn \l__whu_bgfg_box { \Gm@layoutwidth } { \tex_hss:D #1 }
     \put (\Gm@layouthoffset,-\Gm@layoutvoffset) 
       { \vbox_to_zero:n { \box_use_drop:N \l__whu_bgfg_box \tex_vss:D } }
   }
@@ -34,9 +40,21 @@
           }
       }
   }
+\cs_new_protected:Npn \__whu_bfground_cb:n #1
+  {
+    \hbox_set:Nn \l__whu_bgfg_box { \hbox_overlap_center:n {#1} }
+    \put (\Gm@layouthoffset+.5\Gm@layoutwidth,-\Gm@layoutvoffset-\Gm@layoutheight)
+      {
+        \hbox:n 
+          {
+            \box_move_up:nn { \box_dp:N \l__whu_bgfg_box }
+              { \box_use_drop:N \l__whu_bgfg_box }
+          }
+      }
+  }
 \cs_new_protected:Npn \__whu_bfground_rb:n #1
   {
-    \hbox_set_to_wd:Nnn \l__whu_bgfg_box { \Gm@layoutwidth } { \tex_hfil:D #1 }
+    \hbox_set_to_wd:Nnn \l__whu_bgfg_box { \Gm@layoutwidth } { \tex_hss:D #1 }
     \put (\Gm@layouthoffset,-\Gm@layoutvoffset-\Gm@layoutheight)
       {
         \hbox:n 
@@ -46,14 +64,28 @@
           }
       }
   }
+\cs_new_protected:Npn \__whu_bfground_lm:n #1
+  {
+    \hbox_set:Nn \l__whu_bgfg_box { \hbox_overlap_right:n {#1} }
+    \put (\Gm@layouthoffset,
+      {-\Gm@layoutvoffset-.5\Gm@layoutheight-.5\box_ht:N \l__whu_bgfg_box+.5\box_dp:N \l__whu_bgfg_box})
+      { \vbox:n { \box_use_drop:N \l__whu_bgfg_box } }
+  }
 \cs_new_protected:Npn \__whu_bfground_cm:n #1
   {
-    \hbox_set:Nn \l__whu_bgfg_box {#1}
-    \put ({\Gm@layouthoffset+.5\Gm@layoutwidth-.5\box_wd:N \l__whu_bgfg_box} , 
+    \hbox_set:Nn \l__whu_bgfg_box { \hbox_overlap_center:n {#1} }
+    \put ({\Gm@layouthoffset+.5\Gm@layoutwidth} ,
           {-\Gm@layoutvoffset-.5\Gm@layoutheight-.5\box_ht:N \l__whu_bgfg_box+.5\box_dp:N \l__whu_bgfg_box} )
-      { \tex_vbox:D { \box_use_drop:N \l__whu_bgfg_box } }
+      { \vbox:n { \box_use_drop:N \l__whu_bgfg_box } }
   }
-\cs_new:Npn \__whu_bfground_ot:n 
+\cs_new_protected:Npn \__whu_bfground_rm:n #1
+  {
+    \hbox_set_to_wd:Nnn \l__whu_bgfg_box { \Gm@layoutwidth } { \tex_hss:D #1 }
+    \put (\Gm@layouthoffset,
+      {-\Gm@layoutvoffset-.5\Gm@layoutheight-.5\box_ht:N \l__whu_bgfg_box+.5\box_dp:N \l__whu_bgfg_box})
+      { \vbox:n { \box_use_drop:N \l__whu_bgfg_box } }
+  }
+\cs_new_protected:Npn \__whu_bfground_ot:n 
   {
     \legacy_if:nTF { @twoside }
       {
@@ -65,7 +97,7 @@
       }
       { \__whu_bfground_rt:n }
   }
-\cs_new:Npn \__whu_bfground_it:n 
+\cs_new_protected:Npn \__whu_bfground_it:n 
   {
     \legacy_if:nTF { @twoside }
       {
@@ -77,19 +109,43 @@
       }
       { \__whu_bfground_lt:n }
   }
-\cs_new:Npn \__whu_bfground_ob:n 
+\cs_new_protected:Npn \__whu_bfground_im:n 
   {
     \legacy_if:nTF { @twoside }
       {
         \if_int_odd:w \c@page 
-          \exp_after:wN \__whu_bfground_rb:n
+          \exp_after:wN \__whu_bfground_lm:n
         \else:
-          \exp_after:wN \__whu_bfground_lb:n
+          \exp_after:wN \__whu_bfground_rm:n
         \fi
       }
-      { \__whu_bfground_rb:n }
+      { \__whu_bfground_lm:n }
   }
-\cs_new:Npn \__whu_bfground_ib:n 
+\cs_new_protected:Npn \__whu_bfground_om:n 
+  {
+    \legacy_if:nTF { @twoside }
+      {
+        \if_int_odd:w \c@page 
+          \exp_after:wN \__whu_bfground_rm:n
+        \else:
+          \exp_after:wN \__whu_bfground_lm:n
+        \fi
+      }
+      { \__whu_bfground_rm:n }
+  }
+\cs_new_protected:Npn \__whu_bfground_ib:n 
+  {
+    \legacy_if:nTF { @twoside }
+      {
+        \if_int_odd:w \c@page 
+          \exp_after:wN \__whu_bfground_lb:n
+        \else:
+          \exp_after:wN \__whu_bfground_rb:n
+        \fi
+      }
+      { \__whu_bfground_lb:n }
+  }
+\cs_new_protected:Npn \__whu_bfground_ob:n 
   {
     \legacy_if:nTF { @twoside }
       {
